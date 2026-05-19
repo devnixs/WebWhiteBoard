@@ -20,3 +20,4 @@
 - `stories/11-remote-cursor-camera-anchoring.story_COMPLETE.md`
 - `stories/12-image-paste-duplicate-fix.story_COMPLETE.md`
 - `stories/13-dockerfile-and-container-packaging.story_COMPLETE.md`
+- `stories/14-github-ci.story_IN_PROGRESS.md`

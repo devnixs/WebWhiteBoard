@@ -134,6 +134,43 @@ Input: Added user authentication with JWT tokens
 Output: feat(auth): implement JWT-based authentication
 ```
 
+### Dual-Format Output (Claude + Codex)
+
+Every skill created in this project must be written to **both** locations simultaneously:
+
+| Format | Location | Extra file |
+|--------|----------|------------|
+| Claude Code | `.claude/skills/<skill-name>/` | — |
+| Codex | `.codex/skills/<skill-name>/` | `agents/openai.yaml` |
+
+**Step 1 — Write the Claude version first** under `.claude/skills/<skill-name>/` as normal.
+
+**Step 2 — Mirror it to Codex** under `.codex/skills/<skill-name>/`:
+- Copy `SKILL.md` verbatim, then update any script-path examples that reference `.claude/skills/...` to use `.codex/skills/...` instead.
+- If the skill bundles scripts, copy the entire `scripts/` folder to the Codex location as well (the script content is identical; only the invocation path in the docs changes).
+- Create `agents/openai.yaml` with this structure:
+
+```yaml
+interface:
+  display_name: "<Human-readable skill name>"
+  short_description: "<One sentence: what it does.>"
+  default_prompt: "Use $<skill-name> to <brief action description>."
+```
+
+`display_name` is title-cased. `short_description` is a single sentence, lowercase start, period at end. `default_prompt` is the canonical invocation line a user or agent would send to trigger the skill.
+
+**Example** — for a skill named `reset-story-or-spec`:
+```yaml
+interface:
+  display_name: "Reset Story or Spec"
+  short_description: "Uncheck all boxes and reset story/spec files to their TODO state."
+  default_prompt: "Use $reset-story-or-spec to reset a story or spec file back to its initial unchecked state."
+```
+
+Both versions are kept in sync whenever the skill is updated: if you edit `SKILL.md` in one location, apply the same change (with path adjustments) to the other.
+
+---
+
 ### Writing Style
 
 Try to explain to the model why things are important in lieu of heavy-handed musty MUSTs. Use theory of mind and try to make the skill general and not super-narrow to specific examples. Start by writing a draft and then look at it with fresh eyes and improve it.
