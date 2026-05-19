@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/backend/">
+    <Project Path="backend/WebWhiteBoard.Api/WebWhiteBoard.Api.csproj" />
+    <Project Path="backend/WebWhiteBoard.Application/WebWhiteBoard.Application.csproj" />
+    <Project Path="backend/WebWhiteBoard.Domain/WebWhiteBoard.Domain.csproj" />
+    <Project Path="backend/WebWhiteBoard.Infrastructure/WebWhiteBoard.Infrastructure.csproj" />
+  </Folder>
+</Solution>

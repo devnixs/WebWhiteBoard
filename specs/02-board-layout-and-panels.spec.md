@@ -1,0 +1,13 @@
+- [X] The board view does not include a fixed page header.
+- [X] The board view uses floating UI panels that occupy minimal space and keep the canvas visually dominant.
+- [X] A floating share panel is displayed in the top-left area of the board view.
+- [X] Triggering the share action copies the current board URL to the clipboard.
+- [X] After copying the board URL, the UI clearly informs the user that the link has been copied.
+- [X] A floating tools panel is displayed on the left side of the board view.
+- [X] A floating bottom-right panel displays the current zoom level.
+- [X] The bottom-right panel includes an affordance to open a shortcut reference popup.
+- [X] A floating top-right panel shows the current user name, logout control, and live WebSocket latency indicator.
+- [X] The floating panels are visually compact and remain usable on both desktop and laptop-sized viewports.
+- [X] The panel system is designed so additional controls can be added later without forcing a redesign of the board shell.
+- [ ] The board canvas displays faint grid lines behind board content to improve spatial orientation without overpowering drawings or UI panels.
+- [ ] The grid lines remain visually subtle during normal board use so the canvas still feels dominant and drawn content remains easy to read.

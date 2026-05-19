@@ -1,0 +1,16 @@
+- [ ] Every major feature is covered by an end-to-end browser test plan against a real backend and a real PostgreSQL database.
+- [ ] End-to-end tests do not mock the backend.
+- [ ] End-to-end tests do not use an in-memory database as a substitute for PostgreSQL.
+- [ ] After each major feature is implemented, the application is manually tested in a running browser before the feature is considered complete.
+- [ ] Manual browser testing includes clicking buttons, typing into text fields, and validating visible UI feedback for the implemented feature.
+- [ ] Manual testing covers first-time login, returning-user login, logout, homepage board creation, homepage board re-entry, and direct shared-link entry into a board.
+- [ ] Manual testing covers share-link copying and visible copy confirmation.
+- [ ] Manual testing covers the board grid overlay to confirm faint grid lines are visible behind content without reducing readability of drawings or floating panels.
+- [ ] Manual testing covers each primary tool, including select, pencil, text, shapes, eraser, and lasso.
+- [ ] Manual testing covers infinite canvas navigation, trackpad panning, zooming, and protection against accidental browser back navigation.
+- [ ] Manual testing covers image paste behavior using platform-appropriate clipboard input.
+- [ ] Manual testing covers single selection, multi-selection, resize, rotate, duplication, deletion, ordering changes, and context-menu editing actions.
+- [ ] Manual testing covers keyboard shortcuts on both Windows/Linux conventions and macOS equivalents as applicable to the implementation environment.
+- [ ] Manual testing covers multi-user collaboration with visible remote cursors, names, colors, and low-latency update behavior.
+- [ ] Manual testing covers reconnect or reload scenarios to confirm persisted board state is restored correctly.
+- [ ] The browser test suite is structured so each major feature area has at least one meaningful end-to-end flow that exercises the real system through the UI.

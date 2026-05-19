@@ -1,0 +1,14 @@
+- [X] When a user loads the app for the first time, the app prompts for the user name before entering the main experience.
+- [X] The chosen user name is stored in local storage and reused across sessions until the user logs out.
+- [X] Logging in assigns the user a random color that is persisted for the current local session identity.
+- [X] The stored local identity is used as the session identity for collaboration features.
+- [X] If a user opens a board through a shareable `/board/{guid}` link and has not yet entered a name, the login flow completes first and then joins that board immediately.
+- [X] If a user reaches `/` directly, the homepage allows the user to create a new board or open an existing known board.
+- [X] The homepage lists only boards that the user has previously connected to.
+- [X] When a user creates a board, that board is added to the user’s locally stored known board list.
+- [X] When a user joins a board, that board is added to the user’s locally stored known board list.
+- [X] Returning to `/` shows previously known boards from local storage without exposing boards the user has never connected to.
+- [X] The application exposes only two user-facing routes: `/` for the homepage and `/board/{guid}` for the board view.
+- [X] Attempting to navigate to an unknown route is handled in a way that preserves the two-route model and guides the user back into a valid flow.
+- [X] The current user name is displayed in the top-right floating panel while authenticated.
+- [X] The top-right floating panel includes a logout action that clears the local identity and returns the user to the unauthenticated flow.

@@ -1,0 +1,6 @@
+@WebWhiteBoard.Api_HostAddress = http://localhost:5058
+
+GET {{WebWhiteBoard.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

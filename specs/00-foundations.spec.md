@@ -1,0 +1,11 @@
+- [X] The application is built with a React + Vite frontend, an ASP.NET Core 10 backend, PostgreSQL for persistence, and WebSockets for real-time collaboration.
+- [X] The architecture prioritizes low-latency drawing interactions, with local responsiveness preserved even while collaboration events are synchronizing.
+- [X] The board canvas is the primary interface and must remain visually unobstructed by large fixed chrome or unnecessary layout containers.
+- [X] The UI uses compact floating panels instead of a fixed header.
+- [X] All major board operations are represented as serializable actions whenever practical so they can be persisted, replayed, synchronized, and extended safely.
+- [X] Active boards live in memory for responsiveness and are persisted to PostgreSQL asynchronously without blocking user interactions.
+- [X] Business logic lives in the back end rather than being duplicated or embedded inconsistently in the frontend.
+- [X] Code is organized for extensibility so new tools, actions, panels, and board entity types can be added without reworking core flows.
+- [X] Features must not silently break previously specified board behavior, and changes must preserve compatibility with the current specs unless the specs are intentionally updated first.
+- [X] Every feature change is driven by an explicit update to the spec files in `specs/`, and implementation is expected to reflect the current specs.
+- [X] Existing React components in `design-guidelines/project` are used only as design guidance, with copied application code cleaned up to match project standards and avoid inline CSS.

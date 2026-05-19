@@ -1,0 +1,13 @@
+- [X] Multiple users can connect to the same board and collaborate in real time.
+- [X] A participant can see other participants’ cursors moving in real time.
+- [X] Each remote cursor displays the participant’s name.
+- [X] Each remote cursor displays the participant’s assigned color.
+- [X] The top-right panel includes an indicator for current WebSocket latency to the server.
+- [X] The collaboration model preserves local responsiveness even when remote updates are delayed or bursty.
+- [X] Board actions are synchronized over WebSockets in a form that can be validated and applied consistently by the backend.
+- [X] Backend validation prevents invalid or inconsistent board mutations from being accepted into the authoritative board state.
+- [X] Active board state is served from memory for low-latency collaboration.
+- [X] Board state is persisted asynchronously to PostgreSQL without requiring users to manually save.
+- [X] Persisted board state can be reloaded accurately after process restarts or reconnects.
+- [X] Known-board metadata needed for homepage re-entry is preserved consistently with the user’s local board history model.
+- [X] Backend and persistence design avoid duplicating domain logic between transport handlers, persistence code, and controller endpoints.

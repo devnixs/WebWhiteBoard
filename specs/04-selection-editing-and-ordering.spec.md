@@ -1,0 +1,20 @@
+- [X] Any selectable board item can be selected by clicking it.
+- [X] A selected item displays a visible bounding box.
+- [X] The bounding box supports resizing the selected item.
+- [X] The bounding box supports rotation of the selected item.
+- [X] A visible rotate handle or icon is shown around the selection bounds.
+- [X] Multiple items can be added to the current selection by using `Ctrl` on Windows/Linux or `Cmd` on macOS while selecting.
+- [X] When multiple items are selected, each item’s own bounds remain visible.
+- [X] When multiple items are selected, a combined bounding box for the whole selection is also shown.
+- [X] Right-clicking a supported item opens a context menu near the interaction point.
+- [X] The context menu supports moving an item to the front.
+- [X] The context menu supports moving an item to the back.
+- [X] The context menu supports duplicating an item.
+- [X] The context menu supports deleting an item.
+- [X] The context menu supports changing an item color when the item type supports color changes.
+- [X] The context menu supports increasing font size when the selected item supports text sizing.
+- [X] The context menu supports increasing draw size when the selected item supports stroke sizing.
+- [X] The context menu supports changing font family when the selected item supports font changes.
+- [X] Pressing `Delete` on Windows/Linux or the platform-appropriate delete key on macOS removes the current selection.
+- [X] Copying the current selection with `Ctrl+C` on Windows/Linux or `Cmd+C` on macOS stores a portable representation that can be pasted back into the board.
+- [X] Pasting a copied selection with `Ctrl+V` on Windows/Linux or `Cmd+V` on macOS creates duplicated board items with preserved editable properties.

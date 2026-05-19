@@ -1,0 +1,20 @@
+- [X] The default active tool when entering a board is the select tool.
+- [X] The left tools panel includes a select tool.
+- [X] The left tools panel includes a pencil tool.
+- [X] Activating the pencil tool opens a compact tool settings panel for pencil-specific options.
+- [X] The pencil settings panel allows selecting pencil color.
+- [X] The pencil settings panel allows selecting pencil size.
+- [X] The left tools panel includes a text tool.
+- [X] Activating the text tool opens a compact tool settings panel for text-specific options.
+- [X] The text settings panel allows selecting font size.
+- [X] The text settings panel allows selecting font family.
+- [X] The left tools panel includes a shapes tool.
+- [X] The shapes tool allows choosing from multiple supported shapes such as circle and square.
+- [X] The left tools panel includes an eraser tool.
+- [X] Activating the eraser tool allows selecting eraser size.
+- [X] The left tools panel includes a lasso selection tool.
+- [X] The whiteboard canvas is infinite in all directions.
+- [X] Users can draw, write, and place shapes anywhere on the infinite canvas without artificial bounds.
+- [X] Pasting an image with `Ctrl+V` on Windows/Linux or `Cmd+V` on macOS inserts the image into the board.
+- [X] Drawing interactions remain responsive even when persistence or collaboration traffic is active in the background.
+- [X] Holding `Shift` while using the pencil constrains drawing to straight snapped directions at 0 degrees, 90 degrees, 180 degrees, and 270 degrees.

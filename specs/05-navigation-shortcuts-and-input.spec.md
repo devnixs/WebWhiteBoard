@@ -1,0 +1,8 @@
+- [X] On laptop trackpads, moving around the infinite board is supported with a two-finger gesture.
+- [X] Zooming is supported with trackpad pinch gestures or the platform-appropriate pan and zoom gestures expected by users.
+- [X] Trackpad interactions are configured so attempting to pan left with two fingers does not trigger browser history navigation away from the board.
+- [X] Keyboard shortcuts support both Windows/Linux conventions and macOS equivalents, replacing `Ctrl` with `Cmd` where appropriate.
+- [X] The shortcuts popup documents the supported shortcuts for all major board operations.
+- [X] The application includes convenient standard shortcuts beyond the explicitly requested ones when they fit the product model and do not conflict with browser behavior.
+- [X] Shortcut handling is scoped carefully so text editing flows do not lose expected native input behavior.
+- [X] Canvas navigation and manipulation shortcuts are implemented in a way that preserves accessibility and predictable focus behavior.
