@@ -16,5 +16,6 @@
 - [X] The whiteboard canvas is infinite in all directions.
 - [X] Users can draw, write, and place shapes anywhere on the infinite canvas without artificial bounds.
 - [X] Pasting an image with `Ctrl+V` on Windows/Linux or `Cmd+V` on macOS inserts the image into the board.
+- [X] Pasting an image inserts it exactly once — no duplicate copy is produced on the canvas.
 - [X] Drawing interactions remain responsive even when persistence or collaboration traffic is active in the background.
 - [X] Holding `Shift` while using the pencil constrains drawing to straight snapped directions at 0 degrees, 90 degrees, 180 degrees, and 270 degrees.

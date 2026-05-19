@@ -26,6 +26,8 @@ var app = builder.Build();
 
 app.UseCors();
 app.UseWebSockets();
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.MapGet("/health", () => Results.Ok(new
 {
@@ -87,5 +89,7 @@ app.Map("/ws/boards/{boardId:guid}", async context =>
     using var socket = await context.WebSockets.AcceptWebSocketAsync();
     await coordinator.HandleConnectionAsync(boardId, socket, context.RequestAborted);
 });
+
+app.MapFallbackToFile("index.html");
 
 app.Run();

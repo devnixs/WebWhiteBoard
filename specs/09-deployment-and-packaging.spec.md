@@ -1,0 +1,10 @@
+- [X] The project can be packaged into a single Docker image that contains both the compiled frontend and the running backend.
+- [X] The Docker image is built entirely from within the container using a multi-stage build — no pre-built artifacts from the host are required.
+- [X] The frontend is built inside a Node.js build stage using `npm ci` and `npm run build`.
+- [X] The backend is compiled and published inside a .NET SDK build stage using `dotnet publish`.
+- [X] The final runtime image is based on the .NET runtime base image only — the Node.js and .NET SDK stages are not included in the shipped image.
+- [X] The frontend static assets produced by the Vite build are copied from the Node build stage into the backend's `wwwroot/` directory in the final image.
+- [X] The backend serves the frontend static files and falls back to `index.html` for any unrecognised route, supporting client-side SPA routing.
+- [X] The PostgreSQL connection string can be supplied at container start-up via the `ConnectionStrings__Postgres` environment variable, overriding the built-in default.
+- [X] The container exposes a single HTTP port that serves both the API and the frontend.
+- [X] A `.dockerignore` file exists to exclude `node_modules`, build output directories, and other host artefacts from the Docker build context.

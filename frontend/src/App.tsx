@@ -919,28 +919,6 @@ function BoardScreen({
       return
     }
 
-    const handlePaste = async (event: ClipboardEvent) => {
-      const files = Array.from(event.clipboardData?.files ?? []).filter((file) =>
-        file.type.startsWith('image/'),
-      )
-
-      if (files.length === 0) {
-        return
-      }
-
-      event.preventDefault()
-      await editor.putExternalContent({ type: 'files', files })
-    }
-
-    window.addEventListener('paste', handlePaste)
-    return () => window.removeEventListener('paste', handlePaste)
-  }, [editor])
-
-  useEffect(() => {
-    if (!editor) {
-      return
-    }
-
     const handleSelectionKeyDown = async (event: KeyboardEvent) => {
       if (isEditableTarget(event.target)) {
         return

@@ -18,3 +18,5 @@
 - `stories/09-board-grid-lines.story_COMPLETE.md`
 - `stories/10-design-token-alignment.story_IN_PROGRESS.md`
 - `stories/11-remote-cursor-camera-anchoring.story_COMPLETE.md`
+- `stories/12-image-paste-duplicate-fix.story_COMPLETE.md`
+- `stories/13-dockerfile-and-container-packaging.story_COMPLETE.md`
