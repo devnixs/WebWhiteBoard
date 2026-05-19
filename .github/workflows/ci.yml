@@ -111,7 +111,7 @@ jobs:
           context: .
           push: ${{ github.event_name == 'push' }}
           tags: |
-            ghcr.io/webwhiteboard:latest
-            ghcr.io/webwhiteboard:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/webwhiteboard:latest
+            ghcr.io/${{ github.repository_owner }}/webwhiteboard:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
