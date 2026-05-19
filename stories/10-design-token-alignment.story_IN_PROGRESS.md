@@ -6,7 +6,7 @@ Bring the application's real UI into visual parity with the reference design bun
 
 ## Scope
 
-- [ ] Introduce or complete a `:root` CSS token block in `frontend/src/index.css` that defines the properties below, taken directly from the design-guidelines THEME object:
+- [X] Introduce or complete a `:root` CSS token block in `frontend/src/index.css` that defines the properties below, taken directly from the design-guidelines THEME object:
   - `--bg: #f7f8fa`
   - `--bg-soft: #f1f3f6`
   - `--panel: #ffffff`
@@ -22,9 +22,9 @@ Bring the application's real UI into visual parity with the reference design bun
   - `--grid-faint: rgba(15, 23, 42, 0.04)`
   - `--panel-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 14px rgba(15, 23, 42, 0.05)`
   - `--panel-shadow-strong: 0 8px 30px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.04)`
-- [ ] Update the production CSS and component styles to consume those tokens via `var()` throughout. Every hardcoded design-guideline value that has a token equivalent should be replaced so the values are defined once.
-- [ ] Recreate the shared reference primitives from `design-guidelines/project/board-chrome.jsx` and `design-guidelines/project/screens.jsx` inside the production app: panel shells, pill buttons, primary buttons, tool buttons, search chip, avatar stack, modal chrome, flyout chrome, and divider treatments.
-- [ ] Recreate the reference icon set from `design-guidelines/project/icons.jsx` in the production app so the rendered strokes and shapes are visually identical, while keeping the implementation local to the real frontend codebase.
+- [X] Update the production CSS and component styles to consume those tokens via `var()` throughout. Every hardcoded design-guideline value that has a token equivalent should be replaced so the values are defined once.
+- [X] Recreate the shared reference primitives from `design-guidelines/project/board-chrome.jsx` and `design-guidelines/project/screens.jsx` inside the production app: panel shells, pill buttons, primary buttons, tool buttons, search chip, avatar stack, modal chrome, flyout chrome, and divider treatments.
+- [X] Recreate the reference icon set from `design-guidelines/project/icons.jsx` in the production app so the rendered strokes and shapes are visually identical, while keeping the implementation local to the real frontend codebase.
 - [ ] Align the `/` unauthenticated screen to `design-guidelines/Screenshots/Screenshot1 - Login.png`.
 - [ ] Align the `/` authenticated returning-user screen to `design-guidelines/Screenshots/Screenshot2 - Board selector.png`.
 - [ ] Align the default `/board/{guid}` chrome state to `design-guidelines/Screenshots/Screenshot3 - Full board view.png`.

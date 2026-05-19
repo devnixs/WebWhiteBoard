@@ -1270,8 +1270,8 @@ function BoardCanvasBackground() {
   const camera = useValue('camera', () => editor.getCamera(), [editor])
   const minorGridSize = Math.max(gridSize * camera.z, 10)
   const majorGridSize = minorGridSize * 4
-  const minorGridOpacity = getGridOpacity(minorGridSize, 10, 24, 0.035)
-  const majorGridOpacity = getGridOpacity(majorGridSize, 24, 72, 0.065)
+  const minorGridOpacity = getGridOpacity(minorGridSize, 10, 24, 0.04)
+  const majorGridOpacity = getGridOpacity(majorGridSize, 24, 72, 0.12)
   const backgroundStyle = {
     '--board-grid-minor-size': `${minorGridSize}px`,
     '--board-grid-major-size': `${majorGridSize}px`,
