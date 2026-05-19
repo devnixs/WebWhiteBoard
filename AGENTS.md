@@ -55,6 +55,9 @@ Agents working in this repo must treat the spec files in `specs/` as the source 
 - `specs/05-navigation-shortcuts-and-input.spec.md`
 - `specs/06-collaboration-persistence-and-backend.spec.md`
 - `specs/07-browser-testing-and-qa.spec.md`
+- `specs/08-visual-design-tokens.spec.md`
+- `specs/09-deployment-and-packaging.spec.md`
+- `specs/10-board-assets-and-uploads.spec.md`
 
 ## Frontend Guidance
 

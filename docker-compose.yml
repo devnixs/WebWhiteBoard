@@ -6,10 +6,15 @@ services:
     ports:
       - "8080:8080"
     environment:
+      # These env vars follow ASP.NET Core's double-underscore config mapping, like ConnectionStrings__Postgres.
       - ConnectionStrings__Postgres=Host=postgres;Port=5432;Database=webwhiteboard;Username=postgres;Password=postgres
+      - Assets__UploadFolderPath=/app/assets
+      - Assets__PublicUrlPrefix=/assets
     depends_on:
       postgres:
         condition: service_healthy
+    volumes:
+      - board-assets:/app/assets
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
       interval: 10s
@@ -36,3 +41,4 @@ services:
 
 volumes:
   postgres-data:
+  board-assets:

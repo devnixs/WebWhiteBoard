@@ -25,3 +25,6 @@
 - `stories/16-application-title-and-branding.story_COMPLETE.md`
 - `stories/15-pencil-color-reset-on-remote-sync.story_TODO.md`
 - `stories/17-frontend-component-decomposition.story_COMPLETE.md`
+- `stories/18-backend-integration-test-suite.story_COMPLETE.md`
+- `stories/19-board-asset-upload-backend.story_TODO.md`
+- `stories/20-board-asset-upload-frontend.story_COMPLETE.md`

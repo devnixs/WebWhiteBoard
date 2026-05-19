@@ -1,6 +1,8 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Net.WebSockets;
+using System.Text;
 using System.Text.Json;
 using Xunit.Abstractions;
 
@@ -174,6 +176,72 @@ public sealed class BoardApiIntegrationTests
         Assert.Empty(reloadedSnapshot.GetProperty("cursors").EnumerateArray());
     }
 
+    [Fact]
+    public async Task UploadAsset_StoresFileServesItBackAndRejectsInvalidUploads()
+    {
+        var connectionString = _postgres.CreateDatabaseConnectionString();
+        var assetUploadFolderPath = Path.Combine(Path.GetTempPath(), $"wwb-assets-{Guid.NewGuid():N}");
+        const string assetPublicUrlPrefix = "/test-assets";
+
+        Directory.CreateDirectory(assetUploadFolderPath);
+
+        try
+        {
+            await using var api = await ApiProcessHost.StartAsync(
+                connectionString,
+                assetUploadFolderPath: assetUploadFolderPath,
+                assetPublicUrlPrefix: assetPublicUrlPrefix,
+                maxUploadSizeBytes: 128);
+
+            using var client = api.CreateClient();
+
+            var pngBytes = CreateOnePixelPng();
+            using var uploadContent = CreateMultipartContent(
+                pngBytes,
+                "image/png",
+                "pixel.png");
+
+            _output.WriteLine("Uploading PNG asset to {0}.", assetPublicUrlPrefix);
+            using var uploadResponse = await client.PostAsync("/assets", uploadContent);
+            uploadResponse.EnsureSuccessStatusCode();
+
+            var uploadPayload = await uploadResponse.Content.ReadFromJsonAsync<JsonElement>();
+            var assetUrl = uploadPayload.GetProperty("url").GetString()
+                ?? throw new Xunit.Sdk.XunitException("Upload response did not contain a URL.");
+
+            Assert.StartsWith($"{assetPublicUrlPrefix}/", assetUrl, StringComparison.Ordinal);
+
+            var storedFiles = Directory.GetFiles(assetUploadFolderPath);
+            Assert.Single(storedFiles);
+            Assert.EndsWith(".png", storedFiles[0], StringComparison.OrdinalIgnoreCase);
+
+            using var assetResponse = await client.GetAsync(assetUrl);
+            assetResponse.EnsureSuccessStatusCode();
+            Assert.Equal("image/png", assetResponse.Content.Headers.ContentType?.MediaType);
+            Assert.Equal(pngBytes, await assetResponse.Content.ReadAsByteArrayAsync());
+
+            using var textContent = CreateMultipartContent(
+                Encoding.UTF8.GetBytes("not-an-image"),
+                "text/plain",
+                "notes.txt");
+            using var unsupportedResponse = await client.PostAsync("/assets", textContent);
+            Assert.Equal(HttpStatusCode.UnsupportedMediaType, unsupportedResponse.StatusCode);
+            Assert.Single(Directory.GetFiles(assetUploadFolderPath));
+
+            using var oversizedContent = CreateMultipartContent(
+                new byte[256],
+                "image/png",
+                "too-large.png");
+            using var oversizedResponse = await client.PostAsync("/assets", oversizedContent);
+            Assert.Equal(HttpStatusCode.RequestEntityTooLarge, oversizedResponse.StatusCode);
+            Assert.Single(Directory.GetFiles(assetUploadFolderPath));
+        }
+        finally
+        {
+            Directory.Delete(assetUploadFolderPath, recursive: true);
+        }
+    }
+
     private static async Task<WebSocket> ConnectAndJoinAsync(
         ApiProcessHost api,
         Guid boardId,
@@ -216,4 +284,26 @@ public sealed class BoardApiIntegrationTests
             await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "test complete", CancellationToken.None);
         }
     }
+
+    private static MultipartFormDataContent CreateMultipartContent(byte[] bytes, string contentType, string fileName)
+    {
+        var content = new MultipartFormDataContent();
+        var fileContent = new ByteArrayContent(bytes);
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+        content.Add(fileContent, "file", fileName);
+        return content;
+    }
+
+    private static byte[] CreateOnePixelPng() =>
+    [
+        0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
+        0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
+        0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+        0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4,
+        0x89, 0x00, 0x00, 0x00, 0x0D, 0x49, 0x44, 0x41,
+        0x54, 0x78, 0x9C, 0x63, 0xF8, 0xCF, 0xC0, 0xF0,
+        0x1F, 0x00, 0x05, 0x00, 0x01, 0xFF, 0x89, 0x99,
+        0x3D, 0x1D, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45,
+        0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82
+    ];
 }

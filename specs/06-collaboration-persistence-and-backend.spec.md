@@ -14,3 +14,5 @@
 - [X] Backend and persistence design avoid duplicating domain logic between transport handlers, persistence code, and controller endpoints.
 - [X] The backend has an automated integration test suite that exercises the real HTTP API and WebSocket collaboration endpoints against a real PostgreSQL database.
 - [X] Backend integration coverage includes board creation/loading, collaborative document synchronization, remote cursor broadcasting, and persisted board reload after application restart.
+- [X] The backend exposes an HTTP image-asset upload endpoint backed by server-side file storage, and stored asset files are served back over stable HTTP URLs without requiring PostgreSQL to hold the binary payload.
+- [ ] Persisted board snapshots in PostgreSQL contain only board structure and asset references — image binaries are stored on the server filesystem and addressed by URL, never embedded as base64 inside the snapshot JSON.

@@ -19,6 +19,9 @@ public sealed class ApiProcessHost : IAsyncDisposable
 
     public static async Task<ApiProcessHost> StartAsync(
         string connectionString,
+        string? assetUploadFolderPath = null,
+        string? assetPublicUrlPrefix = null,
+        long? maxUploadSizeBytes = null,
         CancellationToken cancellationToken = default)
     {
         var port = GetFreeTcpPort();
@@ -41,6 +44,21 @@ public sealed class ApiProcessHost : IAsyncDisposable
         process.StartInfo.Environment["ASPNETCORE_URLS"] = baseAddress.ToString();
         process.StartInfo.Environment["ASPNETCORE_ENVIRONMENT"] = "Development";
         process.StartInfo.Environment["ConnectionStrings__Postgres"] = connectionString;
+
+        if (!string.IsNullOrWhiteSpace(assetUploadFolderPath))
+        {
+            process.StartInfo.Environment["Assets__UploadFolderPath"] = assetUploadFolderPath;
+        }
+
+        if (!string.IsNullOrWhiteSpace(assetPublicUrlPrefix))
+        {
+            process.StartInfo.Environment["Assets__PublicUrlPrefix"] = assetPublicUrlPrefix;
+        }
+
+        if (maxUploadSizeBytes is not null)
+        {
+            process.StartInfo.Environment["Assets__MaxUploadSizeBytes"] = maxUploadSizeBytes.Value.ToString();
+        }
 
         var host = new ApiProcessHost(process, baseAddress);
         process.OutputDataReceived += (_, args) => host.AppendOutput(args.Data);

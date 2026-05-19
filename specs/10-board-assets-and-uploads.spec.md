@@ -1,0 +1,15 @@
+- [X] Image assets pasted, dropped, or otherwise inserted onto a board are uploaded to the backend and persisted as files in a local upload folder on the server, not as base64 data embedded in the board document.
+- [X] The backend exposes an HTTP endpoint that accepts an uploaded image and returns a stable URL that can be referenced from the board document.
+- [X] Uploaded asset files are served back to clients as static files via the URL returned by the upload endpoint.
+- [X] Each uploaded asset has a unique, non-guessable filename so assets from different boards or sessions cannot collide or accidentally overwrite each other.
+- [X] The upload folder location is configurable via configuration or environment variable and defaults to a sensible path under the backend content root.
+- [X] The upload endpoint accepts the common image content types used by browser clipboard paste (at least PNG, JPEG, GIF, and WebP).
+- [X] The upload endpoint enforces a reasonable maximum file size so the API cannot be used to write arbitrarily large files to disk.
+- [X] The upload endpoint rejects unsupported or non-image content with a clear error response and does not write the rejected payload to disk.
+- [X] Pasted images render for the local user immediately after upload completes, in the same on-canvas position they would have rendered before the change.
+- [X] Pasted images render correctly for every other connected participant of a collaborative board once the originating client has finished uploading.
+- [X] Pasted images persist correctly across full page reloads, WebSocket reconnects, and backend process restarts, as long as the asset folder is preserved.
+- [X] PostgreSQL board snapshots no longer contain embedded base64 image binaries — they reference uploaded assets by URL only.
+- [X] Existing board snapshots that still contain inline base64 image assets continue to render correctly, so the change is backward compatible for legacy boards already stored in the database.
+- [ ] When an asset URL references a file that is missing from the upload folder, the rest of the board continues to render and remain interactive without the missing asset breaking the canvas.
+- [X] Asset upload failures (network error, oversize file, rejected content type) surface visibly to the user instead of silently inserting a broken or empty image shape onto the canvas.

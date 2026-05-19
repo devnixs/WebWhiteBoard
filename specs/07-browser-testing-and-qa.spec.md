@@ -11,6 +11,8 @@
 - [X] Manual testing covers each primary tool, including select, pencil, text, shapes, eraser, and lasso.
 - [X] Manual testing covers infinite canvas navigation, trackpad panning, zooming, and protection against accidental browser back navigation.
 - [X] Manual testing covers image paste behavior using platform-appropriate clipboard input.
+- [X] Manual testing of image paste confirms that the pasted image is uploaded to the backend, stored as a file in the asset upload folder, served back to the canvas via a static URL, visible to a second connected participant, and still visible after a full page reload.
+- [X] End-to-end coverage for image paste verifies that the pasted image uploads through the backend asset endpoint, appears exactly once, persists as an asset URL instead of inline base64, remains visible to a second participant, preserves legacy base64 board rendering, and surfaces a visible failure notice when an upload is rejected.
 - [X] Manual testing covers single selection, multi-selection, resize, rotate, duplication, deletion, ordering changes, and context-menu editing actions.
 - [X] Manual testing covers keyboard shortcuts on both Windows/Linux conventions and macOS equivalents as applicable to the implementation environment.
 - [X] Manual testing covers multi-user collaboration with visible remote cursors, names, colors, and low-latency update behavior.
@@ -21,3 +23,4 @@
 - [X] Visual browser QA for the design-guidelines alignment work reproduces the four reference screens from `design-guidelines/Screenshots/` in Chrome DevTools and records whether each one matches the intended route and UI state before the related story can be closed.
 - [X] The backend has a non-unit integration test suite that exercises the deployed API contract directly through HTTP requests and WebSocket messages.
 - [X] Backend integration tests run against a real PostgreSQL instance and cover at least one meaningful flow for board creation, collaboration updates, cursor presence, and persisted reload behavior.
+- [X] Manual browser testing of the backend asset upload flow confirms that a test image `POST`ed from Chrome DevTools to the upload endpoint returns an asset URL, the URL serves the uploaded image over HTTP, and the same image remains reachable after restarting the app container with its asset volume mounted.

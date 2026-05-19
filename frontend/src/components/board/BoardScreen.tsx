@@ -10,8 +10,10 @@ import {
   Tldraw,
 } from 'tldraw'
 import type { TLContent } from 'tldraw'
+import { createBoardAssetStore } from '../../app/assetStore'
 import { copyTextToClipboard, applyRemoteDocument, getBoardSocketUrl, getNextColorChoice, getNextFontChoice, getNextSizeChoice, getSelectionCapabilities, indexRemoteCursors, isEditableTarget, roundCoordinate } from '../../app/utils'
 import type {
+  BoardUploadNotice,
   BoardDocumentSnapshot,
   BoardRealtimeClientMessage,
   BoardRealtimeServerMessage,
@@ -28,6 +30,7 @@ import type {
 import { BoardCanvasBackground } from './BoardCanvasBackground'
 import { BoardPresencePanel, SharePanel, ZoomPanel } from './BoardPanels'
 import { BoardStatusOverlay } from './BoardStatusOverlay'
+import { BoardUploadNotice as BoardUploadNoticeToast } from './BoardUploadNotice'
 import { RemoteCursorLayer } from './RemoteCursorLayer'
 import { SelectionContextMenu } from './SelectionContextMenu'
 import { ShortcutModal } from './ShortcutModal'
@@ -47,6 +50,7 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
   const pendingSnapshotFlushRef = useRef<number | null>(null)
   const queuedDocumentRef = useRef<BoardDocumentSnapshot | null>(null)
   const pendingPingsRef = useRef(new Map<string, number>())
+  const uploadNoticeSequenceRef = useRef(0)
   const isApplyingRemoteSnapshotRef = useRef(false)
   const lastServerVersionRef = useRef(0)
   const [shareState, setShareState] = useState<'idle' | 'copied'>('idle')
@@ -68,6 +72,7 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
   const [shapeChoice, setShapeChoice] = useState<ShapeChoice>('rectangle')
   const [copiedContent, setCopiedContent] = useState<TLContent | null>(null)
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null)
+  const [uploadNotice, setUploadNotice] = useState<BoardUploadNotice | null>(null)
   const tldrawOptions = useMemo(
     () => ({
       camera: {
@@ -82,6 +87,19 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     () => ({
       Background: BoardCanvasBackground,
     }),
+    [],
+  )
+  const assetStore = useMemo(
+    () =>
+      createBoardAssetStore({
+        onUploadError: (message) => {
+          uploadNoticeSequenceRef.current += 1
+          setUploadNotice({
+            id: uploadNoticeSequenceRef.current,
+            message,
+          })
+        },
+      }),
     [],
   )
 
@@ -145,6 +163,18 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
       window.removeEventListener('scroll', closeMenu, true)
     }
   }, [contextMenu])
+
+  useEffect(() => {
+    if (!uploadNotice) {
+      return
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setUploadNotice((current) => (current?.id === uploadNotice.id ? null : current))
+    }, 5000)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [uploadNotice])
 
   useEffect(() => {
     if (!editor) {
@@ -689,6 +719,7 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     >
       <div className="board-screen__canvas">
         <Tldraw
+          assets={assetStore}
           autoFocus
           components={tldrawComponents}
           hideUi
@@ -774,6 +805,12 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
         />
       ) : null}
       {isShortcutsOpen ? <ShortcutModal onClose={() => setIsShortcutsOpen(false)} /> : null}
+      {uploadNotice ? (
+        <BoardUploadNoticeToast
+          notice={uploadNotice}
+          onDismiss={() => setUploadNotice((current) => (current?.id === uploadNotice.id ? null : current))}
+        />
+      ) : null}
       {!isSessionReady ? <BoardStatusOverlay connectionState={connectionState} /> : null}
     </main>
   )

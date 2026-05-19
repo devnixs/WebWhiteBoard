@@ -990,6 +990,58 @@ button {
   letter-spacing: -0.03em;
 }
 
+.board-upload-notice {
+  position: absolute;
+  right: 16px;
+  bottom: 64px;
+  z-index: 36;
+  width: min(100vw - 32px, 340px);
+  pointer-events: none;
+}
+
+.board-upload-notice__card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 14px 14px 16px;
+  border: 1px solid #f1c7bf;
+  border-radius: 14px;
+  background: #fff4f1;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+  pointer-events: auto;
+}
+
+.board-upload-notice__copy {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.board-upload-notice__copy strong {
+  display: block;
+  margin: 6px 0;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  color: #7a2418;
+}
+
+.board-upload-notice__copy p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #a03b2b;
+}
+
+.board-upload-notice__dismiss {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border: 1px solid rgba(160, 59, 43, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.84);
+  color: #8d3022;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .shortcut-overlay {
   position: absolute;
   inset: 0;
@@ -1271,6 +1323,12 @@ code {
     left: 50%;
     right: auto;
     transform: translateX(-50%);
+  }
+
+  .board-upload-notice {
+    right: 12px;
+    bottom: 56px;
+    width: min(100vw - 24px, 320px);
   }
 
   .shortcut-overlay {

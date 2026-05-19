@@ -53,15 +53,15 @@ export function applyRemoteDocument(
 }
 
 export function getBoardSocketUrl(boardId: string) {
-  if (apiBaseUrl) {
-    const url = new URL(apiBaseUrl, window.location.origin)
-    url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
-    url.pathname = `${url.pathname.replace(/\/$/, '')}/ws/boards/${boardId}`
-    return url.toString()
-  }
+  const url = getApiUrl(`/ws/boards/${boardId}`)
+  return url.replace(/^http:/, 'ws:').replace(/^https:/, 'wss:')
+}
 
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-  return `${protocol}//${window.location.host}/ws/boards/${boardId}`
+export function getApiUrl(pathname: string) {
+  const url = apiBaseUrl ? new URL(apiBaseUrl, window.location.origin) : new URL(window.location.origin)
+  const normalizedPathname = pathname.startsWith('/') ? pathname : `/${pathname}`
+  url.pathname = `${url.pathname.replace(/\/$/, '')}${normalizedPathname}`
+  return url.toString()
 }
 
 export function roundCoordinate(value: number) {

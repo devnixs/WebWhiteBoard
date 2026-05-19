@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
-import { apiBaseUrl, boardIdPattern } from './app/constants'
-import { clearIdentity, createIdentity, getRoute, initializeBoardHistoryStore, loadIdentity, persistIdentity, rememberBoardForIdentity } from './app/utils'
+import { boardIdPattern } from './app/constants'
+import { clearIdentity, createIdentity, getApiUrl, getRoute, initializeBoardHistoryStore, loadIdentity, persistIdentity, rememberBoardForIdentity } from './app/utils'
 import type { BoardHistoryStore, LocalIdentity, RouteState } from './app/types'
 import { BoardScreen } from './components/board/BoardScreen'
 import { HomeScreen } from './components/home/HomeScreen'
@@ -72,7 +72,7 @@ function App() {
   }
 
   const handleCreateBoard = async () => {
-    const response = await fetch(`${apiBaseUrl}/boards`, {
+    const response = await fetch(getApiUrl('/boards'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

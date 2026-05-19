@@ -8,6 +8,9 @@
 - [X] The PostgreSQL connection string can be supplied at container start-up via the `ConnectionStrings__Postgres` environment variable, overriding the built-in default.
 - [X] The container exposes a single HTTP port that serves both the API and the frontend.
 - [X] A `.dockerignore` file exists to exclude `node_modules`, build output directories, and other host artefacts from the Docker build context.
+- [X] The container deployment includes a writable upload folder for board image assets, and the folder location is configurable at container start-up via an environment variable so operators can mount it on a persistent volume.
+- [X] The container deployment documents the `Assets__UploadFolderPath` and `Assets__PublicUrlPrefix` environment variables alongside `ConnectionStrings__Postgres` so operators know how uploaded board assets are stored and served.
+- [X] The default `docker-compose.yml` mounts the asset upload folder onto a named volume so uploaded images survive container restarts and image rebuilds.
 
 ## CI / GitHub Actions
 

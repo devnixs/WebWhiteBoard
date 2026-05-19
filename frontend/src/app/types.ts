@@ -157,3 +157,8 @@ export type BoardRealtimeClientMessage =
   | PingClientMessage
 
 export type SelectionClipboardContent = TLContent | null
+
+export type BoardUploadNotice = {
+  id: number
+  message: string
+}
