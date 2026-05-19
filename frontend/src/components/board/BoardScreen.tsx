@@ -1,5 +1,6 @@
 import { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react'
 import type { MouseEvent as ReactMouseEvent } from 'react'
+import 'tldraw/tldraw.css'
 import {
   DefaultColorStyle,
   DefaultFontStyle,

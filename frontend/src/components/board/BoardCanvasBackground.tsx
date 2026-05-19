@@ -22,5 +22,11 @@ export function BoardCanvasBackground() {
     '--board-grid-major-opacity': majorGridOpacity.toFixed(3),
   } as CSSProperties
 
-  return <div aria-hidden="true" className="board-canvas-background" style={backgroundStyle} />
+  return (
+    <div
+      aria-hidden="true"
+      className="tl-background board-canvas-background"
+      style={backgroundStyle}
+    />
+  )
 }
