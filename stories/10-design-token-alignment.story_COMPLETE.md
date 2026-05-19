@@ -25,11 +25,11 @@ Bring the application's real UI into visual parity with the reference design bun
 - [X] Update the production CSS and component styles to consume those tokens via `var()` throughout. Every hardcoded design-guideline value that has a token equivalent should be replaced so the values are defined once.
 - [X] Recreate the shared reference primitives from `design-guidelines/project/board-chrome.jsx` and `design-guidelines/project/screens.jsx` inside the production app: panel shells, pill buttons, primary buttons, tool buttons, search chip, avatar stack, modal chrome, flyout chrome, and divider treatments.
 - [X] Recreate the reference icon set from `design-guidelines/project/icons.jsx` in the production app so the rendered strokes and shapes are visually identical, while keeping the implementation local to the real frontend codebase.
-- [ ] Align the `/` unauthenticated screen to `design-guidelines/Screenshots/Screenshot1 - Login.png`.
-- [ ] Align the `/` authenticated returning-user screen to `design-guidelines/Screenshots/Screenshot2 - Board selector.png`.
-- [ ] Align the default `/board/{guid}` chrome state to `design-guidelines/Screenshots/Screenshot3 - Full board view.png`.
-- [ ] Align the active-pencil + shortcuts state to `design-guidelines/Screenshots/Screenshot4 - Keyboard Shortcut Menu.png`.
-- [ ] If exact screenshot recreation requires deterministic example content or a QA-only seed path, add that support in a way that does not change normal user-facing product behavior.
+- [X] Align the `/` unauthenticated screen to `design-guidelines/Screenshots/Screenshot1 - Login.png`.
+- [X] Align the `/` authenticated returning-user screen to `design-guidelines/Screenshots/Screenshot2 - Board selector.png`.
+- [X] Align the default `/board/{guid}` chrome state to `design-guidelines/Screenshots/Screenshot3 - Full board view.png`.
+- [X] Align the active-pencil + shortcuts state to `design-guidelines/Screenshots/Screenshot4 - Keyboard Shortcut Menu.png`.
+- [X] If exact screenshot recreation requires deterministic example content or a QA-only seed path, add that support in a way that does not change normal user-facing product behavior.
 
 ## Relevant Specs
 
@@ -49,11 +49,11 @@ Bring the application's real UI into visual parity with the reference design bun
 
 Open the app locally in Chrome DevTools against the real frontend/backend stack and keep the matching reference screenshot open beside it during each step:
 
-- [ ] **Login screen parity** — navigate to `/` in a first-visit state and compare against `design-guidelines/Screenshots/Screenshot1 - Login.png`. Verify the brand mark, welcome card proportions, heading/copy spacing, focused input treatment, color palette row, primary button, and helper copy placement match the reference.
-- [ ] **Returning homepage parity** — log in and compare `/` against `design-guidelines/Screenshots/Screenshot2 - Board selector.png`. Verify the top-right identity pill, returning-user heading block, dashed new-board card, board-list shell, search affordance, selected row background, metadata alignment, and avatar stack match the reference.
-- [ ] **Default board parity** — open `/board/{guid}` in the reference default state and compare against `design-guidelines/Screenshots/Screenshot3 - Full board view.png`. Verify the share pill, latency pill, collaborators pill, identity pill, left tool rail, zoom cluster, dot-grid canvas treatment, and overall floating-panel spacing/placement match the reference. If seeded fixture content is used, verify the board content arrangement needed for the screenshot is reproduced as expected.
-- [ ] **Pencil + shortcuts parity** — activate the pencil tool, trigger the copied-link state, and open the shortcuts modal so the board matches `design-guidelines/Screenshots/Screenshot4 - Keyboard Shortcut Menu.png`. Verify the active tool state, pencil flyout, dimmed overlay, modal shell, headings, shortcut keycaps, and close affordance match the reference.
-- [ ] **Iconography spot check** — across homepage and board states, confirm the rendered icons match the reference `design-guidelines/project/icons.jsx` shapes for tools, share, keyboard, logout, zoom, and board-row actions.
+- [X] **Login screen parity** — navigate to `/` in a first-visit state and compare against `design-guidelines/Screenshots/Screenshot1 - Login.png`. Verify the brand mark, welcome card proportions, heading/copy spacing, focused input treatment, color palette row, primary button, and helper copy placement match the reference.
+- [X] **Returning homepage parity** — log in and compare `/` against `design-guidelines/Screenshots/Screenshot2 - Board selector.png`. Verify the top-right identity pill, returning-user heading block, dashed new-board card, board-list shell, search affordance, selected row background, metadata alignment, and avatar stack match the reference.
+- [X] **Default board parity** — open `/board/{guid}` in the reference default state and compare against `design-guidelines/Screenshots/Screenshot3 - Full board view.png`. Verify the share pill, latency pill, collaborators pill, identity pill, left tool rail, zoom cluster, dot-grid canvas treatment, and overall floating-panel spacing/placement match the reference. If seeded fixture content is used, verify the board content arrangement needed for the screenshot is reproduced as expected.
+- [X] **Pencil + shortcuts parity** — activate the pencil tool, trigger the copied-link state, and open the shortcuts modal so the board matches `design-guidelines/Screenshots/Screenshot4 - Keyboard Shortcut Menu.png`. Verify the active tool state, pencil flyout, dimmed overlay, modal shell, headings, shortcut keycaps, and close affordance match the reference.
+- [X] **Iconography spot check** — across homepage and board states, confirm the rendered icons match the reference `design-guidelines/project/icons.jsx` shapes for tools, share, keyboard, logout, zoom, and board-row actions.
 
 ## Completion Rule
 

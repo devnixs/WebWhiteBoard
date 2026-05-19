@@ -1,0 +1,13 @@
+- main [ref=e3]:
+  - generic [ref=e6]: WebWhiteBoard
+  - generic [ref=e7]:
+    - generic [ref=e8]: Welcome
+    - heading "What should we call you?" [level=1] [ref=e9]
+    - paragraph [ref=e10]: Your name is shown next to your cursor so others know who's drawing.
+    - generic [ref=e11]:
+      - generic [ref=e12]: Name
+      - textbox "Name" [active] [ref=e13]:
+        - /placeholder: Maya Chen
+      - generic [ref=e15]: Your color
+      - button "Continue" [ref=e25] [cursor=pointer]
+    - paragraph [ref=e26]: Saved on this device. No account needed.

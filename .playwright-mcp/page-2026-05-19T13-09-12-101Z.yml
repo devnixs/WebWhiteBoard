@@ -1,0 +1,53 @@
+- main [ref=e64]:
+  - application "tldraw" [ref=e66]:
+    - generic [ref=e67]:
+      - img
+    - button "Get a license for production" [ref=e72] [cursor=pointer]
+  - button "Share board" [ref=e74] [cursor=pointer]:
+    - img [ref=e76]
+    - generic [ref=e82]:
+      - strong [ref=e83]: Share board
+      - generic [ref=e84]: a8535c18
+  - generic [ref=e85]:
+    - generic [ref=e86]:
+      - img [ref=e87]
+      - generic [ref=e92]: Connecting
+    - generic [ref=e95]: 1 online
+    - generic [ref=e96]:
+      - generic [ref=e97]: MC
+      - strong [ref=e98]: Maya Chen
+      - button [ref=e100] [cursor=pointer]:
+        - img [ref=e101]
+  - region "Board tools" [ref=e104]:
+    - button "Select" [ref=e106] [cursor=pointer]:
+      - img [ref=e107]
+      - generic [ref=e109]: V
+    - button "Pan" [ref=e111] [cursor=pointer]:
+      - img [ref=e112]
+      - generic [ref=e117]: H
+    - button "Pencil" [ref=e120] [cursor=pointer]:
+      - img [ref=e121]
+      - generic [ref=e124]: P
+    - button "Text" [ref=e126] [cursor=pointer]:
+      - img [ref=e127]
+      - generic [ref=e128]: T
+    - button "Shapes" [ref=e130] [cursor=pointer]:
+      - img [ref=e131]
+      - generic [ref=e134]: R
+    - button "Eraser" [ref=e136] [cursor=pointer]:
+      - img [ref=e137]
+      - generic [ref=e140]: E
+    - button "Lasso" [ref=e142] [cursor=pointer]:
+      - img [ref=e143]
+      - generic [ref=e147]: L
+  - generic [ref=e148]:
+    - generic [ref=e149]:
+      - button "Zoom out" [ref=e150] [cursor=pointer]:
+        - img [ref=e151]
+      - generic [ref=e152]: 100%
+      - button "Zoom in" [ref=e153] [cursor=pointer]:
+        - img [ref=e154]
+      - button "Zoom options" [ref=e156] [cursor=pointer]:
+        - img [ref=e157]
+    - button "Open shortcuts" [ref=e159] [cursor=pointer]:
+      - img [ref=e160]

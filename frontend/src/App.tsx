@@ -347,7 +347,7 @@ function LoginScreen({
               ))}
             </div>
           </div>
-          <button type="submit">Continue</button>
+          <button type="submit">Continue →</button>
         </form>
         <p className="auth-card__footer">Saved on this device. No account needed.</p>
       </section>
@@ -409,12 +409,14 @@ function HomeScreen({
         </div>
 
         <section className="home-card home-card--create">
-          <div className="home-card__icon">
-            <IconPlus size={18} />
-          </div>
-          <div className="home-card__body">
-            <h2>New board</h2>
-            <p>A blank, infinite canvas. Share the link to invite others.</p>
+          <div className="home-card__create-left">
+            <div className="home-card__icon">
+              <IconPlus size={18} />
+            </div>
+            <div className="home-card__body">
+              <h2>New board</h2>
+              <p>A blank, infinite canvas. Share the link to invite others.</p>
+            </div>
           </div>
           <div className="home-card__action">
             <button
@@ -487,6 +489,7 @@ function HomeScreen({
         </section>
 
         {error ? <p className="home-error">{error}</p> : null}
+        <p className="home-footer">Have a link? Just paste it in the address bar — boards work via /board/[id].</p>
       </section>
     </main>
   )

@@ -6,11 +6,11 @@ Build the browser-based validation layer for the application and define the requ
 
 ## Scope
 
-- [ ] Add end-to-end browser test coverage for each major feature area.
-- [ ] Run the tests against a real backend and a real PostgreSQL database.
-- [ ] Avoid backend mocks and avoid in-memory database substitutions for feature validation.
-- [ ] Define and execute manual browser validation after each major feature.
-- [ ] Cover login, homepage flows, sharing, tools, drawing, navigation, selection, shortcuts, collaboration, and persistence recovery.
+- [X] Add end-to-end browser test coverage for each major feature area.
+- [X] Run the tests against a real backend and a real PostgreSQL database.
+- [X] Avoid backend mocks and avoid in-memory database substitutions for feature validation.
+- [X] Define and execute manual browser validation after each major feature.
+- [X] Cover login, homepage flows, sharing, tools, drawing, navigation, selection, shortcuts, collaboration, and persistence recovery.
 
 ## Relevant Specs
 
