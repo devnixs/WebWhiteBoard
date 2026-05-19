@@ -6,6 +6,7 @@
 - [X] Active boards live in memory for responsiveness and are persisted to PostgreSQL asynchronously without blocking user interactions.
 - [X] Business logic lives in the back end rather than being duplicated or embedded inconsistently in the frontend.
 - [X] Code is organized for extensibility so new tools, actions, panels, and board entity types can be added without reworking core flows.
+- [ ] Frontend React UI code is decomposed into small, focused components and supporting modules across multiple files so route shells do not accumulate unrelated panels, dialogs, icons, and helper logic in one monolithic file.
 - [X] Features must not silently break previously specified board behavior, and changes must preserve compatibility with the current specs unless the specs are intentionally updated first.
 - [X] Every feature change is driven by an explicit update to the spec files in `specs/`, and implementation is expected to reflect the current specs.
 - [X] Existing React components in `design-guidelines/project` are used only as design guidance, with copied application code cleaned up to match project standards and avoid inline CSS.

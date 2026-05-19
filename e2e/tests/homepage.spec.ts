@@ -33,7 +33,7 @@ test.describe('homepage', () => {
   })
 
   test('searching by GUID opens that board', async ({ page }) => {
-    const res = await page.request.post('http://localhost:5058/boards', {
+    const res = await page.request.post('http://127.0.0.1:5058/boards', {
       headers: { 'Content-Type': 'application/json' },
       data: {},
     })

@@ -24,3 +24,4 @@
 - `stories/15-collapsible-tool-settings-panel_COMPLETE.md`
 - `stories/16-application-title-and-branding.story_COMPLETE.md`
 - `stories/15-pencil-color-reset-on-remote-sync.story_TODO.md`
+- `stories/17-frontend-component-decomposition.story_TODO.md`
