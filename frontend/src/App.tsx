@@ -561,6 +561,18 @@ function BoardScreen({
     socket.send(JSON.stringify(message))
   })
 
+  // Re-applies the current style selections to the tldraw editor after a remote
+  // document load resets TLInstance.stylesForNextShape to {}.
+  const reapplyStyles = useEffectEvent(() => {
+    if (!editor) {
+      return
+    }
+    editor.setStyleForNextShapes(DefaultColorStyle, drawColor)
+    editor.setStyleForNextShapes(DefaultSizeStyle, drawSize)
+    editor.setStyleForNextShapes(DefaultFontStyle, textFont)
+    editor.setStyleForNextShapes(GeoShapeGeoStyle, shapeChoice)
+  })
+
   useEffect(() => {
     if (shareState !== 'copied') {
       return
@@ -793,6 +805,7 @@ function BoardScreen({
 
         if (message.document) {
           applyRemoteDocument(editor, message.document, isApplyingRemoteSnapshotRef)
+          reapplyStyles()
         }
 
         return
@@ -820,6 +833,7 @@ function BoardScreen({
 
         if (message.actorId !== identity.sessionId && message.document) {
           applyRemoteDocument(editor, message.document, isApplyingRemoteSnapshotRef)
+          reapplyStyles()
         }
 
         return
@@ -850,6 +864,7 @@ function BoardScreen({
         lastServerVersionRef.current = message.version
         if (message.document) {
           applyRemoteDocument(editor, message.document, isApplyingRemoteSnapshotRef)
+          reapplyStyles()
         }
         return
       }
@@ -1482,15 +1497,38 @@ function ToolSettingsPanel({
   onChangeShapeChoice: (value: ShapeChoice) => void
   onChangeEraserSize: (value: SizeChoice) => void
 }) {
-  if (activeTool === 'select') {
+  const [isCollapsed, setIsCollapsed] = useState(false)
+
+  useEffect(() => {
+    setIsCollapsed(false)
+  }, [activeTool])
+
+  if (activeTool === 'select' || activeTool === 'hand') {
     return null
   }
 
+  if (isCollapsed) {
+    return (
+      <section aria-label="Tool settings (collapsed)" className="panel panel--tool-settings panel--tool-settings--collapsed">
+        <button
+          aria-label="Expand tool settings"
+          className="tool-settings__collapse-toggle"
+          onClick={() => setIsCollapsed(false)}
+          type="button"
+        >
+          <IconChevronRight size={14} />
+        </button>
+      </section>
+    )
+  }
+
+  const collapse = () => setIsCollapsed(true)
+
   return (
-    <section className="panel panel--tool-settings">
+    <section aria-label="Tool settings" className="panel panel--tool-settings">
       {activeTool === 'pencil' ? (
         <>
-          <PanelHeader title="Pencil" subtitle="Color and stroke size" />
+          <PanelHeader title="Pencil" subtitle="Color and stroke size" onCollapse={collapse} />
           <ColorPicker mode="swatches" value={drawColor} onChange={onChangeDrawColor} />
           <SizePicker mode="dots" value={drawSize} onChange={onChangeDrawSize} />
         </>
@@ -1498,7 +1536,7 @@ function ToolSettingsPanel({
 
       {activeTool === 'text' ? (
         <>
-          <PanelHeader title="Text" subtitle="Font and size" />
+          <PanelHeader title="Text" subtitle="Font and size" onCollapse={collapse} />
           <SizePicker
             label="Font size"
             renderValue={(size) => `${FONT_SIZES[size]} px`}
@@ -1519,7 +1557,7 @@ function ToolSettingsPanel({
 
       {activeTool === 'shapes' ? (
         <>
-          <PanelHeader title="Shapes" subtitle="Choose a geometry preset" />
+          <PanelHeader title="Shapes" subtitle="Choose a geometry preset" onCollapse={collapse} />
           <OptionPicker
             label="Shape"
             options={shapeChoices.map((shape) => ({
@@ -1536,7 +1574,7 @@ function ToolSettingsPanel({
 
       {activeTool === 'eraser' ? (
         <>
-          <PanelHeader title="Eraser" subtitle="Adjust eraser size" />
+          <PanelHeader title="Eraser" subtitle="Adjust eraser size" onCollapse={collapse} />
           <SizePicker
             label="Eraser size"
             renderValue={(size) => `${STROKE_SIZES[size]} px`}
@@ -1548,7 +1586,7 @@ function ToolSettingsPanel({
 
       {activeTool === 'lasso' ? (
         <>
-          <PanelHeader title="Lasso" subtitle="Selection mode" />
+          <PanelHeader title="Lasso" subtitle="Selection mode" onCollapse={collapse} />
           <p className="tool-settings__helper">
             Drag on the canvas to select a region. This dedicated lasso entry currently uses the
             board selection engine.
@@ -1559,11 +1597,23 @@ function ToolSettingsPanel({
   )
 }
 
-function PanelHeader({ title, subtitle }: { title: string; subtitle: string }) {
+function PanelHeader({ title, subtitle, onCollapse }: { title: string; subtitle: string; onCollapse?: () => void }) {
   return (
     <header className="tool-settings__header">
-      <strong>{title}</strong>
-      <span>{subtitle}</span>
+      <div className="tool-settings__header-text">
+        <strong>{title}</strong>
+        <span>{subtitle}</span>
+      </div>
+      {onCollapse ? (
+        <button
+          aria-label="Collapse tool settings"
+          className="tool-settings__collapse-toggle"
+          onClick={onCollapse}
+          type="button"
+        >
+          <IconChevronLeft size={13} />
+        </button>
+      ) : null}
     </header>
   )
 }
@@ -2235,6 +2285,14 @@ function IconMinus({ size }: { size?: number }) {
 
 function IconChevronDown({ size }: { size?: number }) {
   return <IconBase size={size}><path d="M6 10 L12 16 L18 10" /></IconBase>
+}
+
+function IconChevronLeft({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M14 6 L8 12 L14 18" /></IconBase>
+}
+
+function IconChevronRight({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M10 6 L16 12 L10 18" /></IconBase>
 }
 
 function IconKeyboard({ size }: { size?: number }) {

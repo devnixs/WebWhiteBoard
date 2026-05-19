@@ -10,5 +10,7 @@
 - [X] Returning to `/` shows previously known boards from local storage without exposing boards the user has never connected to.
 - [X] The application exposes only two user-facing routes: `/` for the homepage and `/board/{guid}` for the board view.
 - [X] Attempting to navigate to an unknown route is handled in a way that preserves the two-route model and guides the user back into a valid flow.
+- [X] The browser tab title is `WebWhiteBoard` on both the homepage and board route.
+- [X] The visible application branding uses `WebWhiteBoard` consistently across the authenticated and unauthenticated flows.
 - [X] The current user name is displayed in the top-right floating panel while authenticated.
 - [X] The top-right floating panel includes a logout action that clears the local identity and returns the user to the unauthenticated flow.

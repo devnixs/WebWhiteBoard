@@ -11,3 +11,7 @@
 - [X] The panel system is designed so additional controls can be added later without forcing a redesign of the board shell.
 - [X] The board canvas displays faint line-based grid lines behind board content to improve spatial orientation without overpowering drawings or UI panels.
 - [X] The grid lines remain barely visible during normal board use so the canvas still feels dominant and drawn content remains easy to read.
+- [X] The tool settings panel includes a collapse toggle button that lets the user hide the panel contents.
+- [X] When collapsed, the tool settings panel shows only a minimal affordance (the toggle itself); all option pickers and labels are hidden.
+- [X] Clicking the collapse toggle again expands the panel and restores all tool settings controls.
+- [X] The collapsed or expanded state is remembered while the same tool remains active; switching to a different tool resets the panel to its expanded state.

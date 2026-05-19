@@ -13,6 +13,7 @@ async function loginAndCreateBoard(page: import('@playwright/test').Page, name =
 test.describe('board view', () => {
   test('board canvas and floating panels render', async ({ page }) => {
     await loginAndCreateBoard(page)
+    await expect(page).toHaveTitle('WebWhiteBoard')
     await expect(page.locator('.panel--share')).toBeVisible()
     await expect(page.locator('.panel--tools')).toBeVisible()
     await expect(page.locator('.board-top-right')).toBeVisible()

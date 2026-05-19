@@ -5,6 +5,7 @@
 - [X] Manual browser testing includes clicking buttons, typing into text fields, and validating visible UI feedback for the implemented feature.
 - [X] Manual browser testing for major visual work includes side-by-side comparison against the relevant files in `design-guidelines/Screenshots/` and the prototype source in `design-guidelines/project/`, using Chrome DevTools to verify that spacing, sizing, iconography, colors, borders, shadows, and layout states match the reference closely enough to be considered pixel-accurate.
 - [X] Manual testing covers first-time login, returning-user login, logout, homepage board creation, homepage board re-entry, and direct shared-link entry into a board.
+- [X] Manual testing confirms the browser tab title is `WebWhiteBoard` on `/` and remains `WebWhiteBoard` after entering `/board/{guid}`.
 - [X] Manual testing covers share-link copying and visible copy confirmation.
 - [X] Manual testing covers the board grid overlay to confirm faint line-based grid lines are visible behind content without reducing readability of drawings or floating panels.
 - [X] Manual testing covers each primary tool, including select, pencil, text, shapes, eraser, and lasso.

@@ -731,8 +731,16 @@ button {
 }
 
 .tool-settings__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tool-settings__header-text {
   display: grid;
   gap: 4px;
+  flex: 1 1 auto;
 }
 
 .tool-settings__header strong {
@@ -752,6 +760,33 @@ button {
 .tool-settings__helper {
   margin: 0;
   color: var(--muted);
+}
+
+.tool-settings__collapse-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+}
+
+.tool-settings__collapse-toggle:hover {
+  background: var(--bg-soft);
+  color: var(--ink);
+}
+
+.panel--tool-settings--collapsed {
+  width: auto;
+  min-width: 0;
+  padding: 4px;
+  gap: 0;
+  align-items: center;
+  justify-content: center;
 }
 
 .option-picker {

@@ -21,3 +21,6 @@
 - `stories/12-image-paste-duplicate-fix.story_COMPLETE.md`
 - `stories/13-dockerfile-and-container-packaging.story_COMPLETE.md`
 - `stories/14-github-ci.story_IN_PROGRESS.md`
+- `stories/15-collapsible-tool-settings-panel_COMPLETE.md`
+- `stories/16-application-title-and-branding.story_COMPLETE.md`
+- `stories/15-pencil-color-reset-on-remote-sync.story_TODO.md`

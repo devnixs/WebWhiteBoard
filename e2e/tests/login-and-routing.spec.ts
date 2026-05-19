@@ -5,6 +5,7 @@ import { test, expect } from '@playwright/test'
 test.describe('login and routing', () => {
   test('first-time visit shows login screen', async ({ page }) => {
     await page.goto('/')
+    await expect(page).toHaveTitle('WebWhiteBoard')
     await expect(page.getByRole('heading', { name: /what should we call you/i })).toBeVisible()
     await expect(page.getByRole('button', { name: /continue/i })).toBeVisible()
   })
@@ -48,6 +49,7 @@ test.describe('login and routing', () => {
     const { boardId } = await res.json() as { boardId: string }
 
     await page.goto(`/board/${boardId}`)
+    await expect(page).toHaveTitle('WebWhiteBoard')
     await expect(page.getByRole('heading', { name: /what should we call you/i })).toBeVisible()
     await expect(page.getByText(/you will join board/i)).toBeVisible()
 
@@ -55,6 +57,7 @@ test.describe('login and routing', () => {
     await page.getByRole('textbox').fill('E2EUser')
     await page.getByRole('button', { name: /continue/i }).click()
     await expect(page).toHaveURL(new RegExp(`/board/${boardId}`))
+    await expect(page).toHaveTitle('WebWhiteBoard')
     await expect(page.locator('.board-screen')).toBeVisible()
   })
 

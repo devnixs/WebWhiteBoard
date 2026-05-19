@@ -1,0 +1,753 @@
+﻿2026-05-19T14:14:45.9381184Z Current runner version: '2.334.0'
+2026-05-19T14:14:45.9404309Z ##[group]Runner Image Provisioner
+2026-05-19T14:14:45.9405172Z Hosted Compute Agent
+2026-05-19T14:14:45.9405701Z Version: 20260213.493
+2026-05-19T14:14:45.9406239Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+2026-05-19T14:14:45.9406922Z Build Date: 2026-02-13T00:28:41Z
+2026-05-19T14:14:45.9407489Z Worker ID: {d30fc7fe-3738-44ea-952c-9e7badd98c4d}
+2026-05-19T14:14:45.9408121Z Azure Region: westcentralus
+2026-05-19T14:14:45.9408666Z ##[endgroup]
+2026-05-19T14:14:45.9409983Z ##[group]Operating System
+2026-05-19T14:14:45.9410690Z Ubuntu
+2026-05-19T14:14:45.9411266Z 24.04.4
+2026-05-19T14:14:45.9411712Z LTS
+2026-05-19T14:14:45.9412116Z ##[endgroup]
+2026-05-19T14:14:45.9412594Z ##[group]Runner Image
+2026-05-19T14:14:45.9413086Z Image: ubuntu-24.04
+2026-05-19T14:14:45.9413566Z Version: 20260513.135.3
+2026-05-19T14:14:45.9414663Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260513.135/images/ubuntu/Ubuntu2404-Readme.md
+2026-05-19T14:14:45.9415926Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260513.135
+2026-05-19T14:14:45.9416772Z ##[endgroup]
+2026-05-19T14:14:45.9417782Z ##[group]GITHUB_TOKEN Permissions
+2026-05-19T14:14:45.9419659Z Contents: read
+2026-05-19T14:14:45.9420134Z Metadata: read
+2026-05-19T14:14:45.9420830Z Packages: write
+2026-05-19T14:14:45.9421284Z ##[endgroup]
+2026-05-19T14:14:45.9423323Z Secret source: Actions
+2026-05-19T14:14:45.9423958Z Prepare workflow directory
+2026-05-19T14:14:45.9741894Z Prepare all required actions
+2026-05-19T14:14:45.9779796Z Getting action download info
+2026-05-19T14:14:46.5127826Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+2026-05-19T14:14:46.6640917Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-05-19T14:14:46.7717884Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-05-19T14:14:46.9539453Z Complete job name: e2e
+2026-05-19T14:14:47.0219903Z ##[group]Run actions/checkout@v4
+2026-05-19T14:14:47.0221102Z with:
+2026-05-19T14:14:47.0221718Z   repository: devnixs/WebWhiteBoard
+2026-05-19T14:14:47.0222532Z   token: ***
+2026-05-19T14:14:47.0223016Z   ssh-strict: true
+2026-05-19T14:14:47.0223531Z   ssh-user: git
+2026-05-19T14:14:47.0224072Z   persist-credentials: true
+2026-05-19T14:14:47.0224597Z   clean: true
+2026-05-19T14:14:47.0225137Z   sparse-checkout-cone-mode: true
+2026-05-19T14:14:47.0225727Z   fetch-depth: 1
+2026-05-19T14:14:47.0226200Z   fetch-tags: false
+2026-05-19T14:14:47.0226769Z   show-progress: true
+2026-05-19T14:14:47.0227249Z   lfs: false
+2026-05-19T14:14:47.0227731Z   submodules: false
+2026-05-19T14:14:47.0228238Z   set-safe-directory: true
+2026-05-19T14:14:47.0229053Z ##[endgroup]
+2026-05-19T14:14:47.1393996Z Syncing repository: devnixs/WebWhiteBoard
+2026-05-19T14:14:47.1395809Z ##[group]Getting Git version info
+2026-05-19T14:14:47.1396667Z Working directory is '/home/runner/work/WebWhiteBoard/WebWhiteBoard'
+2026-05-19T14:14:47.1398235Z [command]/usr/bin/git version
+2026-05-19T14:14:47.1398740Z git version 2.54.0
+2026-05-19T14:14:47.1400295Z ##[endgroup]
+2026-05-19T14:14:47.1405170Z Temporarily overriding HOME='/home/runner/work/_temp/161be6b7-40d9-4eab-a818-b55b2d14612e' before making global git config changes
+2026-05-19T14:14:47.1406506Z Adding repository directory to the temporary git global config as a safe directory
+2026-05-19T14:14:47.1407641Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/WebWhiteBoard/WebWhiteBoard
+2026-05-19T14:14:47.1441834Z Deleting the contents of '/home/runner/work/WebWhiteBoard/WebWhiteBoard'
+2026-05-19T14:14:47.1444841Z ##[group]Initializing the repository
+2026-05-19T14:14:47.1448643Z [command]/usr/bin/git init /home/runner/work/WebWhiteBoard/WebWhiteBoard
+2026-05-19T14:14:47.1533491Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-05-19T14:14:47.1535394Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-05-19T14:14:47.1536671Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-05-19T14:14:47.1538014Z hint: call:
+2026-05-19T14:14:47.1538685Z hint:
+2026-05-19T14:14:47.1539769Z hint: 	git config --global init.defaultBranch <name>
+2026-05-19T14:14:47.1540874Z hint:
+2026-05-19T14:14:47.1541461Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-05-19T14:14:47.1542376Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-05-19T14:14:47.1543086Z hint:
+2026-05-19T14:14:47.1543473Z hint: 	git branch -m <name>
+2026-05-19T14:14:47.1544108Z hint:
+2026-05-19T14:14:47.1544935Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-05-19T14:14:47.1545996Z Initialized empty Git repository in /home/runner/work/WebWhiteBoard/WebWhiteBoard/.git/
+2026-05-19T14:14:47.1550165Z [command]/usr/bin/git remote add origin https://github.com/devnixs/WebWhiteBoard
+2026-05-19T14:14:47.1585571Z ##[endgroup]
+2026-05-19T14:14:47.1586349Z ##[group]Disabling automatic garbage collection
+2026-05-19T14:14:47.1588940Z [command]/usr/bin/git config --local gc.auto 0
+2026-05-19T14:14:47.1611752Z ##[endgroup]
+2026-05-19T14:14:47.1612457Z ##[group]Setting up auth
+2026-05-19T14:14:47.1618807Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-05-19T14:14:47.1645546Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-05-19T14:14:47.1940106Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-05-19T14:14:47.1963946Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-05-19T14:14:47.2128057Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-05-19T14:14:47.2157207Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-05-19T14:14:47.2329221Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-05-19T14:14:47.2356201Z ##[endgroup]
+2026-05-19T14:14:47.2357529Z ##[group]Fetching the repository
+2026-05-19T14:14:47.2365632Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +55c0144ab1131b5cd6b70098d1c9ee07f9030fb1:refs/remotes/origin/main
+2026-05-19T14:14:48.1568582Z From https://github.com/devnixs/WebWhiteBoard
+2026-05-19T14:14:48.1570322Z  * [new ref]         55c0144ab1131b5cd6b70098d1c9ee07f9030fb1 -> origin/main
+2026-05-19T14:14:48.1603256Z ##[endgroup]
+2026-05-19T14:14:48.1605133Z ##[group]Determining the checkout info
+2026-05-19T14:14:48.1606774Z ##[endgroup]
+2026-05-19T14:14:48.1607897Z [command]/usr/bin/git sparse-checkout disable
+2026-05-19T14:14:48.1642376Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-05-19T14:14:48.1663108Z ##[group]Checking out the ref
+2026-05-19T14:14:48.1665895Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-05-19T14:14:48.1836978Z Switched to a new branch 'main'
+2026-05-19T14:14:48.1838873Z branch 'main' set up to track 'origin/main'.
+2026-05-19T14:14:48.1847510Z ##[endgroup]
+2026-05-19T14:14:48.1873939Z [command]/usr/bin/git log -1 --format=%H
+2026-05-19T14:14:48.1892084Z 55c0144ab1131b5cd6b70098d1c9ee07f9030fb1
+2026-05-19T14:14:48.2203687Z ##[group]Run actions/setup-node@v4
+2026-05-19T14:14:48.2204734Z with:
+2026-05-19T14:14:48.2205475Z   node-version: 22
+2026-05-19T14:14:48.2206283Z   cache: npm
+2026-05-19T14:14:48.2207191Z   cache-dependency-path: e2e/package-lock.json
+2026-05-19T14:14:48.2208399Z   always-auth: false
+2026-05-19T14:14:48.2209266Z   check-latest: false
+2026-05-19T14:14:48.2210787Z   token: ***
+2026-05-19T14:14:48.2211565Z ##[endgroup]
+2026-05-19T14:14:48.4081942Z Found in cache @ /opt/hostedtoolcache/node/22.22.2/x64
+2026-05-19T14:14:48.4087023Z ##[group]Environment details
+2026-05-19T14:14:51.3048151Z node: v22.22.2
+2026-05-19T14:14:51.3048476Z npm: 10.9.7
+2026-05-19T14:14:51.3048665Z yarn: 1.22.22
+2026-05-19T14:14:51.3049763Z ##[endgroup]
+2026-05-19T14:14:51.3072158Z [command]/opt/hostedtoolcache/node/22.22.2/x64/bin/npm config get cache
+2026-05-19T14:14:51.5226250Z /home/runner/.npm
+2026-05-19T14:14:51.7989555Z npm cache is not found
+2026-05-19T14:14:51.8109958Z ##[group]Run npm ci && npx playwright install --with-deps chromium
+2026-05-19T14:14:51.8110446Z [36;1mnpm ci && npx playwright install --with-deps chromium[0m
+2026-05-19T14:14:51.8177296Z shell: /usr/bin/bash -e {0}
+2026-05-19T14:14:51.8177581Z ##[endgroup]
+2026-05-19T14:14:53.4092161Z 
+2026-05-19T14:14:53.4107849Z added 3 packages, and audited 4 packages in 2s
+2026-05-19T14:14:53.4108376Z 
+2026-05-19T14:14:53.4108719Z found 0 vulnerabilities
+2026-05-19T14:14:54.1595670Z Installing dependencies...
+2026-05-19T14:14:54.1695626Z Switching to root user to install dependencies...
+2026-05-19T14:14:54.2365633Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-05-19T14:14:54.2752179Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-05-19T14:14:54.2753770Z Hit:6 https://packages.microsoft.com/repos/azure-cli noble InRelease
+2026-05-19T14:14:54.2766783Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-05-19T14:14:54.2768459Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-05-19T14:14:54.2801493Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-05-19T14:14:54.2841676Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-05-19T14:14:54.3424748Z Get:8 https://dl.google.com/linux/chrome-stable/deb stable InRelease [1825 B]
+2026-05-19T14:14:54.4083126Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [147 kB]
+2026-05-19T14:14:54.4195149Z Get:10 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [120 kB]
+2026-05-19T14:14:54.4449603Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [2003 kB]
+2026-05-19T14:14:54.4544621Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [354 kB]
+2026-05-19T14:14:54.4567469Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [177 kB]
+2026-05-19T14:14:54.4591931Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1689 kB]
+2026-05-19T14:14:54.4671269Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [386 kB]
+2026-05-19T14:14:54.4699088Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [3193 kB]
+2026-05-19T14:14:54.4867256Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [739 kB]
+2026-05-19T14:14:54.4901812Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [44.7 kB]
+2026-05-19T14:14:54.4915746Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse Translation-en [10.7 kB]
+2026-05-19T14:14:54.4923995Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
+2026-05-19T14:14:54.5343653Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [5760 B]
+2026-05-19T14:14:54.5351651Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [10.6 kB]
+2026-05-19T14:14:54.5371069Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1668 kB]
+2026-05-19T14:14:54.5441614Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Components [21.9 kB]
+2026-05-19T14:14:54.5452403Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1187 kB]
+2026-05-19T14:14:54.5513243Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Components [74.2 kB]
+2026-05-19T14:14:54.6110222Z Get:27 https://dl.google.com/linux/chrome-stable/deb stable/main amd64 Packages [1207 B]
+2026-05-19T14:14:58.8576471Z Fetched 12.2 MB in 1s (8713 kB/s)
+2026-05-19T14:14:59.7341520Z Reading package lists...
+2026-05-19T14:14:59.7609145Z Reading package lists...
+2026-05-19T14:14:59.9341022Z Building dependency tree...
+2026-05-19T14:14:59.9345759Z Reading state information...
+2026-05-19T14:15:00.0972484Z libasound2t64 is already the newest version (1.2.11-1ubuntu0.2).
+2026-05-19T14:15:00.0973225Z libasound2t64 set to manually installed.
+2026-05-19T14:15:00.0973845Z libatk-bridge2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-05-19T14:15:00.0974464Z libatk-bridge2.0-0t64 set to manually installed.
+2026-05-19T14:15:00.0975036Z libatk1.0-0t64 is already the newest version (2.52.0-1build1).
+2026-05-19T14:15:00.0975579Z libatk1.0-0t64 set to manually installed.
+2026-05-19T14:15:00.0976244Z libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-05-19T14:15:00.0976847Z libatspi2.0-0t64 set to manually installed.
+2026-05-19T14:15:00.0977498Z libcairo2 is already the newest version (1.18.0-3build1).
+2026-05-19T14:15:00.0978111Z libcairo2 set to manually installed.
+2026-05-19T14:15:00.0978791Z libcups2t64 is already the newest version (2.4.7-1.2ubuntu7.9).
+2026-05-19T14:15:00.0979411Z libcups2t64 set to manually installed.
+2026-05-19T14:15:00.0980054Z libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+2026-05-19T14:15:00.0980933Z libdbus-1-3 set to manually installed.
+2026-05-19T14:15:00.0981659Z libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.1).
+2026-05-19T14:15:00.0982302Z libdrm2 set to manually installed.
+2026-05-19T14:15:00.0982961Z libgbm1 is already the newest version (25.2.8-0ubuntu0.24.04.1).
+2026-05-19T14:15:00.0983592Z libgbm1 set to manually installed.
+2026-05-19T14:15:00.0984258Z libglib2.0-0t64 is already the newest version (2.80.0-6ubuntu3.8).
+2026-05-19T14:15:00.0984983Z libglib2.0-0t64 set to manually installed.
+2026-05-19T14:15:00.0985652Z libnspr4 is already the newest version (2:4.35-1.1build1).
+2026-05-19T14:15:00.0986283Z libnspr4 set to manually installed.
+2026-05-19T14:15:00.0986931Z libnss3 is already the newest version (2:3.98-1ubuntu0.1).
+2026-05-19T14:15:00.0987534Z libnss3 set to manually installed.
+2026-05-19T14:15:00.0988221Z libpango-1.0-0 is already the newest version (1.52.1+ds-1build1).
+2026-05-19T14:15:00.0988945Z libpango-1.0-0 set to manually installed.
+2026-05-19T14:15:00.0989605Z libx11-6 is already the newest version (2:1.8.7-1build1).
+2026-05-19T14:15:00.0990187Z libx11-6 set to manually installed.
+2026-05-19T14:15:00.0990958Z libxcb1 is already the newest version (1.15-1ubuntu2).
+2026-05-19T14:15:00.0991562Z libxcb1 set to manually installed.
+2026-05-19T14:15:00.0992192Z libxcomposite1 is already the newest version (1:0.4.5-1build3).
+2026-05-19T14:15:00.0992833Z libxcomposite1 set to manually installed.
+2026-05-19T14:15:00.0993489Z libxdamage1 is already the newest version (1:1.1.6-1build1).
+2026-05-19T14:15:00.0994105Z libxdamage1 set to manually installed.
+2026-05-19T14:15:00.0994669Z libxext6 is already the newest version (2:1.3.4-1build2).
+2026-05-19T14:15:00.0995218Z libxext6 set to manually installed.
+2026-05-19T14:15:00.0995827Z libxfixes3 is already the newest version (1:6.0.0-2build1).
+2026-05-19T14:15:00.0996422Z libxfixes3 set to manually installed.
+2026-05-19T14:15:00.0997077Z libxkbcommon0 is already the newest version (1.6.0-1build1).
+2026-05-19T14:15:00.0997738Z libxkbcommon0 set to manually installed.
+2026-05-19T14:15:00.0998398Z libxrandr2 is already the newest version (2:1.5.2-2build1).
+2026-05-19T14:15:00.0999017Z libxrandr2 set to manually installed.
+2026-05-19T14:15:00.0999603Z xvfb is already the newest version (2:21.1.12-1ubuntu1.5).
+2026-05-19T14:15:00.1000427Z fonts-noto-color-emoji is already the newest version (2.047-0ubuntu0.24.04.1).
+2026-05-19T14:15:00.1001752Z libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+2026-05-19T14:15:00.1002405Z libfontconfig1 set to manually installed.
+2026-05-19T14:15:00.1003103Z libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.1).
+2026-05-19T14:15:00.1003756Z libfreetype6 set to manually installed.
+2026-05-19T14:15:00.1004393Z fonts-liberation is already the newest version (1:2.1.5-3).
+2026-05-19T14:15:00.1005054Z fonts-liberation set to manually installed.
+2026-05-19T14:15:00.1005696Z The following additional packages will be installed:
+2026-05-19T14:15:00.1006476Z   xfonts-encodings xfonts-utils
+2026-05-19T14:15:00.1006937Z Recommended packages:
+2026-05-19T14:15:00.1007346Z   fonts-ipafont-mincho fonts-tlwg-loma
+2026-05-19T14:15:00.1143309Z The following NEW packages will be installed:
+2026-05-19T14:15:00.1144160Z   fonts-freefont-ttf fonts-ipafont-gothic fonts-tlwg-loma-otf fonts-unifont
+2026-05-19T14:15:00.1154603Z   fonts-wqy-zenhei xfonts-cyrillic xfonts-encodings xfonts-scalable
+2026-05-19T14:15:00.1155192Z   xfonts-utils
+2026-05-19T14:15:00.1313096Z 0 upgraded, 9 newly installed, 0 to remove and 7 not upgraded.
+2026-05-19T14:15:00.1313560Z Need to get 21.1 MB of archives.
+2026-05-19T14:15:00.1313961Z After this operation, 79.5 MB of additional disk space will be used.
+2026-05-19T14:15:00.1314405Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-05-19T14:15:00.1967314Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+2026-05-19T14:15:00.2926605Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+2026-05-19T14:15:00.4301337Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+2026-05-19T14:15:00.4785497Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-unifont all 1:15.1.01-1build1 [2993 kB]
+2026-05-19T14:15:00.5685895Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-wqy-zenhei all 0.9.45-8 [7472 kB]
+2026-05-19T14:15:00.7237375Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+2026-05-19T14:15:00.7828817Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+2026-05-19T14:15:00.8299918Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
+2026-05-19T14:15:00.8815226Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
+2026-05-19T14:15:01.1443472Z Fetched 21.1 MB in 1s (27.0 MB/s)
+2026-05-19T14:15:01.1675145Z Selecting previously unselected package fonts-ipafont-gothic.
+2026-05-19T14:15:01.1875090Z (Reading database ... 
+2026-05-19T14:15:01.1875403Z (Reading database ... 5%
+2026-05-19T14:15:01.1875655Z (Reading database ... 10%
+2026-05-19T14:15:01.1875888Z (Reading database ... 15%
+2026-05-19T14:15:01.1876111Z (Reading database ... 20%
+2026-05-19T14:15:01.1876359Z (Reading database ... 25%
+2026-05-19T14:15:01.1876664Z (Reading database ... 30%
+2026-05-19T14:15:01.1877018Z (Reading database ... 35%
+2026-05-19T14:15:01.1877390Z (Reading database ... 40%
+2026-05-19T14:15:01.1877612Z (Reading database ... 45%
+2026-05-19T14:15:01.1877835Z (Reading database ... 50%
+2026-05-19T14:15:01.1914798Z (Reading database ... 55%
+2026-05-19T14:15:01.3757778Z (Reading database ... 60%
+2026-05-19T14:15:01.5825337Z (Reading database ... 65%
+2026-05-19T14:15:01.7738426Z (Reading database ... 70%
+2026-05-19T14:15:01.9313549Z (Reading database ... 75%
+2026-05-19T14:15:02.3684984Z (Reading database ... 80%
+2026-05-19T14:15:02.5765408Z (Reading database ... 85%
+2026-05-19T14:15:02.7193123Z (Reading database ... 90%
+2026-05-19T14:15:02.8840809Z (Reading database ... 95%
+2026-05-19T14:15:02.8841315Z (Reading database ... 100%
+2026-05-19T14:15:02.8842228Z (Reading database ... 202288 files and directories currently installed.)
+2026-05-19T14:15:02.8882049Z Preparing to unpack .../0-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
+2026-05-19T14:15:02.8963178Z Unpacking fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-05-19T14:15:03.3327497Z Selecting previously unselected package fonts-freefont-ttf.
+2026-05-19T14:15:03.3435921Z Preparing to unpack .../1-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+2026-05-19T14:15:03.3446848Z Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-05-19T14:15:03.4151362Z Selecting previously unselected package fonts-tlwg-loma-otf.
+2026-05-19T14:15:03.4258370Z Preparing to unpack .../2-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+2026-05-19T14:15:03.4265574Z Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-05-19T14:15:03.4428188Z Selecting previously unselected package fonts-unifont.
+2026-05-19T14:15:03.4534313Z Preparing to unpack .../3-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+2026-05-19T14:15:03.4544655Z Unpacking fonts-unifont (1:15.1.01-1build1) ...
+2026-05-19T14:15:03.5456219Z Selecting previously unselected package fonts-wqy-zenhei.
+2026-05-19T14:15:03.5563190Z Preparing to unpack .../4-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+2026-05-19T14:15:03.5674883Z Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+2026-05-19T14:15:04.0389619Z Selecting previously unselected package xfonts-encodings.
+2026-05-19T14:15:04.0497438Z Preparing to unpack .../5-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+2026-05-19T14:15:04.0509907Z Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-05-19T14:15:04.0719828Z Selecting previously unselected package xfonts-utils.
+2026-05-19T14:15:04.0827895Z Preparing to unpack .../6-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+2026-05-19T14:15:04.0840355Z Unpacking xfonts-utils (1:7.7+6build3) ...
+2026-05-19T14:15:04.1276567Z Selecting previously unselected package xfonts-cyrillic.
+2026-05-19T14:15:04.1385395Z Preparing to unpack .../7-xfonts-cyrillic_1%3a1.0.5+nmu1_all.deb ...
+2026-05-19T14:15:04.1399899Z Unpacking xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-05-19T14:15:04.1625037Z Selecting previously unselected package xfonts-scalable.
+2026-05-19T14:15:04.1731387Z Preparing to unpack .../8-xfonts-scalable_1%3a1.0.3-1.3_all.deb ...
+2026-05-19T14:15:04.1741914Z Unpacking xfonts-scalable (1:1.0.3-1.3) ...
+2026-05-19T14:15:04.2073404Z Setting up fonts-wqy-zenhei (0.9.45-8) ...
+2026-05-19T14:15:04.2183884Z Setting up fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-05-19T14:15:04.2211127Z Setting up fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-05-19T14:15:04.2233637Z Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-05-19T14:15:04.2255734Z Setting up fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-05-19T14:15:04.2312363Z update-alternatives: using /usr/share/fonts/opentype/ipafont-gothic/ipag.ttf to provide /usr/share/fonts/truetype/fonts-japanese-gothic.ttf (fonts-japanese-gothic.ttf) in auto mode
+2026-05-19T14:15:04.2328540Z Setting up fonts-unifont (1:15.1.01-1build1) ...
+2026-05-19T14:15:04.2349411Z Setting up xfonts-utils (1:7.7+6build3) ...
+2026-05-19T14:15:04.2386182Z Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-05-19T14:15:04.2663674Z Setting up xfonts-scalable (1:1.0.3-1.3) ...
+2026-05-19T14:15:04.2880937Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-05-19T14:15:04.2899780Z Not building database; man-db/auto-update is not 'true'.
+2026-05-19T14:15:04.2915375Z Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+2026-05-19T14:15:04.9554308Z 
+2026-05-19T14:15:04.9555062Z Running kernel seems to be up-to-date.
+2026-05-19T14:15:04.9555445Z 
+2026-05-19T14:15:04.9555666Z No services need to be restarted.
+2026-05-19T14:15:04.9555934Z 
+2026-05-19T14:15:04.9556167Z No containers need to be restarted.
+2026-05-19T14:15:04.9556411Z 
+2026-05-19T14:15:04.9556674Z No user sessions are running outdated binaries.
+2026-05-19T14:15:04.9557004Z 
+2026-05-19T14:15:04.9557479Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-05-19T14:15:05.7970140Z Downloading Chrome for Testing 148.0.7778.96 (playwright chromium v1223) from https://cdn.playwright.dev/builds/cft/148.0.7778.96/linux64/chrome-linux64.zip
+2026-05-19T14:15:06.8412871Z |                                                                                |   0% of 175.4 MiB
+2026-05-19T14:15:07.0371110Z |■■■■■■■■                                                                        |  10% of 175.4 MiB
+2026-05-19T14:15:07.0997340Z |■■■■■■■■■■■■■■■■                                                                |  20% of 175.4 MiB
+2026-05-19T14:15:07.1595278Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 175.4 MiB
+2026-05-19T14:15:07.2202399Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 175.4 MiB
+2026-05-19T14:15:07.2804506Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 175.4 MiB
+2026-05-19T14:15:07.3400807Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 175.4 MiB
+2026-05-19T14:15:07.3990446Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 175.4 MiB
+2026-05-19T14:15:07.4578274Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 175.4 MiB
+2026-05-19T14:15:07.5163450Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 175.4 MiB
+2026-05-19T14:15:07.5747340Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 175.4 MiB
+2026-05-19T14:15:09.9444931Z Chrome for Testing 148.0.7778.96 (playwright chromium v1223) downloaded to /home/runner/.cache/ms-playwright/chromium-1223
+2026-05-19T14:15:09.9447408Z Downloading FFmpeg (playwright ffmpeg v1011) from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-linux.zip
+2026-05-19T14:15:10.9595627Z |                                                                                |   0% of 2.3 MiB
+2026-05-19T14:15:11.0105903Z |■■■■■■■■                                                                        |  10% of 2.3 MiB
+2026-05-19T14:15:11.0291438Z |■■■■■■■■■■■■■■■■                                                                |  20% of 2.3 MiB
+2026-05-19T14:15:11.0454858Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 2.3 MiB
+2026-05-19T14:15:11.0619378Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 2.3 MiB
+2026-05-19T14:15:11.0682154Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 2.3 MiB
+2026-05-19T14:15:11.0790355Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 2.3 MiB
+2026-05-19T14:15:11.0807962Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 2.3 MiB
+2026-05-19T14:15:11.0954771Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 2.3 MiB
+2026-05-19T14:15:11.0970135Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 2.3 MiB
+2026-05-19T14:15:11.0986065Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 2.3 MiB
+2026-05-19T14:15:11.1476893Z FFmpeg (playwright ffmpeg v1011) downloaded to /home/runner/.cache/ms-playwright/ffmpeg-1011
+2026-05-19T14:15:11.1480111Z Downloading Chrome Headless Shell 148.0.7778.96 (playwright chromium-headless-shell v1223) from https://cdn.playwright.dev/builds/cft/148.0.7778.96/linux64/chrome-headless-shell-linux64.zip
+2026-05-19T14:15:12.1600882Z |                                                                                |   0% of 113.2 MiB
+2026-05-19T14:15:12.3235635Z |■■■■■■■■                                                                        |  10% of 113.2 MiB
+2026-05-19T14:15:12.3684263Z |■■■■■■■■■■■■■■■■                                                                |  20% of 113.2 MiB
+2026-05-19T14:15:12.4111241Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 113.2 MiB
+2026-05-19T14:15:12.4522326Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 113.2 MiB
+2026-05-19T14:15:12.4938067Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 113.2 MiB
+2026-05-19T14:15:12.5353847Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 113.2 MiB
+2026-05-19T14:15:12.5767211Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 113.2 MiB
+2026-05-19T14:15:12.6181585Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 113.2 MiB
+2026-05-19T14:15:12.6591964Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 113.2 MiB
+2026-05-19T14:15:12.7005146Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 113.2 MiB
+2026-05-19T14:15:14.4037400Z Chrome Headless Shell 148.0.7778.96 (playwright chromium-headless-shell v1223) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1223
+2026-05-19T14:15:14.4232589Z ##[group]Run docker compose up -d --wait
+2026-05-19T14:15:14.4232920Z [36;1mdocker compose up -d --wait[0m
+2026-05-19T14:15:14.4253626Z shell: /usr/bin/bash -e {0}
+2026-05-19T14:15:14.4253888Z ##[endgroup]
+2026-05-19T14:15:16.3777285Z  postgres Pulling 
+2026-05-19T14:15:17.3109525Z  57fb71246055 Pulling fs layer 
+2026-05-19T14:15:17.3110107Z  323b9f3a13a6 Pulling fs layer 
+2026-05-19T14:15:17.3110584Z  2c7dab76422f Pulling fs layer 
+2026-05-19T14:15:17.3110955Z  ce2dce9748cd Pulling fs layer 
+2026-05-19T14:15:17.3111331Z  0b95df53f70a Pulling fs layer 
+2026-05-19T14:15:17.3111667Z  dd3560430f3d Pulling fs layer 
+2026-05-19T14:15:17.3112013Z  68aa0584745b Pulling fs layer 
+2026-05-19T14:15:17.3112346Z  0473da898c6b Pulling fs layer 
+2026-05-19T14:15:17.3112673Z  a4b310a3cf9f Pulling fs layer 
+2026-05-19T14:15:17.3112990Z  ee8322223cd0 Pulling fs layer 
+2026-05-19T14:15:17.3113391Z  7d5f5b30b57d Pulling fs layer 
+2026-05-19T14:15:17.3113773Z  2a18a06e840a Pulling fs layer 
+2026-05-19T14:15:17.3114436Z  3cef98123686 Pulling fs layer 
+2026-05-19T14:15:17.3114794Z  891c16122c8f Pulling fs layer 
+2026-05-19T14:15:17.3115119Z  ce2dce9748cd Waiting 
+2026-05-19T14:15:17.3115417Z  0b95df53f70a Waiting 
+2026-05-19T14:15:17.3115702Z  dd3560430f3d Waiting 
+2026-05-19T14:15:17.3116004Z  68aa0584745b Waiting 
+2026-05-19T14:15:17.3116287Z  0473da898c6b Waiting 
+2026-05-19T14:15:17.3116578Z  a4b310a3cf9f Waiting 
+2026-05-19T14:15:17.3116872Z  3cef98123686 Waiting 
+2026-05-19T14:15:17.3117152Z  ee8322223cd0 Waiting 
+2026-05-19T14:15:17.3117446Z  891c16122c8f Waiting 
+2026-05-19T14:15:17.3117652Z  7d5f5b30b57d Waiting 
+2026-05-19T14:15:17.3117829Z  2a18a06e840a Waiting 
+2026-05-19T14:15:17.5630337Z  323b9f3a13a6 Downloading [================>                                  ]     380B/1.171kB
+2026-05-19T14:15:17.5631357Z  323b9f3a13a6 Downloading [==================================================>]  1.171kB/1.171kB
+2026-05-19T14:15:17.5631962Z  323b9f3a13a6 Verifying Checksum 
+2026-05-19T14:15:17.5632455Z  323b9f3a13a6 Download complete 
+2026-05-19T14:15:17.5737991Z  2c7dab76422f Downloading [>                                                  ]  66.59kB/6.441MB
+2026-05-19T14:15:17.6214955Z  57fb71246055 Downloading [>                                                  ]  306.4kB/29.78MB
+2026-05-19T14:15:17.6785463Z  2c7dab76422f Downloading [=========>                                         ]  1.269MB/6.441MB
+2026-05-19T14:15:17.7222454Z  57fb71246055 Downloading [=====>                                             ]  3.405MB/29.78MB
+2026-05-19T14:15:17.7556034Z  2c7dab76422f Verifying Checksum 
+2026-05-19T14:15:17.7556670Z  2c7dab76422f Download complete 
+2026-05-19T14:15:17.8117718Z  ce2dce9748cd Downloading [>                                                  ]  12.85kB/1.257MB
+2026-05-19T14:15:17.8223787Z  57fb71246055 Downloading [=====================================>             ]  22.25MB/29.78MB
+2026-05-19T14:15:17.8733977Z  57fb71246055 Verifying Checksum 
+2026-05-19T14:15:17.8734519Z  57fb71246055 Download complete 
+2026-05-19T14:15:17.8992747Z  57fb71246055 Extracting [>                                                  ]  327.7kB/29.78MB
+2026-05-19T14:15:17.9107775Z  ce2dce9748cd Verifying Checksum 
+2026-05-19T14:15:17.9108293Z  ce2dce9748cd Download complete 
+2026-05-19T14:15:18.0013897Z  57fb71246055 Extracting [=============>                                     ]  7.864MB/29.78MB
+2026-05-19T14:15:18.0265093Z  0b95df53f70a Downloading [>                                                  ]  84.72kB/8.204MB
+2026-05-19T14:15:18.1038441Z  57fb71246055 Extracting [====================>                              ]  12.45MB/29.78MB
+2026-05-19T14:15:18.1317766Z  0b95df53f70a Downloading [==========>                                        ]  1.706MB/8.204MB
+2026-05-19T14:15:18.1389679Z  dd3560430f3d Downloading [>                                                  ]  14.04kB/1.312MB
+2026-05-19T14:15:18.1744930Z  68aa0584745b Downloading [==================================================>]     116B/116B
+2026-05-19T14:15:18.1751502Z  68aa0584745b Download complete 
+2026-05-19T14:15:18.2091080Z  57fb71246055 Extracting [===================================>               ]   21.3MB/29.78MB
+2026-05-19T14:15:18.2105769Z  0b95df53f70a Downloading [==================================================>]  8.204MB/8.204MB
+2026-05-19T14:15:18.2106548Z  0b95df53f70a Verifying Checksum 
+2026-05-19T14:15:18.2107204Z  0b95df53f70a Download complete 
+2026-05-19T14:15:18.2468448Z  dd3560430f3d Downloading [===========================================>       ]  1.142MB/1.312MB
+2026-05-19T14:15:18.2507940Z  dd3560430f3d Verifying Checksum 
+2026-05-19T14:15:18.2508712Z  dd3560430f3d Download complete 
+2026-05-19T14:15:18.3723695Z  57fb71246055 Extracting [============================================>      ]  26.21MB/29.78MB
+2026-05-19T14:15:18.4306534Z  0473da898c6b Downloading [=====>                                             ]     359B/3.142kB
+2026-05-19T14:15:18.4307919Z  0473da898c6b Download complete 
+2026-05-19T14:15:18.4876967Z  57fb71246055 Extracting [================================================>  ]  28.84MB/29.78MB
+2026-05-19T14:15:18.5066499Z  ee8322223cd0 Downloading [=>                                                 ]     357B/10.39kB
+2026-05-19T14:15:18.5067620Z  ee8322223cd0 Downloading [==================================================>]  10.39kB/10.39kB
+2026-05-19T14:15:18.5072583Z  ee8322223cd0 Verifying Checksum 
+2026-05-19T14:15:18.5073367Z  ee8322223cd0 Download complete 
+2026-05-19T14:15:18.5393512Z  a4b310a3cf9f Downloading [>                                                  ]  536.7kB/114.2MB
+2026-05-19T14:15:18.6213240Z  57fb71246055 Extracting [==================================================>]  29.78MB/29.78MB
+2026-05-19T14:15:18.6387486Z  57fb71246055 Pull complete 
+2026-05-19T14:15:18.6416648Z  323b9f3a13a6 Extracting [==================================================>]  1.171kB/1.171kB
+2026-05-19T14:15:18.6419195Z  323b9f3a13a6 Extracting [==================================================>]  1.171kB/1.171kB
+2026-05-19T14:15:18.6501665Z  a4b310a3cf9f Downloading [==>                                                ]    4.8MB/114.2MB
+2026-05-19T14:15:18.6842400Z  7d5f5b30b57d Downloading [==================================================>]     128B/128B
+2026-05-19T14:15:18.6843119Z  7d5f5b30b57d Download complete 
+2026-05-19T14:15:18.7509010Z  a4b310a3cf9f Downloading [============>                                      ]  28.31MB/114.2MB
+2026-05-19T14:15:18.7679794Z  2a18a06e840a Downloading [==================================================>]     169B/169B
+2026-05-19T14:15:18.7680397Z  2a18a06e840a Verifying Checksum 
+2026-05-19T14:15:18.7680936Z  2a18a06e840a Download complete 
+2026-05-19T14:15:18.8515492Z  a4b310a3cf9f Downloading [===========================>                       ]  62.78MB/114.2MB
+2026-05-19T14:15:18.9425525Z  3cef98123686 Downloading [===>                                               ]     379B/6.1kB
+2026-05-19T14:15:18.9426589Z  3cef98123686 Downloading [==================================================>]    6.1kB/6.1kB
+2026-05-19T14:15:18.9427323Z  3cef98123686 Verifying Checksum 
+2026-05-19T14:15:18.9427812Z  3cef98123686 Download complete 
+2026-05-19T14:15:18.9522791Z  a4b310a3cf9f Downloading [==========================================>        ]  97.81MB/114.2MB
+2026-05-19T14:15:19.0017410Z  a4b310a3cf9f Verifying Checksum 
+2026-05-19T14:15:19.0017789Z  a4b310a3cf9f Download complete 
+2026-05-19T14:15:19.0182245Z  891c16122c8f Downloading [==================================================>]     186B/186B
+2026-05-19T14:15:19.0182720Z  891c16122c8f Download complete 
+2026-05-19T14:15:20.7228629Z  323b9f3a13a6 Pull complete 
+2026-05-19T14:15:20.7243654Z  2c7dab76422f Extracting [>                                                  ]  65.54kB/6.441MB
+2026-05-19T14:15:20.8215648Z  2c7dab76422f Extracting [==================================================>]  6.441MB/6.441MB
+2026-05-19T14:15:20.8652764Z  2c7dab76422f Pull complete 
+2026-05-19T14:15:20.8663388Z  ce2dce9748cd Extracting [=>                                                 ]  32.77kB/1.257MB
+2026-05-19T14:15:20.8882647Z  ce2dce9748cd Extracting [==================================================>]  1.257MB/1.257MB
+2026-05-19T14:15:20.8993298Z  ce2dce9748cd Pull complete 
+2026-05-19T14:15:20.9012502Z  0b95df53f70a Extracting [>                                                  ]   98.3kB/8.204MB
+2026-05-19T14:15:21.0093661Z  0b95df53f70a Extracting [=============================>                     ]  4.817MB/8.204MB
+2026-05-19T14:15:21.0968258Z  0b95df53f70a Extracting [==================================================>]  8.204MB/8.204MB
+2026-05-19T14:15:21.1242690Z  0b95df53f70a Pull complete 
+2026-05-19T14:15:21.1257278Z  dd3560430f3d Extracting [=>                                                 ]  32.77kB/1.312MB
+2026-05-19T14:15:21.1679284Z  dd3560430f3d Extracting [==================================================>]  1.312MB/1.312MB
+2026-05-19T14:15:21.1936529Z  dd3560430f3d Pull complete 
+2026-05-19T14:15:21.1950027Z  68aa0584745b Extracting [==================================================>]     116B/116B
+2026-05-19T14:15:21.1951770Z  68aa0584745b Extracting [==================================================>]     116B/116B
+2026-05-19T14:15:21.2007380Z  68aa0584745b Pull complete 
+2026-05-19T14:15:21.2018867Z  0473da898c6b Extracting [==================================================>]  3.142kB/3.142kB
+2026-05-19T14:15:21.2021757Z  0473da898c6b Extracting [==================================================>]  3.142kB/3.142kB
+2026-05-19T14:15:21.2092009Z  0473da898c6b Pull complete 
+2026-05-19T14:15:21.2534493Z  a4b310a3cf9f Extracting [>                                                  ]  557.1kB/114.2MB
+2026-05-19T14:15:21.3644233Z  a4b310a3cf9f Extracting [===>                                               ]  8.356MB/114.2MB
+2026-05-19T14:15:21.4664069Z  a4b310a3cf9f Extracting [=====>                                             ]  12.81MB/114.2MB
+2026-05-19T14:15:21.5714756Z  a4b310a3cf9f Extracting [========>                                          ]  18.94MB/114.2MB
+2026-05-19T14:15:21.6728852Z  a4b310a3cf9f Extracting [===========>                                       ]  25.62MB/114.2MB
+2026-05-19T14:15:21.7777790Z  a4b310a3cf9f Extracting [===============>                                   ]  35.09MB/114.2MB
+2026-05-19T14:15:21.8821134Z  a4b310a3cf9f Extracting [===================>                               ]  44.56MB/114.2MB
+2026-05-19T14:15:21.9824072Z  a4b310a3cf9f Extracting [=======================>                           ]  53.48MB/114.2MB
+2026-05-19T14:15:22.0890902Z  a4b310a3cf9f Extracting [==========================>                        ]   59.6MB/114.2MB
+2026-05-19T14:15:22.1919286Z  a4b310a3cf9f Extracting [==============================>                    ]  68.52MB/114.2MB
+2026-05-19T14:15:22.2948060Z  a4b310a3cf9f Extracting [==================================>                ]  78.54MB/114.2MB
+2026-05-19T14:15:22.3974857Z  a4b310a3cf9f Extracting [======================================>            ]  87.46MB/114.2MB
+2026-05-19T14:15:22.5007713Z  a4b310a3cf9f Extracting [=========================================>         ]  95.81MB/114.2MB
+2026-05-19T14:15:22.6038416Z  a4b310a3cf9f Extracting [===========================================>       ]  100.3MB/114.2MB
+2026-05-19T14:15:22.7075002Z  a4b310a3cf9f Extracting [=============================================>     ]  103.6MB/114.2MB
+2026-05-19T14:15:22.8282428Z  a4b310a3cf9f Extracting [===============================================>   ]  108.1MB/114.2MB
+2026-05-19T14:15:22.9425199Z  a4b310a3cf9f Extracting [================================================>  ]  110.3MB/114.2MB
+2026-05-19T14:15:23.1100674Z  a4b310a3cf9f Extracting [=================================================> ]  112.5MB/114.2MB
+2026-05-19T14:15:23.2317461Z  a4b310a3cf9f Extracting [==================================================>]  114.2MB/114.2MB
+2026-05-19T14:15:23.2323071Z  a4b310a3cf9f Extracting [==================================================>]  114.2MB/114.2MB
+2026-05-19T14:15:23.7819438Z  a4b310a3cf9f Pull complete 
+2026-05-19T14:15:23.7827262Z  ee8322223cd0 Extracting [==================================================>]  10.39kB/10.39kB
+2026-05-19T14:15:23.7830965Z  ee8322223cd0 Extracting [==================================================>]  10.39kB/10.39kB
+2026-05-19T14:15:23.7920956Z  ee8322223cd0 Pull complete 
+2026-05-19T14:15:23.7930282Z  7d5f5b30b57d Extracting [==================================================>]     128B/128B
+2026-05-19T14:15:23.7934013Z  7d5f5b30b57d Extracting [==================================================>]     128B/128B
+2026-05-19T14:15:23.8018384Z  7d5f5b30b57d Pull complete 
+2026-05-19T14:15:23.8027827Z  2a18a06e840a Extracting [==================================================>]     169B/169B
+2026-05-19T14:15:23.8029277Z  2a18a06e840a Extracting [==================================================>]     169B/169B
+2026-05-19T14:15:23.8089140Z  2a18a06e840a Pull complete 
+2026-05-19T14:15:23.8173014Z  3cef98123686 Extracting [==================================================>]    6.1kB/6.1kB
+2026-05-19T14:15:23.8175040Z  3cef98123686 Extracting [==================================================>]    6.1kB/6.1kB
+2026-05-19T14:15:23.8239566Z  3cef98123686 Pull complete 
+2026-05-19T14:15:23.8247558Z  891c16122c8f Extracting [==================================================>]     186B/186B
+2026-05-19T14:15:23.8249451Z  891c16122c8f Extracting [==================================================>]     186B/186B
+2026-05-19T14:15:23.8304647Z  891c16122c8f Pull complete 
+2026-05-19T14:15:23.8352650Z  postgres Pulled 
+2026-05-19T14:15:25.7816245Z #1 [internal] load local bake definitions
+2026-05-19T14:15:25.9131857Z #1 reading from stdin 390B done
+2026-05-19T14:15:25.9132322Z #1 DONE 0.0s
+2026-05-19T14:15:26.0274142Z 
+2026-05-19T14:15:26.0274784Z #2 [internal] load build definition from Dockerfile
+2026-05-19T14:15:26.0275198Z #2 transferring dockerfile: 1.25kB done
+2026-05-19T14:15:26.0275462Z #2 DONE 0.0s
+2026-05-19T14:15:26.0275614Z 
+2026-05-19T14:15:26.0275867Z #3 [internal] load metadata for mcr.microsoft.com/dotnet/aspnet:10.0
+2026-05-19T14:15:26.0276250Z #3 DONE 0.1s
+2026-05-19T14:15:26.0276361Z 
+2026-05-19T14:15:26.0276578Z #4 [internal] load metadata for mcr.microsoft.com/dotnet/sdk:10.0
+2026-05-19T14:15:26.2472741Z #4 DONE 0.1s
+2026-05-19T14:15:26.2472977Z 
+2026-05-19T14:15:26.2473345Z #5 [auth] library/node:pull token for registry-1.docker.io
+2026-05-19T14:15:26.2473702Z #5 DONE 0.0s
+2026-05-19T14:15:26.2473817Z 
+2026-05-19T14:15:26.2474055Z #6 [internal] load metadata for docker.io/library/node:22-alpine
+2026-05-19T14:15:26.7104648Z #6 DONE 0.8s
+2026-05-19T14:15:26.8434989Z 
+2026-05-19T14:15:26.8436020Z #7 [internal] load .dockerignore
+2026-05-19T14:15:26.8436593Z #7 transferring context: 89B done
+2026-05-19T14:15:26.8437139Z #7 DONE 0.0s
+2026-05-19T14:15:26.8437473Z 
+2026-05-19T14:15:26.8437669Z #8 [internal] load build context
+2026-05-19T14:15:26.8438365Z #8 transferring context: 391.27kB 0.0s done
+2026-05-19T14:15:26.8438891Z #8 DONE 0.0s
+2026-05-19T14:15:26.8441055Z 
+2026-05-19T14:15:26.8442133Z #9 [runtime 1/4] FROM mcr.microsoft.com/dotnet/aspnet:10.0@sha256:9b5222b0ff8e9eb991a7c1a64b25f0f771d21ccc05dfa1c834f5668ffd9cd73f
+2026-05-19T14:15:26.8443669Z #9 resolve mcr.microsoft.com/dotnet/aspnet:10.0@sha256:9b5222b0ff8e9eb991a7c1a64b25f0f771d21ccc05dfa1c834f5668ffd9cd73f done
+2026-05-19T14:15:26.8444649Z #9 sha256:52b4f12fe7f294ae3aee2a4c1d2628cef0c583144319495271f8803be5859f32 3.12kB / 3.12kB done
+2026-05-19T14:15:26.8445748Z #9 sha256:4a9ee8975e61b8bb40224688f7084d4b75e65dec5f76d083e3ad65f9c25b8631 16.82MB / 16.82MB 0.1s
+2026-05-19T14:15:26.8446948Z #9 sha256:49dff918bbaec615bdde259b97e25067aba416465f40c0347f2ea614cf52a11a 3.56kB / 3.56kB 0.1s done
+2026-05-19T14:15:26.8448026Z #9 sha256:dcd84378ed84993ddac0c043e57d52784ffd0d79ae6ddce9f8e27d30bee9a037 154B / 154B 0.1s done
+2026-05-19T14:15:26.8449302Z #9 sha256:8421035875ae732dc785a72d81eae0fd1039c87bd04394931463fd33bfb17d4c 0B / 12.72MB 0.1s
+2026-05-19T14:15:26.8451405Z #9 sha256:9b5222b0ff8e9eb991a7c1a64b25f0f771d21ccc05dfa1c834f5668ffd9cd73f 1.08kB / 1.08kB done
+2026-05-19T14:15:26.9450254Z #9 sha256:4a9ee8975e61b8bb40224688f7084d4b75e65dec5f76d083e3ad65f9c25b8631 16.82MB / 16.82MB 0.1s done
+2026-05-19T14:15:26.9452317Z #9 sha256:8421035875ae732dc785a72d81eae0fd1039c87bd04394931463fd33bfb17d4c 12.72MB / 12.72MB 0.2s done
+2026-05-19T14:15:26.9453447Z #9 sha256:f36dbd191c9a58bb92b2bc4bd26933252822be56fa6797342b702d41c01fd4ef 1.58kB / 1.58kB done
+2026-05-19T14:15:26.9454142Z #9 sha256:606061d2f764e2db9e51c272e4fba547a9d1687ac5ff2dd25f49eb64346e126b 36.59MB / 36.59MB 0.2s
+2026-05-19T14:15:28.7768736Z #9 DONE 1.9s
+2026-05-19T14:15:28.7769985Z 
+2026-05-19T14:15:28.7771328Z #10 [runtime 2/4] WORKDIR /app
+2026-05-19T14:15:28.7772055Z #10 DONE 0.0s
+2026-05-19T14:15:28.7772401Z 
+2026-05-19T14:15:28.7774064Z #11 [dotnet-build  1/10] FROM mcr.microsoft.com/dotnet/sdk:10.0@sha256:dc8430e6024d454edadad1e160e1973be3cabbb7125998ef190d9e5c6adf7dbb
+2026-05-19T14:15:28.7775924Z #11 resolve mcr.microsoft.com/dotnet/sdk:10.0@sha256:dc8430e6024d454edadad1e160e1973be3cabbb7125998ef190d9e5c6adf7dbb done
+2026-05-19T14:15:28.7777352Z #11 sha256:dc8430e6024d454edadad1e160e1973be3cabbb7125998ef190d9e5c6adf7dbb 1.08kB / 1.08kB done
+2026-05-19T14:15:28.7778554Z #11 sha256:95ce19ccaea2d89766ac07f30c8214b2cafd97c5212418937833421742b57acf 2.42kB / 2.42kB done
+2026-05-19T14:15:28.7779691Z #11 sha256:886f165b63e6fab83fabcc70da1bdd4e3cfe74bcc1c68838fd18dd4dc5a7c65a 5.83kB / 5.83kB done
+2026-05-19T14:15:28.7781250Z #11 sha256:606061d2f764e2db9e51c272e4fba547a9d1687ac5ff2dd25f49eb64346e126b 36.59MB / 36.59MB 0.2s done
+2026-05-19T14:15:28.7782339Z #11 extracting sha256:4a9ee8975e61b8bb40224688f7084d4b75e65dec5f76d083e3ad65f9c25b8631 0.6s done
+2026-05-19T14:15:28.7783633Z #11 sha256:ad32d71cc34be5ed0b706aaad80ad8b0278990bae0732fcce427856c081bf191 23.81MB / 23.81MB 0.2s done
+2026-05-19T14:15:28.7785007Z #11 sha256:a11b3a607f3696e7e8afb2d1eb5aee0b1beb860ae3ba02ccce4f2e8610c07f60 185.16MB / 185.16MB 1.1s done
+2026-05-19T14:15:28.7786276Z #11 sha256:9a043145bf3d533fb0963adb3832e1d9f21ea3f95f24f64805633be7ca85769f 18.10MB / 18.10MB 0.3s done
+2026-05-19T14:15:28.7787586Z #11 sha256:d5a388adfa5bcf718d44d73926113f91ecf2f19ccd3da6db69b77cfb048b0e5b 496B / 496B 0.2s done
+2026-05-19T14:15:28.7788814Z #11 extracting sha256:49dff918bbaec615bdde259b97e25067aba416465f40c0347f2ea614cf52a11a done
+2026-05-19T14:15:28.7789972Z #11 extracting sha256:606061d2f764e2db9e51c272e4fba547a9d1687ac5ff2dd25f49eb64346e126b 0.5s done
+2026-05-19T14:15:28.7791327Z #11 extracting sha256:dcd84378ed84993ddac0c043e57d52784ffd0d79ae6ddce9f8e27d30bee9a037 done
+2026-05-19T14:15:28.7792600Z #11 extracting sha256:8421035875ae732dc785a72d81eae0fd1039c87bd04394931463fd33bfb17d4c 0.2s done
+2026-05-19T14:15:28.7793869Z #11 extracting sha256:ad32d71cc34be5ed0b706aaad80ad8b0278990bae0732fcce427856c081bf191 0.1s
+2026-05-19T14:15:29.3097147Z #11 ...
+2026-05-19T14:15:29.3097853Z 
+2026-05-19T14:15:29.3099367Z #12 [node-build 1/6] FROM docker.io/library/node:22-alpine@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920
+2026-05-19T14:15:29.3101349Z #12 resolve docker.io/library/node:22-alpine@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920 done
+2026-05-19T14:15:29.3102892Z #12 sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920 6.41kB / 6.41kB done
+2026-05-19T14:15:29.3104178Z #12 sha256:757ec364de4d37cedf30871be2988927660834e656e9aa52aad9ac194814c30c 1.72kB / 1.72kB done
+2026-05-19T14:15:29.3105490Z #12 sha256:dd720352b0690b8fd0bde339dd11a4ae650bfa79f8be316a7d632377781f6cdf 6.52kB / 6.52kB done
+2026-05-19T14:15:29.3107059Z #12 sha256:2ad77fb7cfd3ef9f6a6dfce0020766303fd6404c57ec5d48a336265ff0201132 52.31MB / 52.31MB 1.0s done
+2026-05-19T14:15:29.3108659Z #12 sha256:b6816b6a041943b79e3f6e0f45fca8a0f83b376014c7525bcb108c6c7b5e9dd7 1.26MB / 1.26MB 0.6s done
+2026-05-19T14:15:29.3110148Z #12 sha256:35cf660f63b0ddbe3c26c27dfb34eedfbc0fd96533a1df799ee586109c18ec7d 449B / 449B 0.7s done
+2026-05-19T14:15:29.3113530Z #12 extracting sha256:2ad77fb7cfd3ef9f6a6dfce0020766303fd6404c57ec5d48a336265ff0201132 1.4s done
+2026-05-19T14:15:29.3114857Z #12 extracting sha256:b6816b6a041943b79e3f6e0f45fca8a0f83b376014c7525bcb108c6c7b5e9dd7 0.0s done
+2026-05-19T14:15:29.3116115Z #12 extracting sha256:35cf660f63b0ddbe3c26c27dfb34eedfbc0fd96533a1df799ee586109c18ec7d done
+2026-05-19T14:15:29.3116674Z #12 DONE 2.6s
+2026-05-19T14:15:29.3116849Z 
+2026-05-19T14:15:29.3117059Z #13 [node-build 2/6] WORKDIR /build/frontend
+2026-05-19T14:15:29.3117415Z #13 DONE 0.0s
+2026-05-19T14:15:29.3117582Z 
+2026-05-19T14:15:29.3118071Z #14 [node-build 3/6] COPY frontend/package.json frontend/package-lock.json ./
+2026-05-19T14:15:29.3118641Z #14 DONE 0.0s
+2026-05-19T14:15:29.4433481Z 
+2026-05-19T14:15:29.4434995Z #11 [dotnet-build  1/10] FROM mcr.microsoft.com/dotnet/sdk:10.0@sha256:dc8430e6024d454edadad1e160e1973be3cabbb7125998ef190d9e5c6adf7dbb
+2026-05-19T14:15:29.6142815Z #11 extracting sha256:ad32d71cc34be5ed0b706aaad80ad8b0278990bae0732fcce427856c081bf191 0.8s done
+2026-05-19T14:15:29.6144557Z #11 extracting sha256:a11b3a607f3696e7e8afb2d1eb5aee0b1beb860ae3ba02ccce4f2e8610c07f60 0.1s
+2026-05-19T14:15:33.2053713Z #11 extracting sha256:a11b3a607f3696e7e8afb2d1eb5aee0b1beb860ae3ba02ccce4f2e8610c07f60 3.5s done
+2026-05-19T14:15:34.7374973Z #11 extracting sha256:d5a388adfa5bcf718d44d73926113f91ecf2f19ccd3da6db69b77cfb048b0e5b
+2026-05-19T14:15:34.8791983Z #11 extracting sha256:d5a388adfa5bcf718d44d73926113f91ecf2f19ccd3da6db69b77cfb048b0e5b done
+2026-05-19T14:15:34.8793004Z #11 extracting sha256:9a043145bf3d533fb0963adb3832e1d9f21ea3f95f24f64805633be7ca85769f
+2026-05-19T14:15:35.0831763Z #11 ...
+2026-05-19T14:15:35.0833143Z 
+2026-05-19T14:15:35.0833690Z #15 [node-build 4/6] RUN npm ci
+2026-05-19T14:15:35.0835219Z #15 2.046 npm warn deprecated lodash.isequal@4.5.0: This package is deprecated. Use require('node:util').isDeepStrictEqual instead.
+2026-05-19T14:15:35.0836330Z #15 5.604 
+2026-05-19T14:15:35.0837158Z #15 5.604 added 300 packages, and audited 301 packages in 5s
+2026-05-19T14:15:35.0838303Z #15 5.604 
+2026-05-19T14:15:35.0838841Z #15 5.604 73 packages are looking for funding
+2026-05-19T14:15:35.0839617Z #15 5.604   run `npm fund` for details
+2026-05-19T14:15:35.0840038Z #15 5.606 
+2026-05-19T14:15:35.0840416Z #15 5.606 found 0 vulnerabilities
+2026-05-19T14:15:35.0843373Z #15 5.607 npm notice
+2026-05-19T14:15:35.0844491Z #15 5.607 npm notice New major version of npm available! 10.9.8 -> 11.14.1
+2026-05-19T14:15:35.0845756Z #15 5.607 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.14.1
+2026-05-19T14:15:35.0846699Z #15 5.607 npm notice To update run: npm install -g npm@11.14.1
+2026-05-19T14:15:35.0847304Z #15 5.607 npm notice
+2026-05-19T14:15:35.0847647Z #15 DONE 5.7s
+2026-05-19T14:15:35.0847850Z 
+2026-05-19T14:15:35.0848091Z #16 [node-build 5/6] COPY frontend/ ./
+2026-05-19T14:15:35.0848548Z #16 DONE 0.0s
+2026-05-19T14:15:35.0848736Z 
+2026-05-19T14:15:35.0849750Z #11 [dotnet-build  1/10] FROM mcr.microsoft.com/dotnet/sdk:10.0@sha256:dc8430e6024d454edadad1e160e1973be3cabbb7125998ef190d9e5c6adf7dbb
+2026-05-19T14:15:35.0850931Z #11 ...
+2026-05-19T14:15:35.0851073Z 
+2026-05-19T14:15:35.0851304Z #17 [node-build 6/6] RUN npm run build
+2026-05-19T14:15:35.2894688Z #17 ...
+2026-05-19T14:15:35.2897995Z 
+2026-05-19T14:15:35.2899168Z #11 [dotnet-build  1/10] FROM mcr.microsoft.com/dotnet/sdk:10.0@sha256:dc8430e6024d454edadad1e160e1973be3cabbb7125998ef190d9e5c6adf7dbb
+2026-05-19T14:15:35.2901363Z #11 extracting sha256:9a043145bf3d533fb0963adb3832e1d9f21ea3f95f24f64805633be7ca85769f 0.4s done
+2026-05-19T14:15:35.2902519Z #11 DONE 8.5s
+2026-05-19T14:15:35.2902775Z 
+2026-05-19T14:15:35.2903000Z #18 [dotnet-build  2/10] WORKDIR /src
+2026-05-19T14:15:35.2903402Z #18 DONE 0.0s
+2026-05-19T14:15:35.2903577Z 
+2026-05-19T14:15:35.2903881Z #19 [dotnet-build  3/10] COPY WebWhiteBoard.slnx ./
+2026-05-19T14:15:35.2904341Z #19 DONE 0.0s
+2026-05-19T14:15:35.4715760Z 
+2026-05-19T14:15:35.4717143Z #20 [dotnet-build  4/10] COPY backend/WebWhiteBoard.Api/WebWhiteBoard.Api.csproj backend/WebWhiteBoard.Api/
+2026-05-19T14:15:35.4717925Z #20 DONE 0.0s
+2026-05-19T14:15:35.4718111Z 
+2026-05-19T14:15:35.4719049Z #21 [dotnet-build  5/10] COPY backend/WebWhiteBoard.Application/WebWhiteBoard.Application.csproj backend/WebWhiteBoard.Application/
+2026-05-19T14:15:35.4720055Z #21 DONE 0.0s
+2026-05-19T14:15:35.4720238Z 
+2026-05-19T14:15:35.4721332Z #22 [dotnet-build  6/10] COPY backend/WebWhiteBoard.Domain/WebWhiteBoard.Domain.csproj backend/WebWhiteBoard.Domain/
+2026-05-19T14:15:35.4722366Z #22 DONE 0.0s
+2026-05-19T14:15:35.4722550Z 
+2026-05-19T14:15:35.4723720Z #23 [dotnet-build  7/10] COPY backend/WebWhiteBoard.Infrastructure/WebWhiteBoard.Infrastructure.csproj backend/WebWhiteBoard.Infrastructure/
+2026-05-19T14:15:35.4724545Z #23 DONE 0.0s
+2026-05-19T14:15:35.4724651Z 
+2026-05-19T14:15:35.4724975Z #24 [dotnet-build  8/10] RUN dotnet restore backend/WebWhiteBoard.Api/WebWhiteBoard.Api.csproj
+2026-05-19T14:15:36.6667378Z #24 1.345   Determining projects to restore...
+2026-05-19T14:15:38.3374521Z #24 3.016   Restored /src/backend/WebWhiteBoard.Domain/WebWhiteBoard.Domain.csproj (in 162 ms).
+2026-05-19T14:15:38.3375963Z #24 3.016   Restored /src/backend/WebWhiteBoard.Application/WebWhiteBoard.Application.csproj (in 182 ms).
+2026-05-19T14:15:39.2931097Z #24 3.971   Restored /src/backend/WebWhiteBoard.Infrastructure/WebWhiteBoard.Infrastructure.csproj (in 1.17 sec).
+2026-05-19T14:15:39.4112066Z #24 3.972   Restored /src/backend/WebWhiteBoard.Api/WebWhiteBoard.Api.csproj (in 1.17 sec).
+2026-05-19T14:15:39.4113022Z #24 DONE 4.1s
+2026-05-19T14:15:39.4113250Z 
+2026-05-19T14:15:39.4113538Z #25 [dotnet-build  9/10] COPY backend/ backend/
+2026-05-19T14:15:39.4114101Z #25 DONE 0.0s
+2026-05-19T14:15:39.4114369Z 
+2026-05-19T14:15:39.4114887Z #17 [node-build 6/6] RUN npm run build
+2026-05-19T14:15:39.4115350Z #17 0.266 
+2026-05-19T14:15:39.4115746Z #17 0.266 > frontend@0.0.0 build
+2026-05-19T14:15:39.4116201Z #17 0.266 > tsc -b && vite build
+2026-05-19T14:15:39.4116767Z #17 0.266 
+2026-05-19T14:15:39.5298727Z #17 4.484 vite v8.0.13 building client environment for production...
+2026-05-19T14:15:39.7018876Z #17 4.505 [2K
+2026-05-19T14:15:40.1745147Z transforming...✓ 802 modules transformed.
+2026-05-19T14:15:40.3736960Z #17 5.328 rendering chunks...
+2026-05-19T14:15:40.8466956Z #17 5.801 computing gzip size...
+2026-05-19T14:15:41.0932971Z #17 5.837 dist/index.html                     0.45 kB │ gzip:   0.29 kB
+2026-05-19T14:15:41.0933964Z #17 5.837 dist/assets/index-CCI0fglP.css     95.17 kB │ gzip:  17.99 kB
+2026-05-19T14:15:41.0934856Z #17 5.837 dist/assets/index-B9HCjgBo.js   1,857.90 kB │ gzip: 554.73 kB
+2026-05-19T14:15:41.0935360Z #17 5.837 
+2026-05-19T14:15:41.0935727Z #17 5.838 [plugin builtin:vite-reporter] 
+2026-05-19T14:15:41.0936446Z #17 5.838 (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-05-19T14:15:41.0937240Z #17 5.838 - Using dynamic import() to code-split the application
+2026-05-19T14:15:41.0938632Z #17 5.838 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+2026-05-19T14:15:41.0940042Z #17 5.838 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+2026-05-19T14:15:41.0941322Z #17 5.839 ✓ built in 1.35s
+2026-05-19T14:15:41.0941687Z #17 DONE 5.9s
+2026-05-19T14:15:41.0941862Z 
+2026-05-19T14:15:41.0942783Z #26 [dotnet-build 10/10] RUN dotnet publish backend/WebWhiteBoard.Api/WebWhiteBoard.Api.csproj     -c Release -o /app/publish --no-restore
+2026-05-19T14:15:43.4894268Z #26 4.080   WebWhiteBoard.Domain -> /src/backend/WebWhiteBoard.Domain/bin/Release/net10.0/WebWhiteBoard.Domain.dll
+2026-05-19T14:15:43.9794115Z #26 4.570   WebWhiteBoard.Application -> /src/backend/WebWhiteBoard.Application/bin/Release/net10.0/WebWhiteBoard.Application.dll
+2026-05-19T14:15:44.7642789Z #26 5.355   WebWhiteBoard.Infrastructure -> /src/backend/WebWhiteBoard.Infrastructure/bin/Release/net10.0/WebWhiteBoard.Infrastructure.dll
+2026-05-19T14:15:45.8280069Z #26 6.419   WebWhiteBoard.Api -> /src/backend/WebWhiteBoard.Api/bin/Release/net10.0/WebWhiteBoard.Api.dll
+2026-05-19T14:15:45.9306919Z #26 6.452   WebWhiteBoard.Api -> /app/publish/
+2026-05-19T14:15:45.9316763Z #26 DONE 6.5s
+2026-05-19T14:15:46.1151939Z 
+2026-05-19T14:15:46.1152573Z #27 [runtime 3/4] COPY --from=dotnet-build /app/publish ./
+2026-05-19T14:15:46.1152968Z #27 DONE 0.0s
+2026-05-19T14:15:46.1153091Z 
+2026-05-19T14:15:46.1153340Z #28 [runtime 4/4] COPY --from=node-build /build/frontend/dist ./wwwroot/
+2026-05-19T14:15:46.1153658Z #28 DONE 0.0s
+2026-05-19T14:15:46.1153768Z 
+2026-05-19T14:15:46.1153865Z #29 exporting to image
+2026-05-19T14:15:46.1154085Z #29 exporting layers
+2026-05-19T14:15:46.8898132Z #29 exporting layers 0.9s done
+2026-05-19T14:15:46.9163363Z #29 writing image sha256:97c7a58c3f6a1db9a57ad9f9e4ac1ce66026d7a088faf4d2c34a8f1afc3fc917 done
+2026-05-19T14:15:46.9164092Z  app  Built
+2026-05-19T14:15:46.9164555Z #29 naming to docker.io/library/webwhiteboard-app done
+2026-05-19T14:15:46.9165030Z #29 DONE 0.9s
+2026-05-19T14:15:46.9165408Z 
+2026-05-19T14:15:46.9165672Z #30 resolving provenance for metadata file
+2026-05-19T14:15:46.9165999Z #30 DONE 0.0s
+2026-05-19T14:15:46.9211484Z  Network webwhiteboard_default  Creating
+2026-05-19T14:15:46.9483191Z  Network webwhiteboard_default  Created
+2026-05-19T14:15:46.9527913Z  Volume "webwhiteboard_postgres-data"  Creating
+2026-05-19T14:15:46.9540331Z  Volume "webwhiteboard_postgres-data"  Created
+2026-05-19T14:15:46.9545359Z  Container webwhiteboard-postgres  Creating
+2026-05-19T14:15:46.9722775Z  Container webwhiteboard-postgres  Created
+2026-05-19T14:15:46.9723406Z  Container webwhiteboard-app-1  Creating
+2026-05-19T14:15:46.9800288Z  Container webwhiteboard-app-1  Created
+2026-05-19T14:15:46.9808787Z  Container webwhiteboard-postgres  Starting
+2026-05-19T14:15:47.2100285Z  Container webwhiteboard-postgres  Started
+2026-05-19T14:15:47.2101066Z  Container webwhiteboard-postgres  Waiting
+2026-05-19T14:15:52.7110592Z  Container webwhiteboard-postgres  Healthy
+2026-05-19T14:15:52.7112154Z  Container webwhiteboard-app-1  Starting
+2026-05-19T14:15:52.8088530Z  Container webwhiteboard-app-1  Started
+2026-05-19T14:15:52.8088944Z  Container webwhiteboard-postgres  Waiting
+2026-05-19T14:15:52.8089259Z  Container webwhiteboard-app-1  Waiting
+2026-05-19T14:15:53.3103047Z  Container webwhiteboard-postgres  Healthy
+2026-05-19T14:18:13.8103431Z container webwhiteboard-app-1 is unhealthy
+2026-05-19T14:18:13.8154501Z ##[error]Process completed with exit code 1.
+2026-05-19T14:18:13.8312701Z ##[group]Run actions/upload-artifact@v4
+2026-05-19T14:18:13.8312943Z with:
+2026-05-19T14:18:13.8313126Z   name: playwright-report
+2026-05-19T14:18:13.8313339Z   path: e2e/test-results/
+2026-05-19T14:18:13.8313541Z   retention-days: 7
+2026-05-19T14:18:13.8313759Z   if-no-files-found: warn
+2026-05-19T14:18:13.8313966Z   compression-level: 6
+2026-05-19T14:18:13.8314153Z   overwrite: false
+2026-05-19T14:18:13.8314347Z   include-hidden-files: false
+2026-05-19T14:18:13.8314559Z ##[endgroup]
+2026-05-19T14:18:14.0353115Z ##[warning]No files were found with the provided path: e2e/test-results/. No artifacts will be uploaded.
+2026-05-19T14:18:14.0433143Z ##[group]Run docker compose down -v
+2026-05-19T14:18:14.0433447Z [36;1mdocker compose down -v[0m
+2026-05-19T14:18:14.0453131Z shell: /usr/bin/bash -e {0}
+2026-05-19T14:18:14.0453369Z ##[endgroup]
+2026-05-19T14:18:14.1154976Z  Container webwhiteboard-app-1  Stopping
+2026-05-19T14:18:14.2173653Z  Container webwhiteboard-app-1  Stopped
+2026-05-19T14:18:14.2174350Z  Container webwhiteboard-app-1  Removing
+2026-05-19T14:18:14.2209223Z  Container webwhiteboard-app-1  Removed
+2026-05-19T14:18:14.2209798Z  Container webwhiteboard-postgres  Stopping
+2026-05-19T14:18:14.3209903Z  Container webwhiteboard-postgres  Stopped
+2026-05-19T14:18:14.3211968Z  Container webwhiteboard-postgres  Removing
+2026-05-19T14:18:14.3245065Z  Container webwhiteboard-postgres  Removed
+2026-05-19T14:18:14.3252116Z  Volume webwhiteboard_postgres-data  Removing
+2026-05-19T14:18:14.3256386Z  Network webwhiteboard_default  Removing
+2026-05-19T14:18:14.3502849Z  Volume webwhiteboard_postgres-data  Removed
+2026-05-19T14:18:14.3893974Z  Network webwhiteboard_default  Removed
+2026-05-19T14:18:14.3984375Z Post job cleanup.
+2026-05-19T14:18:14.4883771Z [command]/usr/bin/git version
+2026-05-19T14:18:14.4916018Z git version 2.54.0
+2026-05-19T14:18:14.4955784Z Temporarily overriding HOME='/home/runner/work/_temp/69c9a161-7961-41e2-a9c6-aa7107abaa10' before making global git config changes
+2026-05-19T14:18:14.4957190Z Adding repository directory to the temporary git global config as a safe directory
+2026-05-19T14:18:14.4963284Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/WebWhiteBoard/WebWhiteBoard
+2026-05-19T14:18:14.5009281Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-05-19T14:18:14.5043406Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-05-19T14:18:14.5237167Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-05-19T14:18:14.5260160Z http.https://github.com/.extraheader
+2026-05-19T14:18:14.5272071Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-05-19T14:18:14.5300407Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-05-19T14:18:14.5492670Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-05-19T14:18:14.5524625Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-05-19T14:18:14.5810148Z Cleaning up orphan processes
+2026-05-19T14:18:14.6147117Z ##[warning]Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

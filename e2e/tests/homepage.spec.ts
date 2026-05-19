@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test'
 
 async function loginAs(page: import('@playwright/test').Page, name: string) {
   await page.goto('/')
+  await expect(page).toHaveTitle('WebWhiteBoard')
   await page.getByRole('textbox').fill(name)
   await page.getByRole('button', { name: /continue/i }).click()
   await expect(page.getByRole('heading', { name: new RegExp(`welcome back, ${name}`, 'i') })).toBeVisible()
