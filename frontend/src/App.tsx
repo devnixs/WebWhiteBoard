@@ -1178,6 +1178,7 @@ function BoardScreen({
       />
       <ToolRail activeTool={activeTool} onSelectTool={setActiveTool} />
       <ToolSettingsPanel
+        key={activeTool}
         activeTool={activeTool}
         drawColor={drawColor}
         drawSize={drawSize}
@@ -1498,10 +1499,6 @@ function ToolSettingsPanel({
   onChangeEraserSize: (value: SizeChoice) => void
 }) {
   const [isCollapsed, setIsCollapsed] = useState(false)
-
-  useEffect(() => {
-    setIsCollapsed(false)
-  }, [activeTool])
 
   if (activeTool === 'select' || activeTool === 'hand') {
     return null
