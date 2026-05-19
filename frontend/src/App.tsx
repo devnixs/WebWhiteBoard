@@ -617,11 +617,7 @@ function BoardScreen({
     }
 
     editor.setCurrentTool('select')
-    editor.setStyleForNextShapes(DefaultColorStyle, drawColor)
-    editor.setStyleForNextShapes(DefaultSizeStyle, drawSize)
-    editor.setStyleForNextShapes(DefaultFontStyle, textFont)
-    editor.setStyleForNextShapes(GeoShapeGeoStyle, shapeChoice)
-  }, [editor, drawColor, drawSize, textFont, shapeChoice])
+  }, [editor])
 
   useEffect(() => {
     if (!editor) {

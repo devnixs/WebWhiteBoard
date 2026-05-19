@@ -19,3 +19,5 @@
 - [ ] After any major frontend component decomposition or file-structure refactor, manual Chrome DevTools regression testing covers both `/` and `/board/{guid}` to confirm the extracted components preserve the existing login, board creation, drawing, sharing, selection, and collaboration-visible UI behavior.
 - [X] The browser test suite is structured so each major feature area has at least one meaningful end-to-end flow that exercises the real system through the UI.
 - [X] Visual browser QA for the design-guidelines alignment work reproduces the four reference screens from `design-guidelines/Screenshots/` in Chrome DevTools and records whether each one matches the intended route and UI state before the related story can be closed.
+- [ ] The backend has a non-unit integration test suite that exercises the deployed API contract directly through HTTP requests and WebSocket messages.
+- [ ] Backend integration tests run against a real PostgreSQL instance and cover at least one meaningful flow for board creation, collaboration updates, cursor presence, and persisted reload behavior.

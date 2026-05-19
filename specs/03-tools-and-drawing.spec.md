@@ -19,5 +19,5 @@
 - [X] Pasting an image inserts it exactly once — no duplicate copy is produced on the canvas.
 - [X] Drawing interactions remain responsive even when persistence or collaboration traffic is active in the background.
 - [X] Holding `Shift` while using the pencil constrains drawing to straight snapped directions at 0 degrees, 90 degrees, 180 degrees, and 270 degrees.
-- [ ] The selected pencil color is preserved after receiving a remote collaboration document update — strokes drawn immediately after a remote sync must appear in the user's chosen color, not tldraw's default black.
+- [X] The selected pencil color is preserved after receiving a remote collaboration document update — strokes drawn immediately after a remote sync must appear in the user's chosen color, not tldraw's default black.
 - [X] The settings panel for every tool that has one (pencil, text, shapes, eraser, lasso) can be collapsed to reclaim canvas real estate without deactivating the tool.

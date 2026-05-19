@@ -41,7 +41,8 @@ test.describe('login and routing', () => {
 
   test('direct board link shows login-first flow with board hint', async ({ page }) => {
     // Create a board first using the API so we have a real GUID
-    const res = await page.request.post('http://127.0.0.1:5058/boards', {
+    const apiBase = process.env.BASE_URL ?? 'http://localhost:5173'
+    const res = await page.request.post(`${apiBase}/boards`, {
       headers: { 'Content-Type': 'application/json' },
       data: {},
     })

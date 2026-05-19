@@ -1,0 +1,78 @@
+- main [ref=e3]:
+  - application "tldraw" [ref=e5]:
+    - generic [ref=e6]:
+      - img
+    - button "Get a license for production" [ref=e11] [cursor=pointer]
+  - button "Share board" [ref=e13] [cursor=pointer]:
+    - img [ref=e15]
+    - generic [ref=e21]:
+      - strong [ref=e22]: Share board
+      - generic [ref=e23]: c91d83b9
+  - generic [ref=e24]:
+    - generic [ref=e25]:
+      - img [ref=e26]
+      - generic [ref=e31]: 1 ms
+    - generic [ref=e34]: 1 online
+    - generic [ref=e35]:
+      - generic [ref=e36]: MC
+      - strong [ref=e37]: Maya Chen
+      - button [ref=e39] [cursor=pointer]:
+        - img [ref=e40]
+  - region "Board tools" [ref=e43]:
+    - button "Select" [ref=e45] [cursor=pointer]:
+      - img [ref=e46]
+      - generic [ref=e48]: V
+    - button "Pan" [ref=e50] [cursor=pointer]:
+      - img [ref=e51]
+      - generic [ref=e56]: H
+    - button "Pencil" [active] [ref=e59] [cursor=pointer]:
+      - img [ref=e60]
+      - generic [ref=e63]: P
+    - button "Text" [ref=e65] [cursor=pointer]:
+      - img [ref=e66]
+      - generic [ref=e67]: T
+    - button "Shapes" [ref=e69] [cursor=pointer]:
+      - img [ref=e70]
+      - generic [ref=e73]: R
+    - button "Eraser" [ref=e75] [cursor=pointer]:
+      - img [ref=e76]
+      - generic [ref=e79]: E
+    - button "Lasso" [ref=e81] [cursor=pointer]:
+      - img [ref=e82]
+      - generic [ref=e86]: L
+  - region "Tool settings" [ref=e106]:
+    - generic [ref=e107]:
+      - generic [ref=e108]:
+        - strong [ref=e109]: Pencil
+        - generic [ref=e110]: Color and stroke size
+      - button "Collapse tool settings" [ref=e111] [cursor=pointer]:
+        - img [ref=e112]
+    - generic [ref=e114]:
+      - generic [ref=e115]: Color
+      - generic [ref=e116]:
+        - button [ref=e117] [cursor=pointer]
+        - button [ref=e119] [cursor=pointer]
+        - button [ref=e121] [cursor=pointer]
+        - button [ref=e123] [cursor=pointer]
+        - button [ref=e125] [cursor=pointer]
+        - button [ref=e127] [cursor=pointer]
+      - generic [ref=e129]: blue
+    - generic [ref=e130]:
+      - generic [ref=e131]: Size
+      - generic [ref=e132]:
+        - button [ref=e133] [cursor=pointer]
+        - button [ref=e135] [cursor=pointer]
+        - button [ref=e137] [cursor=pointer]
+        - button [ref=e139] [cursor=pointer]
+      - generic [ref=e141]: 3.5 px
+  - generic [ref=e87]:
+    - generic [ref=e88]:
+      - button "Zoom out" [ref=e89] [cursor=pointer]:
+        - img [ref=e90]
+      - generic [ref=e91]: 100%
+      - button "Zoom in" [ref=e92] [cursor=pointer]:
+        - img [ref=e93]
+      - button "Zoom options" [ref=e95] [cursor=pointer]:
+        - img [ref=e96]
+    - button "Open shortcuts" [ref=e98] [cursor=pointer]:
+      - img [ref=e99]
