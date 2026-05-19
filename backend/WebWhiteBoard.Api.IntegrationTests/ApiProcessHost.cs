@@ -23,7 +23,7 @@ public sealed class ApiProcessHost : IAsyncDisposable
     {
         var port = GetFreeTcpPort();
         var baseAddress = new Uri($"http://127.0.0.1:{port}");
-        var apiAssemblyPath = typeof(Program).Assembly.Location;
+        var apiAssemblyPath = ResolveApiAssemblyPath();
 
         var process = new Process
         {
@@ -148,5 +148,19 @@ public sealed class ApiProcessHost : IAsyncDisposable
         using var listener = new TcpListener(System.Net.IPAddress.Loopback, 0);
         listener.Start();
         return ((System.Net.IPEndPoint)listener.LocalEndpoint).Port;
+    }
+
+    private static string ResolveApiAssemblyPath()
+    {
+        var path = Path.GetFullPath(Path.Combine(
+            AppContext.BaseDirectory,
+            "../../../../WebWhiteBoard.Api/bin/Release/net10.0/WebWhiteBoard.Api.dll"));
+
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("Unable to locate the backend API assembly for integration tests.", path);
+        }
+
+        return path;
     }
 }

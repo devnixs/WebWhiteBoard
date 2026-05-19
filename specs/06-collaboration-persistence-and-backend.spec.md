@@ -12,5 +12,5 @@
 - [X] Persisted board state can be reloaded accurately after process restarts or reconnects.
 - [X] Known-board metadata needed for homepage re-entry is preserved consistently with the user’s local board history model.
 - [X] Backend and persistence design avoid duplicating domain logic between transport handlers, persistence code, and controller endpoints.
-- [ ] The backend has an automated integration test suite that exercises the real HTTP API and WebSocket collaboration endpoints against a real PostgreSQL database.
-- [ ] Backend integration coverage includes board creation/loading, collaborative document synchronization, remote cursor broadcasting, and persisted board reload after application restart.
+- [X] The backend has an automated integration test suite that exercises the real HTTP API and WebSocket collaboration endpoints against a real PostgreSQL database.
+- [X] Backend integration coverage includes board creation/loading, collaborative document synchronization, remote cursor broadcasting, and persisted board reload after application restart.

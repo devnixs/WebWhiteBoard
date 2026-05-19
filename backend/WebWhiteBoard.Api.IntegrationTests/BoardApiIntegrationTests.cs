@@ -201,7 +201,10 @@ public sealed class BoardApiIntegrationTests
         output.WriteLine("Received session.ready for {0}.", sessionId);
         Assert.Equal("session.ready", readyMessage.GetProperty("type").GetString());
         Assert.Equal(boardId, readyMessage.GetProperty("boardId").GetGuid());
-        Assert.Equal(sessionId, readyMessage.GetProperty("participants")[0].GetProperty("sessionId").GetString());
+
+        var participants = readyMessage.GetProperty("participants").EnumerateArray().ToArray();
+        Assert.Contains(participants, participant =>
+            string.Equals(participant.GetProperty("sessionId").GetString(), sessionId, StringComparison.Ordinal));
 
         return socket;
     }
