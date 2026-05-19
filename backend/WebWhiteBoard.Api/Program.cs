@@ -93,3 +93,5 @@ app.Map("/ws/boards/{boardId:guid}", async context =>
 app.MapFallbackToFile("index.html");
 
 app.Run();
+
+public partial class Program;
