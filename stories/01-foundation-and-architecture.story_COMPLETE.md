@@ -6,10 +6,10 @@ Establish the project structure and core architectural rules for a React + Vite 
 
 ## Scope
 
-- Set up the frontend and backend project layout.
-- Establish shared architectural patterns for board actions, backend-owned business logic, persistence boundaries, and in-memory active board handling.
-- Set up the baseline for asynchronous persistence and future collaboration flows.
-- Ensure copied design-guideline code is cleaned up for production use and does not rely on inline CSS.
+- [X] Set up the frontend and backend project layout.
+- [X] Establish shared architectural patterns for board actions, backend-owned business logic, persistence boundaries, and in-memory active board handling.
+- [X] Set up the baseline for asynchronous persistence and future collaboration flows.
+- [X] Ensure copied design-guideline code is cleaned up for production use and does not rely on inline CSS.
 
 ## Relevant Specs
 

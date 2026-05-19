@@ -6,12 +6,12 @@ Build the board shell so the canvas remains dominant and all controls live in co
 
 ## Scope
 
-- Remove any fixed-header assumption from the board layout.
-- Add the top-left share panel and clipboard-copy confirmation.
-- Add the left tools panel container.
-- Add the bottom-right zoom and shortcuts entry panel.
-- Add the top-right user and WebSocket latency panel.
-- Ensure the shell works on desktop and laptop-sized screens without crowding the board.
+- [X] Remove any fixed-header assumption from the board layout.
+- [X] Add the top-left share panel and clipboard-copy confirmation.
+- [X] Add the left tools panel container.
+- [X] Add the bottom-right zoom and shortcuts entry panel.
+- [X] Add the top-right user and WebSocket latency panel.
+- [X] Ensure the shell works on desktop and laptop-sized screens without crowding the board.
 
 ## Relevant Specs
 

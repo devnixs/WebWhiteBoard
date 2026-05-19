@@ -9,5 +9,5 @@
 - [X] A floating top-right panel shows the current user name, logout control, and live WebSocket latency indicator.
 - [X] The floating panels are visually compact and remain usable on both desktop and laptop-sized viewports.
 - [X] The panel system is designed so additional controls can be added later without forcing a redesign of the board shell.
-- [ ] The board canvas displays faint grid lines behind board content to improve spatial orientation without overpowering drawings or UI panels.
-- [ ] The grid lines remain visually subtle during normal board use so the canvas still feels dominant and drawn content remains easy to read.
+- [X] The board canvas displays faint line-based grid lines behind board content to improve spatial orientation without overpowering drawings or UI panels.
+- [X] The grid lines remain barely visible during normal board use so the canvas still feels dominant and drawn content remains easy to read.

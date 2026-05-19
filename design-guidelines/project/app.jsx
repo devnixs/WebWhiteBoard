@@ -17,7 +17,7 @@ const THEME = {
   '--muted': '#64748b',
   '--border': '#e4e7ec',
   '--border-strong': '#cbd2dc',
-  '--grid': 'rgba(15, 23, 42, 0.08)',
+  '--grid': 'rgba(15, 23, 42, 0.12)',
   '--grid-faint': 'rgba(15, 23, 42, 0.04)',
   '--accent': 'oklch(0.58 0.16 254)',
   '--accent-on': '#ffffff',

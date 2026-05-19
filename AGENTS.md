@@ -77,6 +77,17 @@ Agents working in this repo must treat the spec files in `specs/` as the source 
 - Selection flows must support resize, rotate, multi-select, and context-menu editing actions.
 - Collaboration must show remote cursors with participant names and colors.
 
+## Chrome DevTools MCP Recovery
+
+- Codex uses `chrome-devtools-mcp` through a live stdio transport. If an agent kills `chrome-devtools-mcp` directly with commands like `pkill -f chrome-devtools-mcp`, the MCP transport for the current Codex session is severed and later browser tool calls fail with `Transport closed`.
+- The Chrome DevTools MCP server also uses a shared profile at `~/.cache/chrome-devtools-mcp/chrome-profile`. When that browser instance exits badly, Chrome singleton files such as `SingletonLock`, `SingletonSocket`, and `SingletonCookie` may remain and the next browser launch can fail with `The browser is already running for ... chrome-profile`.
+- Do not try to recover by rebooting the computer. A full reboot is unnecessary for this failure mode.
+- Recovery step 1: Do not kill `chrome-devtools-mcp` from inside the active Codex session unless you are intentionally giving up on browser tools for that session.
+- Recovery step 2: If you see `The browser is already running for ... chrome-profile`, inspect for lingering Chrome processes using that profile and stop those Chrome helper processes first.
+- Recovery step 3: If no Chrome process is still using the profile, remove the stale singleton entries from `~/.cache/chrome-devtools-mcp/chrome-profile`: `SingletonLock`, `SingletonSocket`, `SingletonCookie`, and `RunningChromeVersion`.
+- Recovery step 4: If browser tool calls already fail with `Transport closed`, restart Codex or start a fresh Codex session so the MCP server is relaunched and the stdio connection is re-established. Restarting the app/session is the required fix; restarting macOS is not.
+- Recovery step 5: After restarting Codex, retry the browser action before falling back to other tooling.
+
 ## Design Guidance
 
 - Existing React components in `design-guidelines/project` are reference material only.

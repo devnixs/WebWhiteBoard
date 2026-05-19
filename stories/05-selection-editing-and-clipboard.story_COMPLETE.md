@@ -6,14 +6,14 @@ Implement rich object manipulation for selecting, resizing, rotating, multi-sele
 
 ## Scope
 
-- Support click-to-select for board items.
-- Show per-item selection bounds and rotate handles.
-- Support resize and rotate interactions.
-- Support additive multi-select with `Ctrl` on Windows/Linux and `Cmd` on macOS.
-- Show both item-level bounds and combined bounds for multi-selection.
-- Add right-click context-menu actions for front/back ordering, duplicate, delete, color changes, text-size changes, draw-size changes, and font-family changes where relevant.
-- Support keyboard delete behavior for the current selection.
-- Support copy and paste of selected items while preserving editable properties.
+- [X] Support click-to-select for board items.
+- [X] Show per-item selection bounds and rotate handles.
+- [X] Support resize and rotate interactions.
+- [X] Support additive multi-select with `Ctrl` on Windows/Linux and `Cmd` on macOS.
+- [X] Show both item-level bounds and combined bounds for multi-selection.
+- [X] Add right-click context-menu actions for front/back ordering, duplicate, delete, color changes, text-size changes, draw-size changes, and font-family changes where relevant.
+- [X] Support keyboard delete behavior for the current selection.
+- [X] Support copy and paste of selected items while preserving editable properties.
 
 ## Relevant Specs
 

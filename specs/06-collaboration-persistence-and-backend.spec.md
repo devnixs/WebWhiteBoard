@@ -2,6 +2,7 @@
 - [X] A participant can see other participants’ cursors moving in real time.
 - [X] Each remote cursor displays the participant’s name.
 - [X] Each remote cursor displays the participant’s assigned color.
+- [X] Remote cursors stay anchored to their board positions when the local participant pans or zooms the camera.
 - [X] The top-right panel includes an indicator for current WebSocket latency to the server.
 - [X] The collaboration model preserves local responsiveness even when remote updates are delayed or bursty.
 - [X] Board actions are synchronized over WebSockets in a form that can be validated and applied consistently by the backend.

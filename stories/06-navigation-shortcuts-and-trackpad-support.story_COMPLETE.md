@@ -6,13 +6,13 @@ Make canvas movement, zooming, shortcut behavior, and laptop trackpad interactio
 
 ## Scope
 
-- Support two-finger board movement on laptop trackpads.
-- Support zoom gestures consistent with platform expectations.
-- Prevent accidental browser history navigation during board panning.
-- Implement Windows/Linux shortcut support and macOS equivalents.
-- Add a shortcut reference popup from the bottom-right panel.
-- Add any additional convenient shortcuts that fit the board model and do not conflict with native expectations.
-- Ensure text-editing flows keep expected native keyboard behavior.
+- [X] Support two-finger board movement on laptop trackpads.
+- [X] Support zoom gestures consistent with platform expectations.
+- [X] Prevent accidental browser history navigation during board panning.
+- [X] Implement Windows/Linux shortcut support and macOS equivalents.
+- [X] Add a shortcut reference popup from the bottom-right panel.
+- [X] Add any additional convenient shortcuts that fit the board model and do not conflict with native expectations.
+- [X] Ensure text-editing flows keep expected native keyboard behavior.
 
 ## Relevant Specs
 

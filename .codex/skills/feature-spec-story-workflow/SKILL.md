@@ -34,6 +34,8 @@ Follow this workflow whenever the task is feature creation or feature modificati
 - Each story must reference the exact spec file or files that were updated for that slice.
 - Each story must explicitly say that completion requires checking the referenced spec items from `- [ ]` to `- [X]` when the work is actually done.
 - Each story must mention the browser test that needs to be performed for that feature.
+- All implementation items inside a story file must be written as `- [ ]` checkboxes. They start unchecked and are checked off (`- [X]`) as each item is completed during implementation.
+- Story filenames must end with a status suffix: `_TODO` when first created, `_IN_PROGRESS` once work has begun, and `_COMPLETE` when all items are checked and verification has passed. Rename the file as the status changes.
 
 ## Require Manual Browser Verification
 
@@ -73,3 +75,5 @@ When using this skill for a real task:
 - Keep changed specs unchecked until implementation and verification are done.
 - Keep the story explicit about which spec items should be checked after completion.
 - If the feature is large, explain the story split briefly so sequencing is clear.
+- All items inside the story file are `- [ ]` checkboxes; check them off as work is done.
+- Name new story files with the `_TODO` suffix. Rename to `_IN_PROGRESS` when implementation starts and to `_COMPLETE` when all checks pass.

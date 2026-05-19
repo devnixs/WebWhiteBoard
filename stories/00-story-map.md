@@ -7,12 +7,14 @@
 
 ## Stories
 
-- `stories/01-foundation-and-architecture.story.md`
-- `stories/02-login-homepage-and-routing.story.md`
-- `stories/03-board-layout-and-floating-panels.story.md`
-- `stories/04-tools-and-basic-drawing.story.md`
-- `stories/05-selection-editing-and-clipboard.story.md`
-- `stories/06-navigation-shortcuts-and-trackpad-support.story.md`
-- `stories/07-realtime-collaboration-and-persistence.story.md`
-- `stories/08-end-to-end-and-manual-browser-qa.story.md`
-- `stories/09-board-grid-lines.story.md`
+- `stories/01-foundation-and-architecture.story_COMPLETE.md`
+- `stories/02-login-homepage-and-routing.story_COMPLETE.md`
+- `stories/03-board-layout-and-floating-panels.story_COMPLETE.md`
+- `stories/04-tools-and-basic-drawing.story_COMPLETE.md`
+- `stories/05-selection-editing-and-clipboard.story_COMPLETE.md`
+- `stories/06-navigation-shortcuts-and-trackpad-support.story_COMPLETE.md`
+- `stories/07-realtime-collaboration-and-persistence.story_COMPLETE.md`
+- `stories/08-end-to-end-and-manual-browser-qa.story_IN_PROGRESS.md`
+- `stories/09-board-grid-lines.story_IN_PROGRESS.md`
+- `stories/10-design-token-alignment.story_TODO.md`
+- `stories/11-remote-cursor-camera-anchoring.story_COMPLETE.md`

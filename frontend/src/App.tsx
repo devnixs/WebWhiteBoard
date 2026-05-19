@@ -1,5 +1,5 @@
 import { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react'
-import type { CSSProperties, FormEvent, MouseEvent as ReactMouseEvent } from 'react'
+import type { CSSProperties, FormEvent, MouseEvent as ReactMouseEvent, ReactNode } from 'react'
 import { useEditor } from '@tldraw/editor'
 import { useValue } from '@tldraw/state-react'
 import {
@@ -34,7 +34,7 @@ type KnownBoard = {
 }
 
 type BoardHistoryStore = Record<string, KnownBoard[]>
-type BoardTool = 'select' | 'pencil' | 'text' | 'shapes' | 'eraser' | 'lasso'
+type BoardTool = 'select' | 'hand' | 'pencil' | 'text' | 'shapes' | 'eraser' | 'lasso'
 type ColorChoice = 'blue' | 'green' | 'orange' | 'red' | 'violet' | 'black'
 type SizeChoice = 's' | 'm' | 'l' | 'xl'
 type FontChoice = 'draw' | 'sans' | 'serif' | 'mono'
@@ -159,7 +159,7 @@ const identityStorageKey = 'wwb.identity'
 const boardHistoryStorageKey = 'wwb.board-history'
 const boardIdPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
-const colorPalette = ['#2764ff', '#22a06b', '#eb5e41', '#8f46ff', '#efb100', '#d94f9d']
+const colorPalette = ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#a855f7', '#06b6d4', '#ec4899', '#84cc16']
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? ''
 const colorChoices: ColorChoice[] = ['blue', 'green', 'orange', 'red', 'violet', 'black']
 const sizeChoices: SizeChoice[] = ['s', 'm', 'l', 'xl']
@@ -171,6 +171,7 @@ const shapeChoices: Array<{ id: ShapeChoice; label: string }> = [
   { id: 'star', label: 'Star' },
 ]
 const isMacPlatform = /Mac|iPhone|iPad|iPod/.test(navigator.platform)
+const loginPalette = ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#a855f7', '#06b6d4', '#ec4899', '#84cc16']
 
 function App() {
   const [route, setRoute] = useState<RouteState>(() => getRoute(window.location.pathname))
@@ -214,13 +215,13 @@ function App() {
     setRoute(nextRoute)
   }
 
-  const handleLogin = (name: string) => {
+  const handleLogin = (name: string, color: string) => {
     const trimmedName = name.trim()
     if (!trimmedName) {
       return
     }
 
-    const nextIdentity = createIdentity(trimmedName)
+    const nextIdentity = createIdentity(trimmedName, color)
     persistIdentity(nextIdentity)
     setIdentity(nextIdentity)
 
@@ -303,30 +304,29 @@ function LoginScreen({
   onLogin,
 }: {
   route: RouteState
-  onLogin: (name: string) => void
+  onLogin: (name: string, color: string) => void
 }) {
   const [name, setName] = useState('')
+  const [previewColor] = useState(() => colorPalette[Math.floor(Math.random() * colorPalette.length)])
 
   const destinationLabel =
     route.kind === 'board' ? `You will join board ${shortBoardId(route.boardId)} right away.` : null
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    onLogin(name)
+    onLogin(name, previewColor)
   }
 
   return (
-    <main className="auth-screen">
+    <main className="auth-screen reference-surface">
+      <BrandHeader />
       <section className="auth-card">
-        <span className="screen-eyebrow">First visit</span>
-        <h1>Choose the name other people will see.</h1>
-        <p>
-          This name is stored on this device and reused until you log out. A random color is
-          assigned when you continue.
-        </p>
+        <span className="screen-eyebrow">Welcome</span>
+        <h1>What should we call you?</h1>
+        <p>Your name is shown next to your cursor so others know who&apos;s drawing.</p>
         {destinationLabel ? <p className="auth-card__hint">{destinationLabel}</p> : null}
         <form className="auth-form" onSubmit={handleSubmit}>
-          <label htmlFor="name">Your name</label>
+          <label htmlFor="name">Name</label>
           <input
             id="name"
             autoFocus
@@ -335,8 +335,21 @@ function LoginScreen({
             value={name}
             onChange={(event) => setName(event.target.value)}
           />
+          <div className="auth-palette">
+            <span className="auth-palette__label">Your color</span>
+            <div className="auth-palette__swatches" aria-hidden="true">
+              {loginPalette.map((color) => (
+                <span
+                  className={`auth-palette__swatch ${color === previewColor ? 'auth-palette__swatch--selected' : ''}`}
+                  key={color}
+                  style={{ background: color }}
+                />
+              ))}
+            </div>
+          </div>
           <button type="submit">Continue</button>
         </form>
+        <p className="auth-card__footer">Saved on this device. No account needed.</p>
       </section>
     </main>
   )
@@ -385,23 +398,25 @@ function HomeScreen({
   }
 
   return (
-    <main className="home-screen">
+    <main className="home-screen reference-surface">
+      <BrandHeader />
       <TopRightIdentity identity={identity} onLogout={onLogout} />
 
       <section className="home-shell">
         <div className="home-hero">
-          <span className="screen-eyebrow">Homepage</span>
-          <h1>Return to a known board or create a new one.</h1>
-          <p>
-            Only boards already associated with <strong>{identity.name}</strong> are listed here on
-            this device.
-          </p>
+          <h1>Welcome back, {identity.name}</h1>
+          <p>{knownBoards.length} boards on this device · Pick up where you left off</p>
         </div>
 
-        <div className="home-grid">
-          <section className="home-card">
+        <section className="home-card home-card--create">
+          <div className="home-card__icon">
+            <IconPlus size={18} />
+          </div>
+          <div className="home-card__body">
             <h2>New board</h2>
-            <p>Create a new collaborative board and jump into it immediately.</p>
+            <p>A blank, infinite canvas. Share the link to invite others.</p>
+          </div>
+          <div className="home-card__action">
             <button
               className="primary-button"
               disabled={isCreatingBoard}
@@ -410,35 +425,26 @@ function HomeScreen({
               }}
               type="button"
             >
-              {isCreatingBoard ? 'Creating board…' : 'Create board'}
+              {isCreatingBoard ? 'Creating…' : 'Create'}
             </button>
-          </section>
+          </div>
+        </section>
 
-          <section className="home-card">
-            <h2>Load an existing board</h2>
-            <p>Paste a board GUID to open an existing shared board directly.</p>
-            <form className="join-form" onSubmit={handleJoinBoard}>
-              <label htmlFor="board-id">Board id</label>
+        <section className="home-card home-card--boards">
+          <div className="home-card__header home-card__header--boards">
+            <span className="screen-eyebrow">Your boards</span>
+            <form className="join-form join-form--inline" onSubmit={handleJoinBoard}>
               <input
                 id="board-id"
-                placeholder="00000000-0000-0000-0000-000000000000"
+                aria-label="Search or open board by GUID"
+                placeholder="Search..."
                 value={joinBoardId}
                 onChange={(event) => setJoinBoardId(event.target.value)}
               />
-              <button className="secondary-button" type="submit">
-                Open board
+              <button className="search-button" type="submit">
+                <IconSearch size={14} />
               </button>
             </form>
-          </section>
-        </div>
-
-        <section className="home-card home-card--boards">
-          <div className="home-card__header">
-            <div>
-              <span className="screen-eyebrow">Known boards</span>
-              <h2>Your recent boards</h2>
-            </div>
-            <span className="board-count">{knownBoards.length}</span>
           </div>
 
           {knownBoards.length === 0 ? (
@@ -449,16 +455,31 @@ function HomeScreen({
             <div className="board-list">
               {knownBoards.map((board) => (
                 <button
-                  className="board-row"
+                  className={`board-row ${board === knownBoards[0] ? 'board-row--active' : ''}`}
                   key={board.boardId}
                   onClick={() => onNavigate(`/board/${board.boardId}`)}
                   type="button"
                 >
-                  <div>
-                    <strong>{shortBoardId(board.boardId)}</strong>
-                    <p>/board/{board.boardId}</p>
+                  <div className="board-row__icon">
+                    <IconBoard size={18} />
                   </div>
-                  <span>{formatRelative(board.lastVisitedAt)}</span>
+                  <div className="board-row__meta">
+                    <strong>{shortBoardId(board.boardId)}</strong>
+                    <p>/board/{board.boardId.slice(0, 8)}</p>
+                  </div>
+                  <div className="board-row__time">{formatRelative(board.lastVisitedAt)}</div>
+                  <div className="board-row__avatars" aria-hidden="true">
+                    {getBoardPreviewPalette(board.boardId).map((color, index) => (
+                      <span
+                        className="board-row__avatar"
+                        key={`${board.boardId}-${color}-${index}`}
+                        style={{ background: color, marginLeft: index === 0 ? 0 : -6 }}
+                      />
+                    ))}
+                  </div>
+                  <div className="board-row__more" aria-hidden="true">
+                    <IconMore size={16} />
+                  </div>
                 </button>
               ))}
             </div>
@@ -496,6 +517,7 @@ function BoardScreen({
   const [connectionState, setConnectionState] = useState<ConnectionState>('connecting')
   const [latencyMs, setLatencyMs] = useState<number | null>(null)
   const [participantCount, setParticipantCount] = useState(1)
+  const [participants, setParticipants] = useState<RealtimeParticipant[]>([])
   const [remoteCursors, setRemoteCursors] = useState<Record<string, RealtimeCursor>>({})
   const [isSessionReady, setIsSessionReady] = useState(false)
   const [drawColor, setDrawColor] = useState<ColorChoice>('blue')
@@ -593,6 +615,11 @@ function BoardScreen({
 
     if (activeTool === 'select' || activeTool === 'lasso') {
       editor.setCurrentTool('select')
+      return
+    }
+
+    if (activeTool === 'hand') {
+      editor.setCurrentTool('hand')
       return
     }
 
@@ -726,6 +753,7 @@ function BoardScreen({
       setIsSessionReady(false)
       setLatencyMs(null)
       setParticipantCount(1)
+      setParticipants([])
       setRemoteCursors({})
       lastServerVersionRef.current = 0
     })
@@ -753,6 +781,9 @@ function BoardScreen({
       if (message.type === 'session.ready') {
         lastServerVersionRef.current = message.version
         setParticipantCount(message.participants.length)
+        setParticipants(
+          message.participants.filter((participant) => participant.sessionId !== identity.sessionId),
+        )
         setConnectionState('online')
         setIsSessionReady(true)
         setRemoteCursors(indexRemoteCursors(message.cursors, identity.sessionId))
@@ -766,6 +797,9 @@ function BoardScreen({
 
       if (message.type === 'participant.joined' || message.type === 'participant.left') {
         setParticipantCount(message.participants.length)
+        setParticipants(
+          message.participants.filter((participant) => participant.sessionId !== identity.sessionId),
+        )
 
         if (message.type === 'participant.left') {
           setRemoteCursors((current) => {
@@ -964,6 +998,12 @@ function BoardScreen({
           return
         }
 
+        if (key === 'h') {
+          event.preventDefault()
+          setActiveTool('hand')
+          return
+        }
+
         if (key === 'p') {
           event.preventDefault()
           setActiveTool('pencil')
@@ -1138,6 +1178,7 @@ function BoardScreen({
         latencyMs={latencyMs}
         onLogout={onLogout}
         participantCount={participantCount}
+        participants={participants}
       />
       <ToolRail activeTool={activeTool} onSelectTool={setActiveTool} />
       <ToolSettingsPanel
@@ -1227,19 +1268,19 @@ function BoardCanvasBackground() {
   const editor = useEditor()
   const gridSize = useValue('gridSize', () => editor.getDocumentSettings().gridSize, [editor])
   const camera = useValue('camera', () => editor.getCamera(), [editor])
-  const minorGridSize = Math.max(gridSize * camera.z, 1)
-  const majorGridSize = Math.max(minorGridSize * 4, 1)
-  const minorOpacity = getGridOpacity(minorGridSize, 14, 26, 0.16)
-  const majorOpacity = getGridOpacity(majorGridSize, 22, 52, 0.24)
+  const minorGridSize = Math.max(gridSize * camera.z, 10)
+  const majorGridSize = minorGridSize * 4
+  const minorGridOpacity = getGridOpacity(minorGridSize, 10, 24, 0.035)
+  const majorGridOpacity = getGridOpacity(majorGridSize, 24, 72, 0.065)
   const backgroundStyle = {
     '--board-grid-minor-size': `${minorGridSize}px`,
     '--board-grid-major-size': `${majorGridSize}px`,
-    '--board-grid-minor-offset-x': `${getWrappedGridOffset(0.5 + camera.x * camera.z, minorGridSize)}px`,
-    '--board-grid-minor-offset-y': `${getWrappedGridOffset(0.5 + camera.y * camera.z, minorGridSize)}px`,
-    '--board-grid-major-offset-x': `${getWrappedGridOffset(0.5 + camera.x * camera.z, majorGridSize)}px`,
-    '--board-grid-major-offset-y': `${getWrappedGridOffset(0.5 + camera.y * camera.z, majorGridSize)}px`,
-    '--board-grid-minor-opacity': minorOpacity.toFixed(3),
-    '--board-grid-major-opacity': majorOpacity.toFixed(3),
+    '--board-grid-minor-offset-x': `${getWrappedGridOffset(camera.x * camera.z, minorGridSize)}px`,
+    '--board-grid-minor-offset-y': `${getWrappedGridOffset(camera.y * camera.z, minorGridSize)}px`,
+    '--board-grid-major-offset-x': `${getWrappedGridOffset(camera.x * camera.z, majorGridSize)}px`,
+    '--board-grid-major-offset-y': `${getWrappedGridOffset(camera.y * camera.z, majorGridSize)}px`,
+    '--board-grid-minor-opacity': minorGridOpacity.toFixed(3),
+    '--board-grid-major-opacity': majorGridOpacity.toFixed(3),
   } as CSSProperties
 
   return <div aria-hidden="true" className="board-canvas-background" style={backgroundStyle} />
@@ -1255,7 +1296,7 @@ function SharePanel({
   onShare: () => Promise<void>
 }) {
   return (
-    <section className="panel panel--share panel--share-button">
+    <section className="panel panel--share panel--pill panel--share-button">
       <button
         aria-label="Share board"
         className={`share-button ${shareState === 'copied' ? 'share-button--copied' : ''}`}
@@ -1264,10 +1305,12 @@ function SharePanel({
         }}
         type="button"
       >
-        <span className="panel__badge">{shareState === 'copied' ? 'Copied' : 'Share'}</span>
+        <span className="panel__badge">
+          {shareState === 'copied' ? <IconCheck size={13} /> : <IconShare size={13} />}
+        </span>
         <div className="share-button__meta">
-          <strong>{shortBoardId(boardId)}</strong>
-          <span>{shareState === 'copied' ? 'Board URL copied to clipboard' : `/board/${boardId}`}</span>
+          <strong>{shareState === 'copied' ? 'Link copied' : 'Share board'}</strong>
+          <span>{boardId.slice(0, 8)}</span>
         </div>
       </button>
     </section>
@@ -1280,12 +1323,14 @@ function BoardPresencePanel({
   latencyMs,
   onLogout,
   participantCount,
+  participants,
 }: {
   connectionState: ConnectionState
   identity: LocalIdentity
   latencyMs: number | null
   onLogout: () => void
   participantCount: number
+  participants: Array<Pick<RealtimeParticipant, 'displayName' | 'color' | 'sessionId'>>
 }) {
   const latencyLabel =
     connectionState === 'offline'
@@ -1293,28 +1338,40 @@ function BoardPresencePanel({
       : latencyMs === null
         ? 'Connecting'
         : `${latencyMs} ms`
+  const visibleParticipants = participants.slice(0, 3)
 
   return (
-    <section className="panel panel--top-right panel--presence">
-      <div className={`presence-chip presence-chip--status presence-chip--${connectionState}`}>
-        <span className="presence-chip__status" />
+    <section className="board-top-right">
+      <div className={`panel panel--pill presence-chip presence-chip--status presence-chip--${connectionState}`}>
+        <IconWifi size={13} />
         <span>{latencyLabel}</span>
+        <span className="presence-chip__status" />
       </div>
-      <div className="presence-chip">
-        <span>{participantCount} live</span>
+      <div className="panel panel--pill presence-chip presence-chip--collaborators">
+        <div className="presence-chip__stack">
+          {visibleParticipants.map((participant) => (
+            <span
+              className="presence-chip__avatar"
+              key={participant.sessionId}
+              style={{ background: participant.color }}
+              title={participant.displayName}
+            >
+              {getInitials(participant.displayName)}
+            </span>
+          ))}
+        </div>
+        <span>{participantCount} online</span>
       </div>
-      <div className="presence-chip presence-chip--user">
+      <div className="panel panel--pill presence-chip presence-chip--user">
         <span className="presence-chip__avatar" style={{ background: identity.color }}>
           {getInitials(identity.name)}
         </span>
-        <div className="presence-chip__meta">
-          <strong>{identity.name}</strong>
-          <span>{identity.sessionId}</span>
-        </div>
+        <strong>{identity.name}</strong>
+        <span className="presence-chip__divider" />
+        <button className="logout-icon-button" onClick={onLogout} type="button">
+          <IconLogout size={14} />
+        </button>
       </div>
-      <button className="logout-button" onClick={onLogout} type="button">
-        Logout
-      </button>
     </section>
   )
 }
@@ -1326,13 +1383,22 @@ function RemoteCursorLayer({
   cursors: Record<string, RealtimeCursor>
   editor: Editor
 }) {
-  const visibleCursors = Object.values(cursors)
+  const visibleCursors = useValue(
+    'remoteCursorScreenPoints',
+    () => {
+      editor.getCamera()
+
+      return Object.values(cursors).map((cursor) => ({
+        cursor,
+        screenPoint: editor.pageToScreen({ x: cursor.x, y: cursor.y }),
+      }))
+    },
+    [editor, cursors],
+  )
 
   return (
     <div className="remote-cursor-layer">
-      {visibleCursors.map((cursor) => {
-        const screenPoint = editor.pageToScreen({ x: cursor.x, y: cursor.y })
-
+      {visibleCursors.map(({ cursor, screenPoint }) => {
         return (
           <div
             className="remote-cursor"
@@ -1377,26 +1443,30 @@ function ToolRail({
   onSelectTool: (tool: BoardTool) => void
 }) {
   const tools = [
-    { id: 'select', name: 'Select', hint: 'V' },
-    { id: 'pencil', name: 'Pencil', hint: 'P' },
-    { id: 'text', name: 'Text', hint: 'T' },
-    { id: 'shapes', name: 'Shapes', hint: 'R' },
-    { id: 'eraser', name: 'Eraser', hint: 'E' },
-    { id: 'lasso', name: 'Lasso', hint: 'L' },
+    { id: 'select', name: 'Select', hint: 'V', icon: IconCursor },
+    { id: 'hand', name: 'Pan', hint: 'H', icon: IconHand },
+    { id: 'pencil', name: 'Pencil', hint: 'P', icon: IconPencil },
+    { id: 'text', name: 'Text', hint: 'T', icon: IconText },
+    { id: 'shapes', name: 'Shapes', hint: 'R', icon: IconShapes },
+    { id: 'eraser', name: 'Eraser', hint: 'E', icon: IconEraser },
+    { id: 'lasso', name: 'Lasso', hint: 'L', icon: IconLasso },
   ] as const
 
   return (
     <section className="panel panel--tools" aria-label="Board tools">
-      {tools.map((tool) => (
-        <button
-          className={`tool-button ${activeTool === tool.id ? 'tool-button--active' : ''}`}
-          key={tool.name}
-          onClick={() => onSelectTool(tool.id)}
-          type="button"
-        >
-          <span>{tool.name}</span>
-          <span className="tool-button__hint">{tool.hint}</span>
-        </button>
+      {tools.map((tool, index) => (
+        <div className="tool-rail__item" key={tool.name}>
+          {index === 2 ? <div className="tool-rail__divider" /> : null}
+          <button
+            aria-label={tool.name}
+            className={`tool-button ${activeTool === tool.id ? 'tool-button--active' : ''}`}
+            onClick={() => onSelectTool(tool.id)}
+            type="button"
+          >
+            <tool.icon size={18} />
+            <span className="tool-button__hint">{tool.hint}</span>
+          </button>
+        </div>
       ))}
     </section>
   )
@@ -1440,8 +1510,8 @@ function ToolSettingsPanel({
       {activeTool === 'pencil' ? (
         <>
           <PanelHeader title="Pencil" subtitle="Color and stroke size" />
-          <ColorPicker value={drawColor} onChange={onChangeDrawColor} />
-          <SizePicker value={drawSize} onChange={onChangeDrawSize} />
+          <ColorPicker mode="swatches" value={drawColor} onChange={onChangeDrawColor} />
+          <SizePicker mode="dots" value={drawSize} onChange={onChangeDrawSize} />
         </>
       ) : null}
 
@@ -1518,15 +1588,18 @@ function PanelHeader({ title, subtitle }: { title: string; subtitle: string }) {
 }
 
 function ColorPicker({
+  mode = 'chips',
   value,
   onChange,
 }: {
+  mode?: 'chips' | 'swatches'
   value: ColorChoice
   onChange: (value: ColorChoice) => void
 }) {
   return (
     <OptionPicker
       label="Color"
+      mode={mode}
       options={colorChoices.map((color) => ({
         id: color,
         label: color,
@@ -1540,11 +1613,13 @@ function ColorPicker({
 
 function SizePicker({
   label = 'Size',
+  mode = 'chips',
   value,
   onChange,
   renderValue = (size: SizeChoice) => `${STROKE_SIZES[size]} px`,
 }: {
   label?: string
+  mode?: 'chips' | 'dots'
   value: SizeChoice
   onChange: (value: SizeChoice) => void
   renderValue?: (value: SizeChoice) => string
@@ -1552,9 +1627,11 @@ function SizePicker({
   return (
     <OptionPicker
       label={label}
+      mode={mode}
       options={sizeChoices.map((size) => ({
         id: size,
         label: renderValue(size),
+        sizePx: STROKE_SIZES[size],
       }))}
       value={value}
       onChange={(nextValue) => onChange(nextValue as SizeChoice)}
@@ -1564,22 +1641,24 @@ function SizePicker({
 
 function OptionPicker({
   label,
+  mode = 'chips',
   options,
   value,
   onChange,
 }: {
   label: string
-  options: Array<{ id: string; label: string; swatch?: string }>
+  mode?: 'chips' | 'swatches' | 'dots'
+  options: Array<{ id: string; label: string; swatch?: string; sizePx?: number }>
   value: string
   onChange: (value: string) => void
 }) {
   return (
     <div className="option-picker">
       <span className="option-picker__label">{label}</span>
-      <div className="option-picker__grid">
+      <div className={`option-picker__grid option-picker__grid--${mode}`}>
         {options.map((option) => (
           <button
-            className={`option-chip ${value === option.id ? 'option-chip--active' : ''}`}
+            className={`option-chip option-chip--${mode} ${value === option.id ? 'option-chip--active' : ''}`}
             key={option.id}
             onClick={() => onChange(option.id)}
             type="button"
@@ -1591,10 +1670,16 @@ function OptionPicker({
                 style={{ background: option.swatch }}
               />
             ) : null}
-            <span>{option.label}</span>
+            {option.sizePx ? <span aria-hidden="true" className="option-chip__dot" style={{ width: option.sizePx, height: option.sizePx }} /> : null}
+            {mode === 'swatches' || mode === 'dots' ? null : <span>{option.label}</span>}
           </button>
         ))}
       </div>
+      {(mode === 'swatches' || mode === 'dots') && options.some((option) => option.id === value) ? (
+        <div className="option-picker__value">
+          {options.find((option) => option.id === value)?.label}
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -1614,15 +1699,19 @@ function ZoomPanel({
     <section className="panel panel--bottom-right panel--zoom">
       <div className="zoom-controls">
         <button aria-label="Zoom out" className="zoom-button" onClick={onZoomOut} type="button">
-          -
+          <IconMinus size={14} />
         </button>
         <span className="zoom-level">{zoomLevel}%</span>
         <button aria-label="Zoom in" className="zoom-button" onClick={onZoomIn} type="button">
-          +
+          <IconPlus size={14} />
+        </button>
+        <span className="zoom-divider" />
+        <button aria-label="Zoom options" className="zoom-button" type="button">
+          <IconChevronDown size={14} />
         </button>
       </div>
-      <button className="shortcut-button" onClick={onOpenShortcuts} type="button">
-        Shortcuts
+      <button aria-label="Open shortcuts" className="shortcut-button" onClick={onOpenShortcuts} type="button">
+        <IconKeyboard size={16} />
       </button>
     </section>
   )
@@ -1630,22 +1719,38 @@ function ZoomPanel({
 
 function ShortcutModal({ onClose }: { onClose: () => void }) {
   const modifierLabel = isMacPlatform ? 'Cmd' : 'Ctrl'
-  const shortcuts = [
-    { action: 'Select tool', keys: 'V' },
-    { action: 'Pencil tool', keys: 'P' },
-    { action: 'Text tool', keys: 'T' },
-    { action: 'Shapes tool', keys: 'R' },
-    { action: 'Eraser tool', keys: 'E' },
-    { action: 'Lasso tool', keys: 'L' },
-    { action: 'Select all', keys: `${modifierLabel}+A` },
-    { action: 'Copy selection', keys: `${modifierLabel}+C` },
-    { action: 'Paste selection', keys: `${modifierLabel}+V` },
-    { action: 'Delete selection', keys: isMacPlatform ? 'Delete' : 'Delete / Backspace' },
-    { action: 'Zoom in', keys: `${modifierLabel} +` },
-    { action: 'Zoom out', keys: `${modifierLabel} -` },
-    { action: 'Reset zoom', keys: `${modifierLabel}+0` },
-    { action: 'Open shortcuts', keys: '?' },
-    { action: 'Close this popup', keys: 'Esc' },
+  const groups = [
+    {
+      title: 'Tools',
+      items: [
+        ['Select', 'V'],
+        ['Pan', 'H'],
+        ['Pencil', 'P'],
+        ['Text', 'T'],
+        ['Shapes', 'R'],
+        ['Eraser', 'E'],
+        ['Lasso', 'L'],
+      ],
+    },
+    {
+      title: 'Canvas',
+      items: [
+        ['Pan canvas', 'Two-finger drag'],
+        ['Zoom in / out', `${modifierLabel} + scroll`],
+        ['Zoom to 100%', `${modifierLabel}  0`],
+      ],
+    },
+    {
+      title: 'Editing',
+      items: [
+        ['Select all', `${modifierLabel}  A`],
+        ['Copy', `${modifierLabel}  C`],
+        ['Paste', `${modifierLabel}  V`],
+        ['Duplicate', `${modifierLabel}  D`],
+        ['Delete', isMacPlatform ? 'Delete' : 'Del'],
+        ['Close popup', 'Esc'],
+      ],
+    },
   ]
 
   return (
@@ -1656,20 +1761,31 @@ function ShortcutModal({ onClose }: { onClose: () => void }) {
         onClick={(event) => event.stopPropagation()}
       >
         <div className="shortcut-modal__header">
-          <div>
-            <span className="screen-eyebrow">Shortcuts</span>
-            <h2>Board keyboard reference</h2>
+          <div className="shortcut-modal__title">
+            <IconKeyboard size={16} />
+            <h2>Keyboard shortcuts</h2>
           </div>
-          <button className="shortcut-modal__close" onClick={onClose} type="button">
-            Close
+          <button aria-label="Close shortcuts" className="shortcut-modal__close" onClick={onClose} type="button">
+            <IconClose size={14} />
           </button>
         </div>
-        <div className="shortcut-list">
-          {shortcuts.map((shortcut) => (
-            <div className="shortcut-row" key={shortcut.action}>
-              <span>{shortcut.action}</span>
-              <kbd>{shortcut.keys}</kbd>
-            </div>
+        <div className="shortcut-groups">
+          {groups.map((group) => (
+            <section className={`shortcut-group shortcut-group--${group.title.toLowerCase()}`} key={group.title}>
+              <span className="screen-eyebrow">{group.title}</span>
+              <div className="shortcut-list">
+                {group.items.map(([action, keys]) => (
+                  <div className="shortcut-row" key={action}>
+                    <span>{action}</span>
+                    <span className="shortcut-row__keys">
+                      {keys.split('  ').map((part, index) => (
+                        <kbd key={`${action}-${index}`}>{part}</kbd>
+                      ))}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </section>
           ))}
         </div>
       </section>
@@ -1704,35 +1820,47 @@ function SelectionContextMenu({
       style={{ left: contextMenu.x, top: contextMenu.y }}
     >
       <button className="selection-menu__item" onClick={onBringToFront} type="button">
-        Move to front
+        <span className="selection-menu__icon"><IconFront size={14} /></span>
+        <span>Bring to front</span>
+        <kbd>]</kbd>
       </button>
       <button className="selection-menu__item" onClick={onSendToBack} type="button">
-        Move to back
+        <span className="selection-menu__icon"><IconBack size={14} /></span>
+        <span>Send to back</span>
+        <kbd>[</kbd>
       </button>
       <button className="selection-menu__item" onClick={onDuplicate} type="button">
-        Duplicate
+        <span className="selection-menu__icon"><IconDuplicate size={14} /></span>
+        <span>Duplicate</span>
+        <kbd>{modifierGlyph()} D</kbd>
       </button>
       <button className="selection-menu__item" onClick={onDelete} type="button">
-        Delete
+        <span className="selection-menu__icon"><IconTrash size={14} /></span>
+        <span>Delete</span>
+        <kbd>Del</kbd>
       </button>
       {contextMenu.supportsColor ? (
         <button className="selection-menu__item" onClick={onToggleColor} type="button">
-          Change color
+          <span className="selection-menu__icon"><IconPalette size={14} /></span>
+          <span>Change color</span>
         </button>
       ) : null}
       {contextMenu.supportsFont ? (
         <>
           <button className="selection-menu__item" onClick={onIncreaseFontSize} type="button">
-            Increase font size
+            <span className="selection-menu__icon menu-text-icon">A+</span>
+            <span>Increase font size</span>
           </button>
           <button className="selection-menu__item" onClick={onToggleFontFamily} type="button">
-            Change font family
+            <span className="selection-menu__icon"><IconType size={14} /></span>
+            <span>Font family</span>
           </button>
         </>
       ) : null}
       {contextMenu.supportsDrawSize ? (
         <button className="selection-menu__item" onClick={onIncreaseDrawSize} type="button">
-          Increase draw size
+          <span className="selection-menu__icon menu-text-icon">A+</span>
+          <span>Increase draw size</span>
         </button>
       ) : null}
     </section>
@@ -1770,18 +1898,16 @@ function TopRightIdentity({
 }) {
   return (
     <section className="floating-identity">
-      <div className="presence-chip presence-chip--user">
+      <div className="panel panel--pill presence-chip presence-chip--user">
         <span className="presence-chip__avatar" style={{ background: identity.color }}>
           {getInitials(identity.name)}
         </span>
-        <div className="presence-chip__meta">
-          <strong>{identity.name}</strong>
-          <span>{identity.sessionId}</span>
-        </div>
+        <strong>{identity.name}</strong>
+        <span className="presence-chip__divider" />
+        <button className="logout-icon-button" onClick={onLogout} type="button">
+          <IconLogout size={14} />
+        </button>
       </div>
-      <button className="logout-button" onClick={onLogout} type="button">
-        Logout
-      </button>
     </section>
   )
 }
@@ -1799,11 +1925,11 @@ function getRoute(pathname: string): RouteState {
   return { kind: 'not-found' }
 }
 
-function createIdentity(name: string): LocalIdentity {
+function createIdentity(name: string, color = colorPalette[Math.floor(Math.random() * colorPalette.length)]): LocalIdentity {
   return {
     sessionId: name,
     name,
-    color: colorPalette[Math.floor(Math.random() * colorPalette.length)],
+    color,
   }
 }
 
@@ -1949,6 +2075,16 @@ function getInitials(name: string) {
     .join('')
 }
 
+function getBoardPreviewPalette(boardId: string) {
+  const palette = ['#3b82f6', '#f59e0b', '#22c55e', '#e5e7eb']
+  const seed = Array.from(boardId).reduce((sum, char) => sum + char.charCodeAt(0), 0)
+  return Array.from({ length: 4 }, (_, index) => palette[(seed + index) % palette.length]).slice(0, 4)
+}
+
+function modifierGlyph() {
+  return isMacPlatform ? 'Cmd' : 'Ctrl'
+}
+
 function toMessage(error: unknown) {
   if (error instanceof Error) {
     return error.message
@@ -2030,12 +2166,138 @@ async function copyTextToClipboard(text: string) {
 }
 
 const colorToHex: Record<ColorChoice, string> = {
-  blue: '#2764ff',
-  green: '#22a06b',
-  orange: '#ef8c00',
-  red: '#df4337',
-  violet: '#7f56d9',
-  black: '#102033',
+  blue: '#3b82f6',
+  green: '#22c55e',
+  orange: '#f59e0b',
+  red: '#ef4444',
+  violet: '#a855f7',
+  black: '#1f2430',
+}
+
+function BrandHeader() {
+  return (
+    <header className="brand-header">
+      <span className="brand-header__mark" />
+      <span className="brand-header__name">WebWhiteBoard</span>
+    </header>
+  )
+}
+
+function IconBase({ children, size = 18 }: { children: ReactNode; size?: number }) {
+  return (
+    <svg
+      fill="none"
+      height={size}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.6"
+      viewBox="0 0 24 24"
+      width={size}
+    >
+      {children}
+    </svg>
+  )
+}
+
+function IconCursor({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M5 3 L5 19 L9.5 15.5 L12 21 L15 20 L12.5 14 L19 14 Z" /></IconBase>
+}
+
+function IconHand({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M6 11 V6.5 a1.5 1.5 0 0 1 3 0 V11" /><path d="M9 11 V5 a1.5 1.5 0 0 1 3 0 V11" /><path d="M12 11 V5.5 a1.5 1.5 0 0 1 3 0 V11" /><path d="M15 11 V8 a1.5 1.5 0 0 1 3 0 V14 a6 6 0 0 1 -6 6 H10 a4 4 0 0 1 -4 -4 V11 a1.5 1.5 0 0 1 3 0" /></IconBase>
+}
+
+function IconPencil({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M16 3 L21 8 L8 21 L3 21 L3 16 Z" /><path d="M14 5 L19 10" /></IconBase>
+}
+
+function IconText({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M5 5 L19 5" /><path d="M12 5 L12 20" /></IconBase>
+}
+
+function IconShapes({ size }: { size?: number }) {
+  return <IconBase size={size}><rect height="9" rx="1.5" width="9" x="3" y="3" /><circle cx="16.5" cy="16.5" r="4.5" /></IconBase>
+}
+
+function IconEraser({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M16 4 L20 8 L10 18 L6 18 L4 16 Z" /><path d="M10 18 L15 13" /><path d="M9 21 L21 21" /></IconBase>
+}
+
+function IconLasso({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M4 6 C4 3.5 9 2.5 12 2.5 C17 2.5 20 5 20 8 C20 11 17 13 12 13 C9 13 6.5 12 5.5 11" /><path d="M5.5 11 C5 13 6 16 7 17.5" /><circle cx="7.5" cy="19" r="2" /></IconBase>
+}
+
+function IconShare({ size }: { size?: number }) {
+  return <IconBase size={size}><circle cx="6" cy="12" r="2.5" /><circle cx="18" cy="6" r="2.5" /><circle cx="18" cy="18" r="2.5" /><path d="M8 11 L16 7" /><path d="M8 13 L16 17" /></IconBase>
+}
+
+function IconCheck({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M5 12 L10 17 L19 7" /></IconBase>
+}
+
+function IconWifi({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M3 9 a13 13 0 0 1 18 0" /><path d="M6 12.5 a8 8 0 0 1 12 0" /><path d="M9 16 a3.5 3.5 0 0 1 6 0" /><circle cx="12" cy="19" fill="currentColor" r=".8" stroke="none" /></IconBase>
+}
+
+function IconLogout({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M14 4 H5 a1 1 0 0 0 -1 1 V19 a1 1 0 0 0 1 1 H14" /><path d="M10 12 H20" /><path d="M17 9 L20 12 L17 15" /></IconBase>
+}
+
+function IconPlus({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M12 5 L12 19" /><path d="M5 12 L19 12" /></IconBase>
+}
+
+function IconMinus({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M5 12 L19 12" /></IconBase>
+}
+
+function IconChevronDown({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M6 10 L12 16 L18 10" /></IconBase>
+}
+
+function IconKeyboard({ size }: { size?: number }) {
+  return <IconBase size={size}><rect height="13" rx="2" width="19" x="2.5" y="6" /><path d="M6 10 H6.01" /><path d="M10 10 H10.01" /><path d="M14 10 H14.01" /><path d="M18 10 H18.01" /><path d="M7 14.5 H17" /></IconBase>
+}
+
+function IconClose({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M6 6 L18 18" /><path d="M18 6 L6 18" /></IconBase>
+}
+
+function IconBoard({ size }: { size?: number }) {
+  return <IconBase size={size}><rect height="14" rx="1.5" width="18" x="3" y="4" /><path d="M3 9 H21" /><path d="M9 4 V9" /></IconBase>
+}
+
+function IconSearch({ size }: { size?: number }) {
+  return <IconBase size={size}><circle cx="11" cy="11" r="6" /><path d="M16 16 L20 20" /></IconBase>
+}
+
+function IconMore({ size }: { size?: number }) {
+  return <IconBase size={size}><circle cx="6" cy="12" fill="currentColor" r="1" stroke="none" /><circle cx="12" cy="12" fill="currentColor" r="1" stroke="none" /><circle cx="18" cy="12" fill="currentColor" r="1" stroke="none" /></IconBase>
+}
+
+function IconFront({ size }: { size?: number }) {
+  return <IconBase size={size}><rect height="11" rx="1.5" width="11" x="4" y="4" /><rect fill="white" height="11" rx="1.5" stroke="currentColor" width="11" x="9" y="9" /></IconBase>
+}
+
+function IconBack({ size }: { size?: number }) {
+  return <IconBase size={size}><rect height="11" rx="1.5" width="11" x="9" y="9" /><rect fill="white" height="11" rx="1.5" stroke="currentColor" width="11" x="4" y="4" /></IconBase>
+}
+
+function IconDuplicate({ size }: { size?: number }) {
+  return <IconBase size={size}><rect height="12" rx="1.5" width="12" x="8" y="8" /><path d="M5 16 H4 a1 1 0 0 1 -1 -1 V4 a1 1 0 0 1 1 -1 H15 a1 1 0 0 1 1 1 V5" /></IconBase>
+}
+
+function IconTrash({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M4 7 H20" /><path d="M9 7 V4 H15 V7" /><path d="M6 7 L7 20 H17 L18 7" /></IconBase>
+}
+
+function IconPalette({ size }: { size?: number }) {
+  return <IconBase size={size}><circle cx="7.5" cy="11" fill="currentColor" r="1.2" stroke="none" /><circle cx="12" cy="8" fill="currentColor" r="1.2" stroke="none" /><circle cx="16.5" cy="11" fill="currentColor" r="1.2" stroke="none" /><path d="M12 3 a9 9 0 1 0 0 18 c1 0 1.5 -.7 1.5 -1.5 c0 -1.2 -1.5 -1.5 -1.5 -3 c0 -1 .8 -2 2 -2 H17 a4 4 0 0 0 4 -4 A9 9 0 0 0 12 3 z" /></IconBase>
+}
+
+function IconType({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M4 4 H11 V6" /><path d="M7.5 4 V14" /><path d="M5.5 14 H9.5" /><path d="M13 11 H20 V12.5" /><path d="M16.5 11 V20" /><path d="M14.5 20 H18.5" /></IconBase>
 }
 
 export default App

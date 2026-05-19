@@ -6,13 +6,13 @@ Implement the core toolset and basic board authoring behaviors for drawing, text
 
 ## Scope
 
-- Make select the default active tool.
-- Add pencil, text, shapes, eraser, and lasso tools to the left tool panel.
-- Add tool-specific floating settings panels for pencil, text, and eraser behavior.
-- Support shape selection within the shapes tool.
-- Support infinite canvas authoring.
-- Support image paste using `Ctrl+V` on Windows/Linux and `Cmd+V` on macOS.
-- Support shift-constrained straight-line pencil drawing with orthogonal snapping.
+- [X] Make select the default active tool.
+- [X] Add pencil, text, shapes, eraser, and lasso tools to the left tool panel.
+- [X] Add tool-specific floating settings panels for pencil, text, and eraser behavior.
+- [X] Support shape selection within the shapes tool.
+- [X] Support infinite canvas authoring.
+- [X] Support image paste using `Ctrl+V` on Windows/Linux and `Cmd+V` on macOS.
+- [X] Support shift-constrained straight-line pencil drawing with orthogonal snapping.
 
 ## Relevant Specs
 

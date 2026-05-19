@@ -1,0 +1,10 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]: First visit
+    - heading "Choose the name other people will see." [level=1] [ref=e6]
+    - paragraph [ref=e7]: This name is stored on this device and reused until you log out. A random color is assigned when you continue.
+    - generic [ref=e8]:
+      - generic [ref=e9]: Your name
+      - textbox "Your name" [active] [ref=e10]:
+        - /placeholder: Maya Chen
+      - button "Continue" [ref=e11] [cursor=pointer]

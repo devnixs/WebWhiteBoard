@@ -1,0 +1,48 @@
+- main [ref=e3]:
+  - application "tldraw" [ref=e5]:
+    - generic [ref=e6]:
+      - img
+    - button "Get a license for production" [ref=e11] [cursor=pointer]
+  - button "Share board" [ref=e13] [cursor=pointer]:
+    - generic [ref=e14]: Share
+    - generic [ref=e15]:
+      - strong [ref=e16]: Board 00000000
+      - generic [ref=e17]: /board/00000000-0000-0000-0000-000000000001
+  - generic [ref=e18]:
+    - generic [ref=e21]: Offline
+    - generic [ref=e23]: 1 live
+    - generic [ref=e24]:
+      - generic [ref=e25]: T
+      - generic [ref=e26]:
+        - strong [ref=e27]: TestUser
+        - generic [ref=e28]: TestUser
+    - button "Logout" [ref=e29] [cursor=pointer]
+  - region "Board tools" [ref=e30]:
+    - button "Select V" [ref=e31] [cursor=pointer]:
+      - generic [ref=e32]: Select
+      - generic [ref=e33]: V
+    - button "Pencil P" [ref=e34] [cursor=pointer]:
+      - generic [ref=e35]: Pencil
+      - generic [ref=e36]: P
+    - button "Text T" [ref=e37] [cursor=pointer]:
+      - generic [ref=e38]: Text
+      - generic [ref=e39]: T
+    - button "Shapes R" [ref=e40] [cursor=pointer]:
+      - generic [ref=e41]: Shapes
+      - generic [ref=e42]: R
+    - button "Eraser E" [ref=e43] [cursor=pointer]:
+      - generic [ref=e44]: Eraser
+      - generic [ref=e45]: E
+    - button "Lasso L" [ref=e46] [cursor=pointer]:
+      - generic [ref=e47]: Lasso
+      - generic [ref=e48]: L
+  - generic [ref=e49]:
+    - generic [ref=e50]:
+      - button "Zoom out" [ref=e51] [cursor=pointer]: "-"
+      - generic [ref=e52]: 100%
+      - button "Zoom in" [ref=e53] [cursor=pointer]: +
+    - button "Shortcuts" [ref=e54] [cursor=pointer]
+  - generic [ref=e56]:
+    - generic [ref=e57]: Realtime
+    - strong [ref=e58]: Board offline
+    - paragraph [ref=e59]: Realtime connection closed. Rejoin the board to resume collaboration.

@@ -1,0 +1,36 @@
+- main [ref=e12]:
+  - generic [ref=e13]:
+    - generic [ref=e14]:
+      - generic [ref=e15]: T
+      - generic [ref=e16]:
+        - strong [ref=e17]: TestUser
+        - generic [ref=e18]: TestUser
+    - button "Logout" [ref=e19] [cursor=pointer]
+  - generic [ref=e20]:
+    - generic [ref=e21]:
+      - generic [ref=e22]: Homepage
+      - heading "Return to a known board or create a new one." [level=1] [ref=e23]
+      - paragraph [ref=e24]:
+        - text: Only boards already associated with
+        - strong [ref=e25]: TestUser
+        - text: are listed here on this device.
+    - generic [ref=e26]:
+      - generic [ref=e27]:
+        - heading "New board" [level=2] [ref=e28]
+        - paragraph [ref=e29]: Create a new collaborative board and jump into it immediately.
+        - button "Create board" [ref=e30] [cursor=pointer]
+      - generic [ref=e31]:
+        - heading "Load an existing board" [level=2] [ref=e32]
+        - paragraph [ref=e33]: Paste a board GUID to open an existing shared board directly.
+        - generic [ref=e34]:
+          - generic [ref=e35]: Board id
+          - textbox "Board id" [ref=e36]:
+            - /placeholder: 00000000-0000-0000-0000-000000000000
+          - button "Open board" [ref=e37] [cursor=pointer]
+    - generic [ref=e38]:
+      - generic [ref=e39]:
+        - generic [ref=e40]:
+          - generic [ref=e41]: Known boards
+          - heading "Your recent boards" [level=2] [ref=e42]
+        - generic [ref=e43]: "0"
+      - paragraph [ref=e44]: No boards are stored yet for this identity. Create one or open a shared board by id.

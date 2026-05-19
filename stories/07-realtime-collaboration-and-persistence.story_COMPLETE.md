@@ -6,14 +6,14 @@ Implement authoritative real-time multi-user board collaboration, remote cursor 
 
 ## Scope
 
-- Allow multiple users to connect to the same board in real time.
-- Synchronize board actions over WebSockets.
-- Show remote participant cursors, names, and colors.
-- Show current WebSocket latency in the top-right panel.
-- Validate incoming board mutations on the backend before they are accepted into authoritative state.
-- Keep active board state in memory for responsiveness.
-- Persist board state asynchronously to PostgreSQL.
-- Restore persisted board state after reconnects or process restarts.
+- [X] Allow multiple users to connect to the same board in real time.
+- [X] Synchronize board actions over WebSockets.
+- [X] Show remote participant cursors, names, and colors.
+- [X] Show current WebSocket latency in the top-right panel.
+- [X] Validate incoming board mutations on the backend before they are accepted into authoritative state.
+- [X] Keep active board state in memory for responsiveness.
+- [X] Persist board state asynchronously to PostgreSQL.
+- [X] Restore persisted board state after reconnects or process restarts.
 
 ## Relevant Specs
 

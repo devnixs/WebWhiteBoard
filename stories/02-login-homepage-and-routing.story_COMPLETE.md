@@ -6,12 +6,12 @@ Implement the first-load login flow, local identity storage, known-board homepag
 
 ## Scope
 
-- Prompt for user name on first load.
-- Store the user name in local storage and assign a random color.
-- Support direct board-link entry with login-first behavior.
-- Implement the homepage at `/` with create-board and known-board re-entry flows.
-- Persist the locally known board list and show only previously connected boards.
-- Show the current user name and provide logout behavior.
+- [X] Prompt for user name on first load.
+- [X] Store the user name in local storage and assign a random color.
+- [X] Support direct board-link entry with login-first behavior.
+- [X] Implement the homepage at `/` with create-board and known-board re-entry flows.
+- [X] Persist the locally known board list and show only previously connected boards.
+- [X] Show the current user name and provide logout behavior.
 
 ## Relevant Specs
 
