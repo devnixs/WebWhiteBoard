@@ -74,7 +74,7 @@ jobs:
         run: npx playwright test
         working-directory: e2e
         env:
-          BASE_URL: http://localhost:8080
+          BASE_URL: http://localhost:5173
 
       - name: Upload test report
         if: always()
