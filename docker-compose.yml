@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "5173:8080"
     environment:
       # These env vars follow ASP.NET Core's double-underscore config mapping, like ConnectionStrings__Postgres.
       - ConnectionStrings__Postgres=Host=postgres;Port=5432;Database=webwhiteboard;Username=postgres;Password=postgres

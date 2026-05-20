@@ -418,17 +418,16 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
   }, [isSessionReady])
 
   useEffect(() => {
-    const resetFrame = window.requestAnimationFrame(() => {
-      isSessionReadyRef.current = false
-      setConnectionState('connecting')
-      setIsSessionReady(false)
-      setLatencyMs(null)
-      setParticipantCount(1)
-      setParticipants([])
-      setRemoteCursors({})
-      updateSelection([])
-      replaceDocument(createEmptyBoardDocument(), 'remote')
-    })
+    isSessionReadyRef.current = false
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset must happen before the new socket can deliver session.ready, otherwise an rAF-deferred reset races and wipes the freshly synced state
+    setConnectionState('connecting')
+    setIsSessionReady(false)
+    setLatencyMs(null)
+    setParticipantCount(1)
+    setParticipants([])
+    setRemoteCursors({})
+    updateSelection([])
+    replaceDocument(createEmptyBoardDocument(), 'remote')
 
     const pendingPings = pendingPingsRef.current
     const socket = new WebSocket(getBoardSocketUrl(boardId))
@@ -538,8 +537,6 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     })
 
     return () => {
-      window.cancelAnimationFrame(resetFrame)
-
       if (websocketRef.current === socket) {
         websocketRef.current = null
       }
