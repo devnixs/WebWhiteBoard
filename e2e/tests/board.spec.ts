@@ -94,6 +94,7 @@ async function dragCanvasAtPage(
 async function panCanvasBy(
   page: import('@playwright/test').Page,
   delta: { x: number; y: number },
+  button: 'middle' | 'right' = 'middle',
 ) {
   const state = await getRuntimeState(page)
   if (!state) {
@@ -107,9 +108,9 @@ async function panCanvasBy(
   }
 
   await canvas.hover({ position: start })
-  await page.mouse.down({ button: 'middle' })
+  await page.mouse.down({ button })
   await page.mouse.move(start.x + delta.x, start.y + delta.y, { steps: 10 })
-  await page.mouse.up({ button: 'middle' })
+  await page.mouse.up({ button })
 }
 
 async function pasteClipboardImage(page: import('@playwright/test').Page) {
@@ -228,6 +229,56 @@ test.describe('board view', () => {
     await waitForElementCount(page, (elements) =>
       elements.filter((element) => element.type === 'shape').length === 1,
     )
+  })
+
+  test('select tool marquee-selects shapes and right-drag pans without opening the context menu', async ({ page }) => {
+    await loginAndCreateBoard(page)
+    await replaceDocument(page, {
+      schema: { kind: 'wwb.native-board', version: 1 },
+      store: {
+        elements: [
+          {
+            id: 'shape-marquee-a',
+            type: 'shape',
+            color: 'blue',
+            size: 'm',
+            shape: 'rectangle',
+            position: { x: 120, y: 140 },
+            width: 120,
+            height: 120,
+            rotation: 0,
+          },
+          {
+            id: 'shape-marquee-b',
+            type: 'shape',
+            color: 'green',
+            size: 'm',
+            shape: 'rectangle',
+            position: { x: 300, y: 160 },
+            width: 120,
+            height: 120,
+            rotation: 0,
+          },
+        ],
+      },
+    })
+
+    await page.getByRole('button', { name: 'Select' }).click()
+    await dragCanvasAtPage(page, { x: 80, y: 100 }, { x: 460, y: 320 })
+
+    await expect.poll(async () => {
+      const state = await getRuntimeState(page)
+      return state?.selectedIds.length ?? 0
+    }).toBe(2)
+
+    const beforePan = await getRuntimeState(page)
+    await panCanvasBy(page, { x: 80, y: 50 }, 'right')
+
+    await expect(page.locator('.selection-menu')).toHaveCount(0)
+    await expect.poll(async () => {
+      const state = await getRuntimeState(page)
+      return state?.viewport ?? null
+    }).not.toEqual(beforePan?.viewport ?? null)
   })
 
   test('native board state persists after reload', async ({ page }) => {
@@ -470,6 +521,35 @@ test.describe('board view', () => {
     await expect(zoomLabel).toHaveText('100%')
   })
 
+  test('ctrl plus mouse wheel zooms in 10 percent steps', async ({ page }) => {
+    await loginAndCreateBoard(page)
+    const canvas = page.locator('.board-screen__canvas')
+    const zoomLabel = page.locator('.zoom-level')
+    await expect(zoomLabel).toHaveText('100%')
+
+    const state = await getRuntimeState(page)
+    if (!state) {
+      throw new Error('Missing runtime state.')
+    }
+
+    await canvas.hover({
+      position: {
+        x: Math.round(state.canvasSize.width / 2),
+        y: Math.round(state.canvasSize.height / 2),
+      },
+    })
+
+    await page.keyboard.down('Control')
+    await page.mouse.wheel(0, -100)
+    await page.keyboard.up('Control')
+    await expect(zoomLabel).toHaveText('110%')
+
+    await page.keyboard.down('Control')
+    await page.mouse.wheel(0, 100)
+    await page.keyboard.up('Control')
+    await expect(zoomLabel).toHaveText('100%')
+  })
+
   test('debug runtime hook is available for native canvas', async ({ page }) => {
     await loginAndCreateBoard(page)
     const state = await getRuntimeState(page)
@@ -489,6 +569,7 @@ declare global {
           schema: { kind: string; version: number }
           store: { elements: Array<Record<string, unknown>> }
         }
+        selectedIds: string[]
         viewport: { x: number; y: number; zoom: number }
       }
       replaceDocument: (document: unknown) => void

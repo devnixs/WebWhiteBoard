@@ -11,6 +11,9 @@
 - [X] Preserve keyboard shortcuts, clipboard flows, context-menu editing actions, and tool-settings behavior for the native runtime.
 - [X] Ensure the selected pencil color, size, text settings, and shape settings remain stable across local edits and incoming collaboration updates.
 - [X] Preserve duplicate-free image paste behavior and native rendering of pasted assets inside the new board engine.
+- [X] Add desktop select-tool marquee selection on primary-button drag without requiring the dedicated lasso tool.
+- [X] Add desktop secondary-button drag panning that matches the existing hand-tool and middle-click camera movement.
+- [X] Reduce desktop `Ctrl` + mouse wheel zoom step size to 10% per wheel step.
 
 ## Relevant Specs
 
@@ -31,6 +34,8 @@
 - [ ] Draw freehand strokes, hold `Shift` to constrain a stroke, create text, place multiple shapes, and paste an image with `Cmd+V` or `Ctrl+V`; confirm each item renders once on the native canvas.
 - [ ] Select single and multiple items, then resize, rotate, duplicate, recolor, reorder, and delete them using both visible controls and the context menu where applicable.
 - [ ] Verify keyboard shortcuts, trackpad interactions, and text-editing focus behavior still feel correct while using the native canvas runtime.
+- [X] With the select tool active, drag on empty board space to box-select multiple elements, then drag with the secondary mouse button to pan the camera and confirm the behavior matches the hand tool feel.
+- [X] Hold `Ctrl` and rotate the mouse wheel on desktop hardware; confirm each wheel step zooms by about 10% and stays centered on the pointer location.
 
 ## Completion Rule
 

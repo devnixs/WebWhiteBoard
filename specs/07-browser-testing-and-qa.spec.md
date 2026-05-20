@@ -11,6 +11,7 @@
 - [X] Manual testing covers each primary tool, including select, pencil, text, shapes, eraser, and lasso.
 - [X] Manual testing covers infinite canvas navigation, trackpad panning, zooming, and protection against accidental browser back navigation.
 - [ ] Manual Chrome DevTools verification of the native canvas runtime covers drawing, text, shapes, image paste, selection handles, resize, rotate, duplication, lasso, pan, zoom, and shortcut flows on `/board/{guid}`.
+- [X] Manual Chrome DevTools testing on `/board/{guid}` verifies that the select tool can box-select with a primary-button drag, that secondary-button drag pans like the hand tool, and that `Ctrl` + mouse wheel zoom changes occur in 10% steps.
 - [X] Manual testing covers image paste behavior using platform-appropriate clipboard input.
 - [X] Manual testing of image paste confirms that the pasted image is uploaded to the backend, stored as a file in the asset upload folder, served back to the canvas via a static URL, visible to a second connected participant, and still visible after a full page reload.
 - [X] End-to-end coverage for image paste verifies that the pasted image uploads through the backend asset endpoint, appears exactly once, persists as an asset URL instead of inline base64, remains visible to a second participant, preserves legacy base64 board rendering, and surfaces a visible failure notice when an upload is rejected.

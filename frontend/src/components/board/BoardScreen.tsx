@@ -93,8 +93,11 @@ type BoardScreenProps = {
 type PointerPanState = {
   kind: 'pan'
   pointerId: number
+  contextMenuEligible: boolean
   lastX: number
   lastY: number
+  originX: number
+  originY: number
 }
 
 type PointerDrawState = {
@@ -147,6 +150,13 @@ type PointerLassoState = {
   path: BoardPoint[]
 }
 
+type PointerMarqueeSelectionState = {
+  kind: 'marquee-selection'
+  pointerId: number
+  origin: BoardPoint
+  current: BoardPoint
+}
+
 type PointerInteractionState =
   | PointerPanState
   | PointerDrawState
@@ -155,6 +165,7 @@ type PointerInteractionState =
   | PointerResizeState
   | PointerRotateState
   | PointerEraseState
+  | PointerMarqueeSelectionState
   | PointerLassoState
 
 type TextEditorState = {
@@ -191,6 +202,19 @@ declare global {
   }
 }
 
+const desktopZoomStepFactor = 1.1
+const desktopWheelDeltaPerStep = 100
+const contextMenuPanThresholdPx = 3
+
+function createRectangleSelectionPath(origin: BoardPoint, current: BoardPoint): BoardPoint[] {
+  return [
+    origin,
+    { x: current.x, y: origin.y },
+    current,
+    { x: origin.x, y: current.y },
+  ]
+}
+
 export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
   const boardScreenRef = useRef<HTMLElement | null>(null)
   const textEditorRef = useRef<HTMLTextAreaElement | null>(null)
@@ -204,6 +228,7 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
   const selectionRef = useRef<string[]>([])
   const internalClipboardRef = useRef<string | null>(null)
   const lastPointerPagePointRef = useRef<BoardPoint>({ x: 0, y: 0 })
+  const suppressContextMenuRef = useRef(false)
   const [shareState, setShareState] = useState<'idle' | 'copied'>('idle')
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false)
   const [activeTool, setActiveTool] = useState<BoardTool>('select')
@@ -755,7 +780,16 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
       event.preventDefault()
 
       if (event.ctrlKey) {
-        zoomByFactor(Math.exp(-event.deltaY * 0.01), getLocalScreenPoint(event.clientX, event.clientY))
+        if (event.deltaY === 0) {
+          return
+        }
+
+        const direction = Math.sign(event.deltaY)
+        const stepCount = Math.max(1, Math.round(Math.abs(event.deltaY) / desktopWheelDeltaPerStep))
+        const factor = direction < 0
+          ? desktopZoomStepFactor ** stepCount
+          : (1 / desktopZoomStepFactor) ** stepCount
+        zoomByFactor(factor, getLocalScreenPoint(event.clientX, event.clientY))
         return
       }
 
@@ -924,7 +958,14 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
 
     if (!hitElement) {
       updateSelection([])
-      return false
+      interactionRef.current = {
+        kind: 'marquee-selection',
+        pointerId: event.pointerId,
+        origin: boardPoint,
+        current: boardPoint,
+      }
+      setLassoPath(createRectangleSelectionPath(boardPoint, boardPoint))
+      return true
     }
 
     if (isModifierPressed) {
@@ -952,26 +993,22 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     lastPointerPagePointRef.current = boardPoint
     const hitElement = hitTestBoardElements(documentRef.current, boardPoint, viewport.zoom)[0] ?? null
 
-    if (event.button === 2) {
-      const nextSelection = hitElement
-        ? selectionRef.current.includes(hitElement.id)
-          ? selectionRef.current
-          : [hitElement.id]
-        : []
-      updateSelection(nextSelection)
-      setContextMenu(
-        hitElement
-          ? {
-              x: event.clientX,
-              y: event.clientY,
-              selectedIds: nextSelection,
-            }
-          : null,
-      )
+    setContextMenu(null)
+
+    if (activeTool === 'hand' || event.button === 1 || event.button === 2) {
+      event.currentTarget.setPointerCapture(event.pointerId)
+      interactionRef.current = {
+        kind: 'pan',
+        pointerId: event.pointerId,
+        contextMenuEligible: event.button === 2,
+        lastX: event.clientX,
+        lastY: event.clientY,
+        originX: event.clientX,
+        originY: event.clientY,
+      }
+      event.preventDefault()
       return
     }
-
-    setContextMenu(null)
 
     if (activeTool === 'text') {
       event.preventDefault()
@@ -989,25 +1026,14 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
       return
     }
 
-    event.currentTarget.setPointerCapture(event.pointerId)
-
-    if (activeTool === 'hand' || event.button === 1) {
-      interactionRef.current = {
-        kind: 'pan',
-        pointerId: event.pointerId,
-        lastX: event.clientX,
-        lastY: event.clientY,
-      }
-      event.preventDefault()
-      return
-    }
-
     if (activeTool === 'select') {
+      event.currentTarget.setPointerCapture(event.pointerId)
       beginSelectionInteraction(event, boardPoint, hitElement)
       return
     }
 
     if (activeTool === 'pencil') {
+      event.currentTarget.setPointerCapture(event.pointerId)
       interactionRef.current = {
         kind: 'draw',
         pointerId: event.pointerId,
@@ -1018,6 +1044,7 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     }
 
     if (activeTool === 'shapes') {
+      event.currentTarget.setPointerCapture(event.pointerId)
       interactionRef.current = {
         kind: 'shape',
         pointerId: event.pointerId,
@@ -1029,6 +1056,7 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     }
 
     if (activeTool === 'eraser') {
+      event.currentTarget.setPointerCapture(event.pointerId)
       interactionRef.current = {
         kind: 'erase',
         pointerId: event.pointerId,
@@ -1041,6 +1069,7 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     }
 
     if (activeTool === 'lasso') {
+      event.currentTarget.setPointerCapture(event.pointerId)
       interactionRef.current = {
         kind: 'lasso',
         pointerId: event.pointerId,
@@ -1066,8 +1095,16 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     if (interaction.kind === 'pan') {
       const deltaX = event.clientX - interaction.lastX
       const deltaY = event.clientY - interaction.lastY
+      const didCrossContextMenuThreshold = interaction.contextMenuEligible
+        && Math.hypot(event.clientX - interaction.originX, event.clientY - interaction.originY) > contextMenuPanThresholdPx
+
+      if (didCrossContextMenuThreshold) {
+        suppressContextMenuRef.current = true
+      }
+
       interactionRef.current = {
         ...interaction,
+        contextMenuEligible: interaction.contextMenuEligible && !didCrossContextMenuThreshold,
         lastX: event.clientX,
         lastY: event.clientY,
       }
@@ -1145,6 +1182,15 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
       return
     }
 
+    if (interaction.kind === 'marquee-selection') {
+      interactionRef.current = {
+        ...interaction,
+        current: boardPoint,
+      }
+      setLassoPath(createRectangleSelectionPath(interaction.origin, boardPoint))
+      return
+    }
+
     if (interaction.kind === 'erase') {
       const radius = getEraserRadius(eraserSize)
       replaceDocument(eraseAtPoint(documentRef.current, boardPoint, radius), 'local')
@@ -1195,6 +1241,15 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
         updateSelection(selectElementsInLasso(documentRef.current, interaction.path))
       }
 
+      if (interaction.kind === 'marquee-selection') {
+        updateSelection(
+          selectElementsInLasso(
+            documentRef.current,
+            createRectangleSelectionPath(interaction.origin, interaction.current),
+          ),
+        )
+      }
+
       interactionRef.current = null
       clearInteractionPreview()
     }
@@ -1206,6 +1261,12 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
 
   const handleContextMenu = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
+
+    if (suppressContextMenuRef.current) {
+      suppressContextMenuRef.current = false
+      setContextMenu(null)
+      return
+    }
 
     const boardPoint = screenToBoardPoint(event.clientX, event.clientY)
     const hitElement = hitTestBoardElements(documentRef.current, boardPoint, viewport.zoom)[0]

@@ -31,3 +31,4 @@
 - [X] Pressing `Escape` while the text caret is active and the input is empty closes the text input without creating an empty text element and without leaving a residual caret on the canvas.
 - [X] Committing text (via blur or `Cmd/Ctrl+Enter`) renders the typed text as a permanent text element on the native canvas at the caret location, and the caret indicator is removed once the text is committed.
 - [X] The select tool only becomes active again automatically when the user explicitly switches tools (via the tool rail, keyboard shortcut, or pressing `Escape`).
+- [X] With the select tool active, dragging with the primary pointer button on empty board space starts a rectangle marquee selection so desktop users can box-select elements without switching tools.

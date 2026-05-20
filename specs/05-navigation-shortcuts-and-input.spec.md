@@ -7,3 +7,5 @@
 - [X] The application includes convenient standard shortcuts beyond the explicitly requested ones when they fit the product model and do not conflict with browser behavior.
 - [X] Shortcut handling is scoped carefully so text editing flows do not lose expected native input behavior.
 - [X] Canvas navigation and manipulation shortcuts are implemented in a way that preserves accessibility and predictable focus behavior.
+- [X] On desktop browsers, holding `Ctrl` while rotating the mouse wheel zooms the board in 10% increments per wheel step instead of using large jumps.
+- [X] On desktop browsers, holding the secondary mouse button while moving the pointer pans the board using the same camera behavior as the hand tool and existing middle-click pan interaction.
