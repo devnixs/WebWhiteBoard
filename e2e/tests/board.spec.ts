@@ -197,6 +197,40 @@ test.describe('board view', () => {
     await expect(menu.getByText('Delete')).toBeVisible()
   })
 
+  test('context menu color palette applies the exact chosen swatch', async ({ page }) => {
+    await loginAndCreateBoard(page)
+    await replaceDocument(page, {
+      schema: { kind: 'wwb.native-board', version: 1 },
+      store: {
+        elements: [
+          {
+            id: 'shape-color',
+            type: 'shape',
+            color: 'blue',
+            size: 'm',
+            shape: 'rectangle',
+            position: { x: 140, y: 160 },
+            width: 180,
+            height: 120,
+            rotation: 0,
+          },
+        ],
+      },
+    })
+
+    await clickCanvasAtPage(page, { x: 230, y: 220 }, 'right')
+    const menu = page.locator('.selection-menu')
+    await expect(menu).toBeVisible()
+    await expect(page.getByRole('group', { name: 'Color palette' })).toBeVisible()
+    await page.getByRole('button', { name: 'Choose Red' }).click()
+
+    await expect.poll(async () => {
+      const elements = await getDocumentElements(page)
+      const shape = elements.find((element) => element.id === 'shape-color')
+      return shape?.color ?? null
+    }).toBe('red')
+  })
+
   test('native selection editing actions duplicate and delete shapes', async ({ page }) => {
     await loginAndCreateBoard(page)
     await replaceDocument(page, {

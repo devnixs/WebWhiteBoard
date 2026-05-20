@@ -33,16 +33,33 @@ Follow this workflow whenever the task is feature creation or feature modificati
 - Match the local story format if one already exists. Reuse local headings and tone instead of inventing a new template.
 - Each story must reference the exact spec file or files that were updated for that slice.
 - Each story must explicitly say that completion requires checking the referenced spec items from `- [ ]` to `- [X]` when the work is actually done.
-- Each story must mention the browser test that needs to be performed for that feature.
+- Each story must mention all three verification activities that need to be performed for that feature: the new Playwright test, the manual Chrome DevTools browser test, and the full e2e regression run.
 - All implementation items inside a story file must be written as `- [ ]` checkboxes. They start unchecked and are checked off (`- [X]`) as each item is completed during implementation.
 - Story filenames must end with a status suffix: `_TODO` when first created, `_IN_PROGRESS` once work has begun, and `_COMPLETE` when all items are checked and verification has passed. Rename the file as the status changes.
 
-## Require Manual Browser Verification
+## Require Three Verification Activities
 
-- Treat manual browser verification as mandatory, not optional polish.
+Every story must require all three of the following before it can be considered complete. None of them is optional polish.
+
+### 1. New Playwright Test
+
+- Each story must add at least one new Playwright test that covers the new feature or bugfix.
+- Place the test in the repository's established Playwright location (for example `e2e/tests/`) and follow local naming and structure conventions.
+- The test must exercise the actual user-visible behavior described in the spec items the story references, not just internal implementation details.
+- The story must describe what the new Playwright test should cover in concrete terms (route, setup, actions, assertions).
+- The new Playwright test must pass before the story is marked complete.
+
+### 2. Manual Chrome DevTools Browser Test
+
 - The required manual browser test must be described inside each story in concrete terms. Name the route, user actions, and expected outcome.
-- The manual browser test must be performed using a Chrome DevTools browser instance, not just by reading code or relying on automated tests.
+- The manual browser test must be performed using the Chrome DevTools MCP browser instance, not just by reading code or relying on automated tests.
 - A story is not complete until that manual browser verification has been executed and the feature behaves as expected.
+
+### 3. Full E2E Regression Run
+
+- Each story must require running the full end-to-end test suite (not just the new test) to confirm that the change has not introduced a regression in any existing feature.
+- The story must name the exact command used to run the full e2e suite in this repository.
+- All e2e tests must pass before the story is marked complete. If any existing test fails, the story is not done until the regression is fixed or the test is intentionally and justifiably updated.
 - If the repository already has an end-to-end or QA spec, update or reference it when the new feature changes required browser coverage.
 
 ## Story Content Checklist
@@ -53,18 +70,24 @@ Each story should cover:
 - Scope
 - Relevant specs
 - Acceptance notes or implementation constraints when needed
-- Browser test instructions with concrete manual steps
-- Completion rule stating both conditions:
+- Playwright test plan: which file is added or extended, what it covers, what assertions it makes
+- Browser test instructions with concrete manual steps using Chrome DevTools MCP
+- Full e2e regression instructions: exact command to run the full suite
+- Completion rule stating all four conditions:
   1. referenced spec items are checked to `- [X]`
-  2. the Chrome DevTools manual browser test has been run and passed
+  2. the new Playwright test has been added and passes
+  3. the Chrome DevTools manual browser test has been run and passed
+  4. the full e2e test suite has been run and all tests pass
 
 ## Suggested Wording Patterns
 
 Use wording like:
 
 - `Relevant Specs`: list exact `specs/...` paths
-- `Completion Rule`: `This story is complete only when the relevant items in ... have been checked - [X] and the manual Chrome DevTools browser test described below has been run successfully.`
+- `Playwright Test`: describe the new test file/case, the user flow it drives, and the assertions it makes
 - `Browser Test`: describe the route, setup, clicks, typing, gestures, collaboration steps, and expected visible result
+- `E2E Regression`: name the command (e.g. `npx playwright test`) and require the entire suite to pass
+- `Completion Rule`: `This story is complete only when the relevant items in ... have been checked - [X], the new Playwright test described below has been added and passes, the manual Chrome DevTools browser test described below has been run successfully, and the full e2e test suite passes with no regressions.`
 
 ## Output Expectations
 

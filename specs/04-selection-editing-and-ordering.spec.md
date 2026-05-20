@@ -12,7 +12,9 @@
 - [X] The context menu supports moving an item to the back.
 - [X] The context menu supports duplicating an item.
 - [X] The context menu supports deleting an item.
-- [X] The context menu supports changing an item color when the item type supports color changes.
+- [X] The context menu displays a color palette when the selected item type supports color changes.
+- [X] The context menu color palette shows the available board colors as direct choices instead of applying a random or implicit next color.
+- [X] Choosing a color from the context menu palette updates the selected items to that exact color.
 - [X] The context menu supports increasing font size when the selected item supports text sizing.
 - [X] The context menu supports increasing draw size when the selected item supports stroke sizing.
 - [X] The context menu supports changing font family when the selected item supports font changes.

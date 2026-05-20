@@ -1214,6 +1214,69 @@ button {
   justify-content: center;
 }
 
+.selection-menu__color-summary {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.selection-menu__palette-section {
+  display: grid;
+  gap: 6px;
+  padding: 6px 6px 8px;
+}
+
+.selection-menu__palette-label {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 4px 0;
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.selection-menu__palette {
+  display: grid;
+  gap: 6px;
+}
+
+.selection-menu__swatch {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--bg-soft);
+  color: var(--ink);
+  text-align: left;
+  font-size: 12px;
+}
+
+.selection-menu__swatch:hover {
+  border-color: color-mix(in srgb, var(--selection-swatch) 34%, var(--border));
+  background: color-mix(in srgb, var(--selection-swatch) 10%, white);
+}
+
+.selection-menu__swatch[data-active='true'] {
+  border-color: color-mix(in srgb, var(--selection-swatch) 48%, var(--border-strong));
+  background: color-mix(in srgb, var(--selection-swatch) 16%, white);
+}
+
+.selection-menu__swatch-chip {
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 999px;
+  background: var(--selection-swatch);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+}
+
 .menu-text-icon {
   font-family: "JetBrains Mono", "SFMono-Regular", monospace;
   font-size: 12px;

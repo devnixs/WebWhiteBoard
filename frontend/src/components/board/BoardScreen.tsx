@@ -47,7 +47,6 @@ import {
   applyRemoteDocument,
   copyTextToClipboard,
   getBoardSocketUrl,
-  getNextColorChoice,
   getNextFontChoice,
   getNextSizeChoice,
   indexRemoteCursors,
@@ -1331,11 +1330,11 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     <main
       className="board-screen"
       data-session-id={identity.sessionId}
-      onClick={handleCanvasClick}
       ref={boardScreenRef}
     >
       <div
         className="board-screen__canvas"
+        onClick={handleCanvasClick}
         onContextMenu={handleContextMenu}
         onDoubleClick={handleDoubleClick}
         onPointerDown={handlePointerDown}
@@ -1415,10 +1414,12 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
           contextMenu={{
             x: contextMenu.x,
             y: contextMenu.y,
-            selectedShapeIds: contextMenu.selectedIds,
+            selectedIds: contextMenu.selectedIds,
             supportsColor: contextMenuCapabilities.supportsColor,
             supportsDrawSize: contextMenuCapabilities.supportsDrawSize,
             supportsFont: contextMenuCapabilities.supportsFont,
+            currentColor: getSharedColorForSelection(documentRef.current, contextMenu.selectedIds),
+            hasMixedColor: selectionHasMixedColors(documentRef.current, contextMenu.selectedIds),
           }}
           onBringToFront={() => applyContextAction(bringSelectionToFront)}
           onDelete={() => {
@@ -1446,10 +1447,9 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
             applyContextAction((nextDocument, ids) => updateSelectedFontSize(nextDocument, ids, nextSize))
           }}
           onSendToBack={() => applyContextAction(sendSelectionToBack)}
-          onToggleColor={() => {
-            const nextColor = getNextColorForSelection(documentRef.current, contextMenu.selectedIds, drawColor)
-            setDrawColor(nextColor)
-            applyContextAction((nextDocument, ids) => updateSelectedElementColor(nextDocument, ids, nextColor))
+          onSelectColor={(color) => {
+            setDrawColor(color)
+            applyContextAction((nextDocument, ids) => updateSelectedElementColor(nextDocument, ids, color))
           }}
           onToggleFontFamily={() => {
             const nextFont = getNextFontForSelection(documentRef.current, contextMenu.selectedIds, textFont)
@@ -1562,10 +1562,28 @@ async function readImageDimensions(src: string) {
   })
 }
 
-function getNextColorForSelection(document: BoardDocumentSnapshot, ids: string[], fallback: ColorChoice) {
-  const selected = getElementsByIds(document, ids)
-  const color = selected.find((element) => element.type !== 'image' && 'color' in element)?.color
-  return getNextColorChoice(color ?? fallback)
+function getSharedColorForSelection(document: BoardDocumentSnapshot, ids: string[]) {
+  const selectedColors = getElementsByIds(document, ids)
+    .filter((element): element is Extract<BoardElement, { color: ColorChoice }> => element.type !== 'image')
+    .map((element) => element.color)
+
+  if (selectedColors.length === 0) {
+    return null
+  }
+
+  return selectedColors.every((color) => color === selectedColors[0]) ? selectedColors[0] : null
+}
+
+function selectionHasMixedColors(document: BoardDocumentSnapshot, ids: string[]) {
+  const selectedColors = getElementsByIds(document, ids)
+    .filter((element): element is Extract<BoardElement, { color: ColorChoice }> => element.type !== 'image')
+    .map((element) => element.color)
+
+  if (selectedColors.length <= 1) {
+    return false
+  }
+
+  return selectedColors.some((color) => color !== selectedColors[0])
 }
 
 function getNextSizeForSelection(document: BoardDocumentSnapshot, ids: string[], fallback: SizeChoice) {

@@ -1,18 +1,40 @@
 import { useLayoutEffect, useRef, useState } from 'react'
-import type { ContextMenuState } from '../../app/types'
+import type { CSSProperties } from 'react'
+import { colorChoices, colorToHex } from '../../app/constants'
+import type { ColorChoice } from '../../app/types'
 import { modifierGlyph } from '../../app/utils'
 import { IconBack, IconDuplicate, IconFront, IconPalette, IconTrash, IconType } from '../common/Icons'
 
+type SelectionContextMenuState = {
+  x: number
+  y: number
+  selectedIds: string[]
+  supportsColor: boolean
+  supportsDrawSize: boolean
+  supportsFont: boolean
+  currentColor: ColorChoice | null
+  hasMixedColor: boolean
+}
+
 type SelectionContextMenuProps = {
-  contextMenu: ContextMenuState
+  contextMenu: SelectionContextMenuState
   onBringToFront: () => void
   onSendToBack: () => void
   onDuplicate: () => void
   onDelete: () => void
-  onToggleColor: () => void
+  onSelectColor: (color: ColorChoice) => void
   onIncreaseFontSize: () => void
   onIncreaseDrawSize: () => void
   onToggleFontFamily: () => void
+}
+
+const colorLabels: Record<ColorChoice, string> = {
+  blue: 'Blue',
+  green: 'Green',
+  orange: 'Orange',
+  red: 'Red',
+  violet: 'Violet',
+  black: 'Black',
 }
 
 export function SelectionContextMenu({
@@ -21,7 +43,7 @@ export function SelectionContextMenu({
   onSendToBack,
   onDuplicate,
   onDelete,
-  onToggleColor,
+  onSelectColor,
   onIncreaseFontSize,
   onIncreaseDrawSize,
   onToggleFontFamily,
@@ -50,6 +72,11 @@ export function SelectionContextMenu({
   return (
     <section
       className="selection-menu"
+      onClick={(event) => event.stopPropagation()}
+      onContextMenu={(event) => event.stopPropagation()}
+      onMouseDown={(event) => event.stopPropagation()}
+      onMouseUp={(event) => event.stopPropagation()}
+      onPointerDown={(event) => event.stopPropagation()}
       ref={menuRef}
       style={{ left: position.x, top: position.y }}
     >
@@ -74,10 +101,31 @@ export function SelectionContextMenu({
         <kbd>Del</kbd>
       </button>
       {contextMenu.supportsColor ? (
-        <button className="selection-menu__item" onClick={onToggleColor} type="button">
-          <span className="selection-menu__icon"><IconPalette size={14} /></span>
-          <span>Change color</span>
-        </button>
+        <div aria-label="Color palette" className="selection-menu__palette-section" role="group">
+          <div className="selection-menu__palette-label">
+            <span className="selection-menu__icon"><IconPalette size={14} /></span>
+            <span>Change color</span>
+            <span className="selection-menu__color-summary">
+              {contextMenu.hasMixedColor ? 'Mixed' : colorLabels[contextMenu.currentColor ?? 'blue']}
+            </span>
+          </div>
+          <div className="selection-menu__palette">
+            {colorChoices.map((color) => (
+              <button
+                aria-label={`Choose ${colorLabels[color]}`}
+                className="selection-menu__swatch"
+                data-active={contextMenu.currentColor === color && !contextMenu.hasMixedColor}
+                key={color}
+                onClick={() => onSelectColor(color)}
+                style={{ '--selection-swatch': colorToHex[color] } as CSSProperties}
+                type="button"
+              >
+                <span className="selection-menu__swatch-chip" />
+                <span>{colorLabels[color]}</span>
+              </button>
+            ))}
+          </div>
+        </div>
       ) : null}
       {contextMenu.supportsFont ? (
         <>
