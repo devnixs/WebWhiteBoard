@@ -16,6 +16,7 @@ export function ShortcutModal({ onClose }: ShortcutModalProps) {
         ['Pencil', 'P'],
         ['Text', 'T'],
         ['Shapes', 'R'],
+        ['Arrow', 'A'],
         ['Eraser', 'E'],
         ['Lasso', 'L'],
       ],

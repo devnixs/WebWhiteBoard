@@ -1,5 +1,5 @@
 import type { BoardTool } from '../../app/types'
-import { IconCursor, IconEraser, IconHand, IconLasso, IconPencil, IconShapes, IconText } from '../common/Icons'
+import { IconArrow, IconCursor, IconEraser, IconHand, IconLasso, IconPencil, IconShapes, IconText } from '../common/Icons'
 
 type ToolRailProps = {
   activeTool: BoardTool
@@ -12,6 +12,7 @@ const tools = [
   { id: 'pencil', name: 'Pencil', hint: 'P', icon: IconPencil },
   { id: 'text', name: 'Text', hint: 'T', icon: IconText },
   { id: 'shapes', name: 'Shapes', hint: 'R', icon: IconShapes },
+  { id: 'arrow', name: 'Arrow', hint: 'A', icon: IconArrow },
   { id: 'eraser', name: 'Eraser', hint: 'E', icon: IconEraser },
   { id: 'lasso', name: 'Lasso', hint: 'L', icon: IconLasso },
 ] as const

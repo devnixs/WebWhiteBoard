@@ -108,6 +108,14 @@ export function ToolSettingsPanel({
         </>
       ) : null}
 
+      {activeTool === 'arrow' ? (
+        <>
+          <PanelHeader title="Arrow" subtitle="Color and stroke size" onCollapse={collapse} />
+          <ColorPicker value={drawColor} onChange={onChangeDrawColor} />
+          <SizePicker value={drawSize} onChange={onChangeDrawSize} />
+        </>
+      ) : null}
+
       {activeTool === 'eraser' ? (
         <>
           <PanelHeader title="Eraser" subtitle="Adjust eraser size" onCollapse={collapse} />

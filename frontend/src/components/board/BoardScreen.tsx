@@ -4,6 +4,7 @@ import {
   appendElement,
   bringSelectionToFront,
   createEmptyBoardDocument,
+  createArrowElement,
   createImageElement,
   createInitialViewport,
   createRuntimeDebugState,
@@ -110,6 +111,7 @@ type PointerShapeState = {
   pointerId: number
   origin: BoardPoint
   current: BoardPoint
+  shape: ShapeChoice
 }
 
 type PointerMoveSelectionState = {
@@ -716,6 +718,12 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
           return
         }
 
+        if (key === 'a') {
+          event.preventDefault()
+          setActiveTool('arrow')
+          return
+        }
+
         if (key === 'e') {
           event.preventDefault()
           setActiveTool('eraser')
@@ -1047,13 +1055,28 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
 
     if (activeTool === 'shapes') {
       event.currentTarget.setPointerCapture(event.pointerId)
+      const authoredShape: ShapeChoice = shapeChoice
       interactionRef.current = {
         kind: 'shape',
         pointerId: event.pointerId,
         origin: boardPoint,
         current: boardPoint,
+        shape: authoredShape,
       }
-      setDraftShape(createShapeElement(boardPoint, 1, 1, shapeChoice, drawColor, drawSize))
+      setDraftShape(createShapeElement(boardPoint, 1, 1, authoredShape, drawColor, drawSize))
+      return
+    }
+
+    if (activeTool === 'arrow') {
+      event.currentTarget.setPointerCapture(event.pointerId)
+      interactionRef.current = {
+        kind: 'shape',
+        pointerId: event.pointerId,
+        origin: boardPoint,
+        current: boardPoint,
+        shape: 'arrow',
+      }
+      setDraftShape(createArrowElement(boardPoint, boardPoint, drawColor, drawSize))
       return
     }
 
@@ -1130,14 +1153,16 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
         current: boardPoint,
       }
       setDraftShape(
-        createShapeElement(
-          interaction.origin,
-          boardPoint.x - interaction.origin.x,
-          boardPoint.y - interaction.origin.y,
-          shapeChoice,
-          drawColor,
-          drawSize,
-        ),
+        interaction.shape === 'arrow'
+          ? createArrowElement(interaction.origin, boardPoint, drawColor, drawSize)
+          : createShapeElement(
+              interaction.origin,
+              boardPoint.x - interaction.origin.x,
+              boardPoint.y - interaction.origin.y,
+              interaction.shape,
+              drawColor,
+              drawSize,
+            ),
       )
       return
     }
@@ -1228,11 +1253,14 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
       if (interaction.kind === 'shape') {
         const width = interaction.current.x - interaction.origin.x
         const height = interaction.current.y - interaction.origin.y
-        if (Math.abs(width) >= 6 || Math.abs(height) >= 6) {
+        const dragDistance = Math.hypot(width, height)
+        if (interaction.shape === 'arrow' ? dragDistance >= 6 : Math.abs(width) >= 6 || Math.abs(height) >= 6) {
           replaceDocument(
             appendElement(
               documentRef.current,
-              createShapeElement(interaction.origin, width, height, shapeChoice, drawColor, drawSize),
+              interaction.shape === 'arrow'
+                ? createArrowElement(interaction.origin, interaction.current, drawColor, drawSize)
+                : createShapeElement(interaction.origin, width, height, interaction.shape, drawColor, drawSize),
             ),
             'local',
           )

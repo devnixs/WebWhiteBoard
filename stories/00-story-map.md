@@ -33,4 +33,6 @@
 - `stories/23-native-html-canvas-collaboration-assets-and-qa.story_COMPLETE.md`
 - `stories/24-native-canvas-tool-persistence-text-and-paste-fixes.story_COMPLETE.md`
 - `stories/25-text-tool-blinking-caret-and-immediate-typing.story_COMPLETE.md`
-- `stories/26-double-click-text-to-edit.story_TODO.md`
+- `stories/26-double-click-text-to-edit.story_COMPLETE.md`
+- `stories/27-context-menu-color-palette.story_COMPLETE.md`
+- `stories/28-arrow-tool.story_COMPLETE.md`

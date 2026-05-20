@@ -37,6 +37,10 @@ export function IconShapes({ size }: { size?: number }) {
   return <IconBase size={size}><rect height="9" rx="1.5" width="9" x="3" y="3" /><circle cx="16.5" cy="16.5" r="4.5" /></IconBase>
 }
 
+export function IconArrow({ size }: { size?: number }) {
+  return <IconBase size={size}><path d="M4 12 H17" /><path d="M13 8 L17 12 L13 16" /></IconBase>
+}
+
 export function IconEraser({ size }: { size?: number }) {
   return <IconBase size={size}><path d="M16 4 L20 8 L10 18 L6 18 L4 16 Z" /><path d="M10 18 L15 13" /><path d="M9 21 L21 21" /></IconBase>
 }

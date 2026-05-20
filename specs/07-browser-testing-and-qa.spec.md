@@ -9,6 +9,7 @@
 - [X] Manual testing covers share-link copying and visible copy confirmation.
 - [X] Manual testing covers the board grid overlay to confirm faint line-based grid lines are visible behind content without reducing readability of drawings or floating panels.
 - [X] Manual testing covers each primary tool, including select, pencil, text, shapes, eraser, and lasso.
+- [X] Manual testing covers the dedicated arrow tool, including creating arrows in multiple directions and confirming the arrowhead orientation remains correct after selection, duplication, and reload.
 - [X] Manual testing covers infinite canvas navigation, trackpad panning, zooming, and protection against accidental browser back navigation.
 - [ ] Manual Chrome DevTools verification of the native canvas runtime covers drawing, text, shapes, image paste, selection handles, resize, rotate, duplication, lasso, pan, zoom, and shortcut flows on `/board/{guid}`.
 - [X] Manual Chrome DevTools testing on `/board/{guid}` verifies that the select tool can box-select with a primary-button drag, that secondary-button drag pans like the hand tool, and that `Ctrl` + mouse wheel zoom changes occur in 10% steps.
@@ -24,6 +25,7 @@
 - [X] Manual testing covers reconnect or reload scenarios to confirm persisted board state is restored correctly.
 - [X] After any major frontend component decomposition or file-structure refactor, manual Chrome DevTools regression testing covers both `/` and `/board/{guid}` to confirm the extracted components preserve the existing login, board creation, drawing, sharing, selection, and collaboration-visible UI behavior.
 - [X] The browser test suite is structured so each major feature area has at least one meaningful end-to-end flow that exercises the real system through the UI.
+- [X] End-to-end coverage verifies that the arrow tool can be activated from the tool rail and keyboard shortcut, that dragging creates an arrow element with persisted color and size settings, and that the arrow remains present after reload.
 - [X] Visual browser QA for the design-guidelines alignment work reproduces the four reference screens from `design-guidelines/Screenshots/` in Chrome DevTools and records whether each one matches the intended route and UI state before the related story can be closed.
 - [X] The backend has a non-unit integration test suite that exercises the deployed API contract directly through HTTP requests and WebSocket messages.
 - [X] Backend integration tests run against a real PostgreSQL instance and cover at least one meaningful flow for board creation, collaboration updates, cursor presence, and persisted reload behavior.

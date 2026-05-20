@@ -226,7 +226,7 @@ function isFontChoice(value: unknown): value is FontChoice {
 }
 
 function isShapeChoice(value: unknown): value is ShapeChoice {
-  return value === 'rectangle' || value === 'ellipse' || value === 'diamond' || value === 'star'
+  return value === 'rectangle' || value === 'ellipse' || value === 'diamond' || value === 'star' || value === 'arrow'
 }
 
 export function createInitialViewport(): BoardViewport {
@@ -484,10 +484,14 @@ function drawShapeElement(
   context.rotate(element.rotation)
   context.strokeStyle = colorToHex[element.color]
   context.fillStyle = `${colorToHex[element.color]}10`
-  context.lineWidth = Math.max(1, sizeToPixels[element.size] * viewport.zoom * 0.22)
+  context.lineWidth = getShapeStrokeWidth(element, viewport.zoom)
+  context.lineCap = 'round'
+  context.lineJoin = 'round'
 
   drawShapePath(context, element.shape, width, height)
-  context.fill()
+  if (element.shape !== 'arrow') {
+    context.fill()
+  }
   context.stroke()
   context.restore()
 }
@@ -548,6 +552,18 @@ function drawShapePath(context: CanvasRenderingContext2D, shape: ShapeChoice, wi
     context.lineTo(0, height / 2)
     context.lineTo(-width / 2, 0)
     context.closePath()
+    return
+  }
+
+  if (shape === 'arrow') {
+    const headLength = getArrowHeadLength(width, height)
+    const tipX = width / 2
+    const shaftEndX = tipX - headLength
+    context.moveTo(-width / 2, 0)
+    context.lineTo(shaftEndX, 0)
+    context.moveTo(shaftEndX, -height / 2)
+    context.lineTo(tipX, 0)
+    context.lineTo(shaftEndX, height / 2)
     return
   }
 
@@ -855,6 +871,10 @@ function isPointInsideElement(element: BoardElement, point: BoardPoint, threshol
   if (element.type === 'text') {
     const metrics = getTextMetrics(element)
     return isPointInsideRotatedRect(point, element.position, metrics.width, metrics.height, element.rotation)
+  }
+
+  if (element.type === 'shape' && element.shape === 'arrow') {
+    return isPointNearArrow(element, point, threshold)
   }
 
   return isPointInsideRotatedRect(point, element.position, element.width, element.height, element.rotation)
@@ -1256,6 +1276,37 @@ export function createShapeElement(
   }
 }
 
+export function createArrowElement(
+  origin: BoardPoint,
+  target: BoardPoint,
+  color: ColorChoice,
+  size: SizeChoice,
+): BoardShapeElement {
+  const deltaX = target.x - origin.x
+  const deltaY = target.y - origin.y
+  const length = Math.max(24, roundCoordinate(Math.hypot(deltaX, deltaY)))
+  const height = Math.max(18, roundCoordinate(length * 0.22))
+  const center = {
+    x: roundCoordinate((origin.x + target.x) / 2),
+    y: roundCoordinate((origin.y + target.y) / 2),
+  }
+
+  return {
+    id: crypto.randomUUID(),
+    type: 'shape',
+    color,
+    size,
+    shape: 'arrow',
+    position: normalizePoint({
+      x: center.x - length / 2,
+      y: center.y - height / 2,
+    }),
+    width: length,
+    height,
+    rotation: roundCoordinate(Math.atan2(deltaY, deltaX)),
+  }
+}
+
 export function createImageElement(position: BoardPoint, width: number, height: number, src: string): BoardImageElement {
   return {
     id: crypto.randomUUID(),
@@ -1447,7 +1498,58 @@ function distancePointToSegment(point: BoardPoint, start: BoardPoint, end: Board
   return distanceBetweenPoints(point, projection)
 }
 
+function getShapeStrokeWidth(element: BoardShapeElement, zoom: number) {
+  const multiplier = element.shape === 'arrow' ? 0.38 : 0.22
+  return Math.max(1, sizeToPixels[element.size] * zoom * multiplier)
+}
+
+function getArrowHeadLength(width: number, height: number) {
+  return Math.min(width * 0.28, Math.max(height * 1.15, 18))
+}
+
+function isPointNearArrow(element: BoardShapeElement, point: BoardPoint, threshold: number) {
+  const localPoint = getLocalRotatedPoint(point, element.position, element.width, element.height, element.rotation)
+  const headLength = getArrowHeadLength(element.width, element.height)
+  const tipX = element.position.x + element.width
+  const shaftEndX = tipX - headLength
+  const centerY = element.position.y + element.height / 2
+  const tolerance = threshold + Math.max(4, sizeToPixels[element.size] * 0.5)
+  const segments = [
+    {
+      start: { x: element.position.x, y: centerY },
+      end: { x: shaftEndX, y: centerY },
+    },
+    {
+      start: { x: shaftEndX, y: element.position.y },
+      end: { x: tipX, y: centerY },
+    },
+    {
+      start: { x: shaftEndX, y: element.position.y + element.height },
+      end: { x: tipX, y: centerY },
+    },
+  ]
+
+  return segments.some((segment) => distancePointToSegment(localPoint, segment.start, segment.end) <= tolerance)
+}
+
 function isPointInsideRotatedRect(
+  point: BoardPoint,
+  position: BoardPoint,
+  width: number,
+  height: number,
+  rotation: number,
+) {
+  const localPoint = getLocalRotatedPoint(point, position, width, height, rotation)
+
+  return (
+    localPoint.x >= position.x &&
+    localPoint.x <= position.x + width &&
+    localPoint.y >= position.y &&
+    localPoint.y <= position.y + height
+  )
+}
+
+function getLocalRotatedPoint(
   point: BoardPoint,
   position: BoardPoint,
   width: number,
@@ -1458,14 +1560,8 @@ function isPointInsideRotatedRect(
     x: position.x + width / 2,
     y: position.y + height / 2,
   }
-  const localPoint = rotatePoint(point, center, -rotation)
 
-  return (
-    localPoint.x >= position.x &&
-    localPoint.x <= position.x + width &&
-    localPoint.y >= position.y &&
-    localPoint.y <= position.y + height
-  )
+  return rotatePoint(point, center, -rotation)
 }
 
 function isPointInPolygon(point: BoardPoint, polygon: BoardPoint[]) {

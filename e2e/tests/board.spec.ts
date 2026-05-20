@@ -156,7 +156,7 @@ test.describe('board view', () => {
 
   test('tool rail has all expected tools and tool panels', async ({ page }) => {
     await loginAndCreateBoard(page)
-    for (const label of ['Select', 'Pan', 'Pencil', 'Text', 'Shapes', 'Eraser', 'Lasso']) {
+    for (const label of ['Select', 'Pan', 'Pencil', 'Text', 'Shapes', 'Arrow', 'Eraser', 'Lasso']) {
       await expect(page.getByRole('button', { name: label })).toBeVisible()
     }
 
@@ -166,6 +166,50 @@ test.describe('board view', () => {
     await expect(page.locator('.panel--tool-settings')).toContainText('Text')
     await page.getByRole('button', { name: 'Shapes' }).click()
     await expect(page.locator('.panel--tool-settings')).toContainText('Shapes')
+    await page.getByRole('button', { name: 'Arrow' }).click()
+    await expect(page.locator('.panel--tool-settings')).toContainText('Arrow')
+  })
+
+  test('arrow tool creates persisted arrows from the tool rail and keyboard shortcut', async ({ page }) => {
+    await loginAndCreateBoard(page)
+
+    await page.getByRole('button', { name: 'Arrow' }).click()
+    await page.getByRole('button', { name: 'red' }).click()
+    await page.getByRole('button', { name: '8 px' }).click()
+    await dragCanvasAtPage(page, { x: -140, y: -30 }, { x: 80, y: 90 })
+
+    await expect.poll(async () => {
+      const elements = await getDocumentElements(page)
+      return elements.filter((element) => element.type === 'shape' && element.shape === 'arrow').length
+    }).toBe(1)
+
+    await page.keyboard.press('V')
+    await page.keyboard.press('A')
+    const stateAfterShortcut = await getRuntimeState(page)
+    expect(stateAfterShortcut?.activeTool).toBe('arrow')
+
+    await dragCanvasAtPage(page, { x: 180, y: 120 }, { x: -40, y: 180 })
+
+    await expect.poll(async () => {
+      const elements = await getDocumentElements(page)
+      return elements.filter((element) => element.type === 'shape' && element.shape === 'arrow').length
+    }).toBe(2)
+
+    const arrowsBeforeReload = (await getDocumentElements(page)).filter(
+      (element) => element.type === 'shape' && element.shape === 'arrow',
+    )
+    expect(arrowsBeforeReload).toHaveLength(2)
+    expect(arrowsBeforeReload.every((element) => element.color === 'red' && element.size === 'l')).toBeTruthy()
+
+    await page.waitForTimeout(500)
+    await page.reload()
+    await expect(page.locator('.board-status-overlay')).not.toBeVisible({ timeout: 10000 })
+
+    const arrowsAfterReload = (await getDocumentElements(page)).filter(
+      (element) => element.type === 'shape' && element.shape === 'arrow',
+    )
+    expect(arrowsAfterReload).toHaveLength(2)
+    expect(arrowsAfterReload.every((element) => element.color === 'red' && element.size === 'l')).toBeTruthy()
   })
 
   test('context menu appears when right-clicking a native shape', async ({ page }) => {

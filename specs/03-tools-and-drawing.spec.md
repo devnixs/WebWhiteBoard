@@ -10,6 +10,10 @@
 - [X] The text settings panel allows selecting font family.
 - [X] The left tools panel includes a shapes tool.
 - [X] The shapes tool allows choosing from multiple supported shapes such as circle and square.
+- [X] The left tools panel includes an arrow tool for creating directional arrows without opening the shapes preset picker.
+- [X] Activating the arrow tool opens a compact tool settings panel for arrow-specific options.
+- [X] The arrow settings panel allows selecting arrow color.
+- [X] The arrow settings panel allows selecting arrow stroke size.
 - [X] The left tools panel includes an eraser tool.
 - [X] Activating the eraser tool allows selecting eraser size.
 - [X] The left tools panel includes a lasso selection tool.
@@ -24,6 +28,8 @@
 - [ ] The selected pencil color is preserved after receiving a remote collaboration document update, so strokes drawn immediately after a remote sync still appear in the user's chosen color.
 - [X] The settings panel for every tool that has one (pencil, text, shapes, eraser, lasso) can be collapsed to reclaim canvas real estate without deactivating the tool.
 - [X] Activating a tool from the tool rail keeps that tool active for repeated use — drawing a pencil stroke, placing a shape, or creating a text item does not silently revert the active tool back to the select tool.
+- [X] Dragging on the canvas with the arrow tool active creates an arrow element with a visible directional arrowhead from the drag origin toward the drag endpoint.
+- [X] Arrow elements render through the native canvas runtime, remain selectable like other board items, and preserve their color and draw size when duplicated, synchronized, and reloaded.
 - [X] Clicking the canvas with the text tool active opens an editable text input at the click location, focuses it, and lets the user type and commit text without the tool being deselected mid-interaction.
 - [X] After clicking the canvas with the text tool active, a blinking text caret (the standard `|` insertion-point indicator) appears at the click location to signal that the position is the active text input target.
 - [X] After clicking the canvas with the text tool active, the user can start typing immediately on the keyboard without any further click, focus action, or modal step, and the typed characters appear at the caret position in real time.

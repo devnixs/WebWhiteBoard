@@ -15,11 +15,11 @@ export type KnownBoard = {
 }
 
 export type BoardHistoryStore = Record<string, KnownBoard[]>
-export type BoardTool = 'select' | 'hand' | 'pencil' | 'text' | 'shapes' | 'eraser' | 'lasso'
+export type BoardTool = 'select' | 'hand' | 'pencil' | 'text' | 'shapes' | 'arrow' | 'eraser' | 'lasso'
 export type ColorChoice = 'blue' | 'green' | 'orange' | 'red' | 'violet' | 'black'
 export type SizeChoice = 's' | 'm' | 'l' | 'xl'
 export type FontChoice = 'draw' | 'sans' | 'serif' | 'mono'
-export type ShapeChoice = 'rectangle' | 'ellipse' | 'diamond' | 'star'
+export type ShapeChoice = 'rectangle' | 'ellipse' | 'diamond' | 'star' | 'arrow'
 export type ConnectionState = 'connecting' | 'online' | 'offline'
 export type BoardPoint = {
   x: number
