@@ -374,11 +374,14 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
   ])
 
   const contextMenuCapabilities = useMemo(() => {
-    const selected = getElementsByIds(document, contextMenu?.selectedIds ?? [])
+    const ids = contextMenu?.selectedIds ?? []
+    const selected = getElementsByIds(document, ids)
     return {
       supportsColor: selected.some((element) => element.type !== 'image'),
       supportsDrawSize: selected.some((element) => element.type === 'stroke' || element.type === 'shape'),
       supportsFont: selected.some((element) => element.type === 'text'),
+      currentColor: getSharedColorForSelection(document, ids),
+      hasMixedColor: selectionHasMixedColors(document, ids),
     }
   }, [contextMenu?.selectedIds, document])
 
@@ -1418,8 +1421,8 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
             supportsColor: contextMenuCapabilities.supportsColor,
             supportsDrawSize: contextMenuCapabilities.supportsDrawSize,
             supportsFont: contextMenuCapabilities.supportsFont,
-            currentColor: getSharedColorForSelection(documentRef.current, contextMenu.selectedIds),
-            hasMixedColor: selectionHasMixedColors(documentRef.current, contextMenu.selectedIds),
+            currentColor: contextMenuCapabilities.currentColor,
+            hasMixedColor: contextMenuCapabilities.hasMixedColor,
           }}
           onBringToFront={() => applyContextAction(bringSelectionToFront)}
           onDelete={() => {
