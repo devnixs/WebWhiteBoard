@@ -218,13 +218,13 @@ test.describe('board view', () => {
     })
 
     await clickCanvasAtPage(page, { x: 240, y: 220 }, 'right')
-    await page.getByText('Duplicate').click()
+    await page.getByRole('button', { name: 'Duplicate' }).click()
     await waitForElementCount(page, (elements) =>
       elements.filter((element) => element.type === 'shape').length === 2,
     )
 
     await clickCanvasAtPage(page, { x: 268, y: 248 }, 'right')
-    await page.getByText('Delete').click()
+    await page.getByRole('button', { name: 'Delete' }).click()
     await waitForElementCount(page, (elements) =>
       elements.filter((element) => element.type === 'shape').length === 1,
     )

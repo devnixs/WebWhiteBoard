@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef, useState } from 'react'
 import type { ContextMenuState } from '../../app/types'
 import { modifierGlyph } from '../../app/utils'
 import { IconBack, IconDuplicate, IconFront, IconPalette, IconTrash, IconType } from '../common/Icons'
@@ -25,8 +26,33 @@ export function SelectionContextMenu({
   onIncreaseDrawSize,
   onToggleFontFamily,
 }: SelectionContextMenuProps) {
+  const menuRef = useRef<HTMLElement | null>(null)
+  const [position, setPosition] = useState(() => ({ x: contextMenu.x, y: contextMenu.y }))
+
+  useLayoutEffect(() => {
+    const menu = menuRef.current
+    if (!menu) {
+      setPosition({ x: contextMenu.x, y: contextMenu.y })
+      return
+    }
+
+    const viewportPadding = 12
+    const rect = menu.getBoundingClientRect()
+    const maxX = Math.max(viewportPadding, window.innerWidth - rect.width - viewportPadding)
+    const maxY = Math.max(viewportPadding, window.innerHeight - rect.height - viewportPadding)
+
+    setPosition({
+      x: Math.min(Math.max(contextMenu.x, viewportPadding), maxX),
+      y: Math.min(Math.max(contextMenu.y, viewportPadding), maxY),
+    })
+  }, [contextMenu])
+
   return (
-    <section className="selection-menu" style={{ left: contextMenu.x, top: contextMenu.y }}>
+    <section
+      className="selection-menu"
+      ref={menuRef}
+      style={{ left: position.x, top: position.y }}
+    >
       <button className="selection-menu__item" onClick={onBringToFront} type="button">
         <span className="selection-menu__icon"><IconFront size={14} /></span>
         <span>Bring to front</span>

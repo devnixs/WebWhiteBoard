@@ -313,19 +313,20 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     [selectedElements],
   )
   const rotateHandlePoint = selectionBounds ? getRotateHandlePoint(selectionBounds) : null
-  const isEditingExistingElement = Boolean(textEditor?.editingElementId)
+  const editingElementId = textEditor?.editingElementId ?? null
+  const isEditingExistingElement = Boolean(editingElementId)
   const renderDocument = useMemo(() => {
-    if (!textEditor?.editingElementId) {
+    if (!editingElementId) {
       return document
     }
 
     return {
       ...document,
       store: {
-        elements: document.store.elements.filter((el) => el.id !== textEditor.editingElementId),
+        elements: document.store.elements.filter((el) => el.id !== editingElementId),
       },
     }
-  }, [document, textEditor?.editingElementId])
+  }, [document, editingElementId])
   const renderPreview = useMemo<BoardRenderPreview>(() => ({
     draftStroke: draftStroke ? { color: drawColor, points: draftStroke, size: drawSize } : null,
     draftShape: draftShape?.type === 'shape' ? draftShape : null,
