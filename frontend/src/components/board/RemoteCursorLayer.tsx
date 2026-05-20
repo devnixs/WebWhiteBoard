@@ -1,42 +1,33 @@
-import { useValue } from '@tldraw/state-react'
-import type { Editor } from 'tldraw'
-import type { RealtimeCursor } from '../../app/types'
+import { pageToScreen } from '../../app/canvasRuntime'
+import type { BoardCanvasSize, BoardViewport, RealtimeCursor } from '../../app/types'
 
 type RemoteCursorLayerProps = {
+  canvasSize: BoardCanvasSize
   cursors: Record<string, RealtimeCursor>
-  editor: Editor
+  viewport: BoardViewport
 }
 
-export function RemoteCursorLayer({ cursors, editor }: RemoteCursorLayerProps) {
-  const visibleCursors = useValue(
-    'remoteCursorScreenPoints',
-    () => {
-      editor.getCamera()
-
-      return Object.values(cursors).map((cursor) => ({
-        cursor,
-        screenPoint: editor.pageToScreen({ x: cursor.x, y: cursor.y }),
-      }))
-    },
-    [editor, cursors],
-  )
-
+export function RemoteCursorLayer({ canvasSize, cursors, viewport }: RemoteCursorLayerProps) {
   return (
     <div className="remote-cursor-layer">
-      {visibleCursors.map(({ cursor, screenPoint }) => (
-        <div
-          className="remote-cursor"
-          key={cursor.actorId}
-          style={{
-            transform: `translate(${screenPoint.x}px, ${screenPoint.y}px)`,
-          }}
-        >
-          <div className="remote-cursor__pointer" style={{ borderTopColor: cursor.color }} />
-          <div className="remote-cursor__label" style={{ background: cursor.color }}>
-            {cursor.displayName}
+      {Object.values(cursors).map((cursor) => {
+        const screenPoint = pageToScreen({ x: cursor.x, y: cursor.y }, viewport, canvasSize)
+
+        return (
+          <div
+            className="remote-cursor"
+            key={cursor.actorId}
+            style={{
+              transform: `translate(${screenPoint.x}px, ${screenPoint.y}px)`,
+            }}
+          >
+            <div className="remote-cursor__pointer" style={{ borderTopColor: cursor.color }} />
+            <div className="remote-cursor__label" style={{ background: cursor.color }}>
+              {cursor.displayName}
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }

@@ -1,5 +1,3 @@
-import type { Editor, TLContent, TLShapeId } from 'tldraw'
-
 export type RouteState =
   | { kind: 'home' }
   | { kind: 'board'; boardId: string }
@@ -23,12 +21,98 @@ export type SizeChoice = 's' | 'm' | 'l' | 'xl'
 export type FontChoice = 'draw' | 'sans' | 'serif' | 'mono'
 export type ShapeChoice = 'rectangle' | 'ellipse' | 'diamond' | 'star'
 export type ConnectionState = 'connecting' | 'online' | 'offline'
-export type BoardDocumentSnapshot = ReturnType<Editor['getSnapshot']>['document']
+export type BoardPoint = {
+  x: number
+  y: number
+}
+
+export type BoardBounds = {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+export type BoardViewport = {
+  x: number
+  y: number
+  zoom: number
+}
+
+export type BoardCanvasSize = {
+  width: number
+  height: number
+}
+
+export type BoardStrokeElement = {
+  id: string
+  type: 'stroke'
+  color: ColorChoice
+  size: SizeChoice
+  points: BoardPoint[]
+}
+
+export type BoardTextElement = {
+  id: string
+  type: 'text'
+  color: ColorChoice
+  font: FontChoice
+  size: SizeChoice
+  position: BoardPoint
+  scale: number
+  rotation: number
+  text: string
+}
+
+export type BoardShapeElement = {
+  id: string
+  type: 'shape'
+  color: ColorChoice
+  size: SizeChoice
+  shape: ShapeChoice
+  position: BoardPoint
+  width: number
+  height: number
+  rotation: number
+}
+
+export type BoardImageElement = {
+  id: string
+  type: 'image'
+  position: BoardPoint
+  width: number
+  height: number
+  rotation: number
+  src: string
+}
+
+export type BoardElement =
+  | BoardStrokeElement
+  | BoardTextElement
+  | BoardShapeElement
+  | BoardImageElement
+
+export type BoardDocumentSnapshot = {
+  schema: {
+    kind: 'wwb.native-board'
+    version: 1
+  }
+  store: {
+    elements: BoardElement[]
+  }
+}
+
+export type BoardRuntimeDebugState = {
+  document: BoardDocumentSnapshot
+  viewport: BoardViewport
+  canvasSize: BoardCanvasSize
+  activeTool: BoardTool
+}
 
 export type ContextMenuState = {
   x: number
   y: number
-  selectedShapeIds: TLShapeId[]
+  selectedShapeIds: string[]
   supportsColor: boolean
   supportsDrawSize: boolean
   supportsFont: boolean
@@ -53,7 +137,7 @@ export type SessionReadyMessage = {
   type: 'session.ready'
   boardId: string
   version: number
-  document: BoardDocumentSnapshot | null
+  document: unknown | null
   cursors: RealtimeCursor[]
   participants: RealtimeParticipant[]
 }
@@ -77,7 +161,7 @@ export type BoardDocumentUpdatedMessage = {
   boardId: string
   actorId: string
   version: number
-  document: BoardDocumentSnapshot | null
+  document: unknown | null
 }
 
 export type CursorUpdatedMessage = {
@@ -97,7 +181,7 @@ export type SyncRejectedMessage = {
   boardId: string
   message: string
   version: number
-  document: BoardDocumentSnapshot | null
+  document: unknown | null
 }
 
 export type PongMessage = {
@@ -155,8 +239,6 @@ export type BoardRealtimeClientMessage =
   | BoardDocumentReplaceClientMessage
   | CursorUpdateClientMessage
   | PingClientMessage
-
-export type SelectionClipboardContent = TLContent | null
 
 export type BoardUploadNotice = {
   id: number

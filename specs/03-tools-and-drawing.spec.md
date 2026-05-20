@@ -13,11 +13,21 @@
 - [X] The left tools panel includes an eraser tool.
 - [X] Activating the eraser tool allows selecting eraser size.
 - [X] The left tools panel includes a lasso selection tool.
+- [ ] The board's rendering, hit-testing, and authoring interactions are driven by an application-owned native HTML canvas surface while preserving the existing floating tool UI.
 - [X] The whiteboard canvas is infinite in all directions.
 - [X] Users can draw, write, and place shapes anywhere on the infinite canvas without artificial bounds.
+- [ ] Pencil strokes, text, shapes, pasted images, and transient interaction previews all render through the native canvas engine without exposing third-party editor chrome inside the board.
 - [X] Pasting an image with `Ctrl+V` on Windows/Linux or `Cmd+V` on macOS inserts the image into the board.
 - [X] Pasting an image inserts it exactly once — no duplicate copy is produced on the canvas.
 - [X] Drawing interactions remain responsive even when persistence or collaboration traffic is active in the background.
 - [X] Holding `Shift` while using the pencil constrains drawing to straight snapped directions at 0 degrees, 90 degrees, 180 degrees, and 270 degrees.
-- [X] The selected pencil color is preserved after receiving a remote collaboration document update — strokes drawn immediately after a remote sync must appear in the user's chosen color, not tldraw's default black.
+- [ ] The selected pencil color is preserved after receiving a remote collaboration document update, so strokes drawn immediately after a remote sync still appear in the user's chosen color.
 - [X] The settings panel for every tool that has one (pencil, text, shapes, eraser, lasso) can be collapsed to reclaim canvas real estate without deactivating the tool.
+- [X] Activating a tool from the tool rail keeps that tool active for repeated use — drawing a pencil stroke, placing a shape, or creating a text item does not silently revert the active tool back to the select tool.
+- [X] Clicking the canvas with the text tool active opens an editable text input at the click location, focuses it, and lets the user type and commit text without the tool being deselected mid-interaction.
+- [X] After clicking the canvas with the text tool active, a blinking text caret (the standard `|` insertion-point indicator) appears at the click location to signal that the position is the active text input target.
+- [X] After clicking the canvas with the text tool active, the user can start typing immediately on the keyboard without any further click, focus action, or modal step, and the typed characters appear at the caret position in real time.
+- [X] The text caret continues to blink at the active position while the text input is empty, so the user has a clear visual signal that the canvas is ready to receive typed text.
+- [X] Pressing `Escape` while the text caret is active and the input is empty closes the text input without creating an empty text element and without leaving a residual caret on the canvas.
+- [X] Committing text (via blur or `Cmd/Ctrl+Enter`) renders the typed text as a permanent text element on the native canvas at the caret location, and the caret indicator is removed once the text is committed.
+- [X] The select tool only becomes active again automatically when the user explicitly switches tools (via the tool rail, keyboard shortcut, or pressing `Escape`).

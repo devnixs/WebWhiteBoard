@@ -20,7 +20,7 @@ Agents working in this repo must treat the spec files in `specs/` as the source 
 ## Required Stack
 
 - Frontend: React + Vite.
-- Whiteboard SDK: `tldraw`.
+- Board runtime: native HTML canvas.
 - Backend: ASP.NET Core 10.
 - Database: PostgreSQL.
 - Real-time transport: WebSockets.

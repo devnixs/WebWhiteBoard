@@ -26,3 +26,24 @@ export const colorToHex: Record<ColorChoice, string> = {
   violet: '#a855f7',
   black: '#1f2430',
 }
+
+export const sizeToPixels: Record<SizeChoice, number> = {
+  s: 2,
+  m: 4,
+  l: 8,
+  xl: 12,
+}
+
+export const fontFamilyLabels: Record<FontChoice, string> = {
+  draw: 'Draw',
+  sans: 'Sans',
+  serif: 'Serif',
+  mono: 'Mono',
+}
+
+export const fontPixelSizes: Record<SizeChoice, number> = {
+  s: 14,
+  m: 18,
+  l: 24,
+  xl: 32,
+}

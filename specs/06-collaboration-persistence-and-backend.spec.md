@@ -6,13 +6,15 @@
 - [X] The top-right panel includes an indicator for current WebSocket latency to the server.
 - [X] The collaboration model preserves local responsiveness even when remote updates are delayed or bursty.
 - [X] Board actions are synchronized over WebSockets in a form that can be validated and applied consistently by the backend.
+- [X] Real-time board mutations, viewport transforms, and persisted board snapshots use application-owned document and action schemas instead of third-party editor snapshot payloads.
 - [X] Backend validation prevents invalid or inconsistent board mutations from being accepted into the authoritative board state.
 - [X] Active board state is served from memory for low-latency collaboration.
 - [X] Board state is persisted asynchronously to PostgreSQL without requiring users to manually save.
 - [X] Persisted board state can be reloaded accurately after process restarts or reconnects.
+- [X] Remote cursor projection and incoming board updates remain visually anchored to the correct board positions after the native canvas runtime replaces the existing editor integration.
 - [X] Known-board metadata needed for homepage re-entry is preserved consistently with the user’s local board history model.
 - [X] Backend and persistence design avoid duplicating domain logic between transport handlers, persistence code, and controller endpoints.
 - [X] The backend has an automated integration test suite that exercises the real HTTP API and WebSocket collaboration endpoints against a real PostgreSQL database.
 - [X] Backend integration coverage includes board creation/loading, collaborative document synchronization, remote cursor broadcasting, and persisted board reload after application restart.
 - [X] The backend exposes an HTTP image-asset upload endpoint backed by server-side file storage, and stored asset files are served back over stable HTTP URLs without requiring PostgreSQL to hold the binary payload.
-- [ ] Persisted board snapshots in PostgreSQL contain only board structure and asset references — image binaries are stored on the server filesystem and addressed by URL, never embedded as base64 inside the snapshot JSON.
+- [X] Persisted board snapshots in PostgreSQL contain only board structure and asset references — image binaries are stored on the server filesystem and addressed by URL, never embedded as base64 inside the snapshot JSON.

@@ -1,6 +1,7 @@
 - [X] On laptop trackpads, moving around the infinite board is supported with a two-finger gesture.
 - [X] Zooming is supported with trackpad pinch gestures or the platform-appropriate pan and zoom gestures expected by users.
 - [X] Trackpad interactions are configured so attempting to pan left with two fingers does not trigger browser history navigation away from the board.
+- [ ] The native canvas camera supports smooth pointer, wheel, and trackpad pan-and-zoom behavior across supported desktop browsers without desynchronizing board content, selection overlays, or remote cursors.
 - [X] Keyboard shortcuts support both Windows/Linux conventions and macOS equivalents, replacing `Ctrl` with `Cmd` where appropriate.
 - [X] The shortcuts popup documents the supported shortcuts for all major board operations.
 - [X] The application includes convenient standard shortcuts beyond the explicitly requested ones when they fit the product model and do not conflict with browser behavior.

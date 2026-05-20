@@ -3,6 +3,7 @@
 - [X] The bounding box supports resizing the selected item.
 - [X] The bounding box supports rotation of the selected item.
 - [X] A visible rotate handle or icon is shown around the selection bounds.
+- [ ] Selection bounds, resize handles, rotate controls, and multi-select visuals are rendered by the application's native canvas interaction layer and remain aligned while the board is panned or zoomed.
 - [X] Multiple items can be added to the current selection by using `Ctrl` on Windows/Linux or `Cmd` on macOS while selecting.
 - [X] When multiple items are selected, each item’s own bounds remain visible.
 - [X] When multiple items are selected, a combined bounding box for the whole selection is also shown.
@@ -18,3 +19,4 @@
 - [X] Pressing `Delete` on Windows/Linux or the platform-appropriate delete key on macOS removes the current selection.
 - [X] Copying the current selection with `Ctrl+C` on Windows/Linux or `Cmd+C` on macOS stores a portable representation that can be pasted back into the board.
 - [X] Pasting a copied selection with `Ctrl+V` on Windows/Linux or `Cmd+V` on macOS creates duplicated board items with preserved editable properties.
+- [X] Double-clicking an existing text element with the select/cursor tool enters inline edit mode for that element, placing a blinking editable caret inside the existing text so the user can modify it without switching to the text tool.

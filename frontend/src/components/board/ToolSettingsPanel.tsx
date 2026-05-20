@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { FONT_FAMILIES, FONT_SIZES, STROKE_SIZES } from 'tldraw'
-import { colorChoices, colorToHex, fontChoices, shapeChoices, sizeChoices } from '../../app/constants'
+import { colorChoices, colorToHex, fontChoices, fontFamilyLabels, fontPixelSizes, shapeChoices, sizeChoices, sizeToPixels } from '../../app/constants'
 import type { BoardTool, ColorChoice, FontChoice, ShapeChoice, SizeChoice } from '../../app/types'
 import { IconChevronLeft, IconChevronRight } from '../common/Icons'
 
@@ -76,7 +75,7 @@ export function ToolSettingsPanel({
           <PanelHeader title="Text" subtitle="Font and size" onCollapse={collapse} />
           <SizePicker
             label="Font size"
-            renderValue={(size) => `${FONT_SIZES[size]} px`}
+            renderValue={(size) => `${fontPixelSizes[size]} px`}
             value={textSize}
             onChange={onChangeTextSize}
           />
@@ -84,7 +83,7 @@ export function ToolSettingsPanel({
             label="Font family"
             options={fontChoices.map((font) => ({
               id: font,
-              label: FONT_FAMILIES[font],
+              label: fontFamilyLabels[font],
             }))}
             value={textFont}
             onChange={(value) => onChangeTextFont(value as FontChoice)}
@@ -114,7 +113,7 @@ export function ToolSettingsPanel({
           <PanelHeader title="Eraser" subtitle="Adjust eraser size" onCollapse={collapse} />
           <SizePicker
             label="Eraser size"
-            renderValue={(size) => `${STROKE_SIZES[size]} px`}
+            renderValue={(size) => `${sizeToPixels[size]} px`}
             value={eraserSize}
             onChange={onChangeEraserSize}
           />
@@ -126,7 +125,7 @@ export function ToolSettingsPanel({
           <PanelHeader title="Lasso" subtitle="Selection mode" onCollapse={collapse} />
           <p className="tool-settings__helper">
             Drag on the canvas to select a region. This dedicated lasso entry currently uses the
-            board selection engine.
+            native board selection engine.
           </p>
         </>
       ) : null}
@@ -192,7 +191,7 @@ function SizePicker({
   mode = 'chips',
   value,
   onChange,
-  renderValue = (size: SizeChoice) => `${STROKE_SIZES[size]} px`,
+  renderValue = (size: SizeChoice) => `${sizeToPixels[size]} px`,
 }: {
   label?: string
   mode?: 'chips' | 'dots'
@@ -207,7 +206,7 @@ function SizePicker({
       options={sizeChoices.map((size) => ({
         id: size,
         label: renderValue(size),
-        sizePx: STROKE_SIZES[size],
+        sizePx: sizeToPixels[size],
       }))}
       value={value}
       onChange={(nextValue) => onChange(nextValue as SizeChoice)}

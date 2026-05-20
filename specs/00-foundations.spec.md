@@ -1,8 +1,10 @@
 - [X] The application is built with a React + Vite frontend, an ASP.NET Core 10 backend, PostgreSQL for persistence, and WebSockets for real-time collaboration.
+- [X] The board authoring surface is implemented with an application-owned native HTML canvas renderer and interaction layer rather than an embedded third-party whiteboard SDK.
 - [X] The architecture prioritizes low-latency drawing interactions, with local responsiveness preserved even while collaboration events are synchronizing.
 - [X] The board canvas is the primary interface and must remain visually unobstructed by large fixed chrome or unnecessary layout containers.
 - [X] The UI uses compact floating panels instead of a fixed header.
 - [X] All major board operations are represented as serializable actions whenever practical so they can be persisted, replayed, synchronized, and extended safely.
+- [X] The board document, runtime state, and collaboration payloads are defined by application-owned schemas so the frontend canvas engine, backend validation, and persistence format can evolve together without depending on a third-party editor snapshot model.
 - [X] Active boards live in memory for responsiveness and are persisted to PostgreSQL asynchronously without blocking user interactions.
 - [X] Business logic lives in the back end rather than being duplicated or embedded inconsistently in the frontend.
 - [X] Code is organized for extensibility so new tools, actions, panels, and board entity types can be added without reworking core flows.

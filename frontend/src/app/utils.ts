@@ -1,4 +1,4 @@
-import type { Editor, TLShapeId } from 'tldraw'
+import { normalizeBoardDocumentSnapshot } from './canvasRuntime'
 import { apiBaseUrl, boardHistoryStorageKey, colorChoices, colorPalette, fontChoices, identityStorageKey, isMacPlatform, sizeChoices } from './constants'
 import type { BoardDocumentSnapshot, BoardHistoryStore, ColorChoice, FontChoice, LocalIdentity, RealtimeCursor, RouteState, SizeChoice } from './types'
 
@@ -36,20 +36,8 @@ export function indexRemoteCursors(cursors: RealtimeCursor[], ownActorId: string
   }, {})
 }
 
-export function applyRemoteDocument(
-  editor: Editor,
-  document: BoardDocumentSnapshot,
-  isApplyingRemoteSnapshotRef: { current: boolean },
-) {
-  isApplyingRemoteSnapshotRef.current = true
-
-  try {
-    editor.loadSnapshot({ document })
-  } finally {
-    window.requestAnimationFrame(() => {
-      isApplyingRemoteSnapshotRef.current = false
-    })
-  }
+export function applyRemoteDocument(document: unknown): BoardDocumentSnapshot {
+  return normalizeBoardDocumentSnapshot(document)
 }
 
 export function getBoardSocketUrl(boardId: string) {
@@ -206,17 +194,6 @@ export function formatRelative(isoString: string) {
 
   const deltaDays = Math.round(deltaHours / 24)
   return `${deltaDays} day${deltaDays === 1 ? '' : 's'} ago`
-}
-
-export function getSelectionCapabilities(editor: Editor, selectedShapeIds: TLShapeId[]) {
-  const selectedShapes = editor.getSelectedShapes().filter((shape) => selectedShapeIds.includes(shape.id))
-  const shapeTypes = new Set(selectedShapes.map((shape) => shape.type))
-
-  return {
-    supportsColor: selectedShapes.some((shape) => ['draw', 'geo', 'text'].includes(shape.type)),
-    supportsDrawSize: selectedShapes.some((shape) => ['draw', 'geo'].includes(shape.type)),
-    supportsFont: selectedShapes.some((shape) => shapeTypes.has('text') && shape.type === 'text'),
-  }
 }
 
 export function isEditableTarget(target: EventTarget | null) {

@@ -1,4 +1,3 @@
-import type { TLAsset, TLAssetStore } from 'tldraw'
 import { getApiUrl, toMessage } from './utils'
 
 type AssetUploadHttpResponse = {
@@ -6,8 +5,9 @@ type AssetUploadHttpResponse = {
   Url?: string
 }
 
-type BoardAssetStoreOptions = {
+type UploadBoardAssetOptions = {
   onUploadError?: (message: string) => void
+  signal?: AbortSignal
 }
 
 function getStoredAssetUrl(response: AssetUploadHttpResponse) {
@@ -23,43 +23,30 @@ async function readUploadFailureMessage(response: Response) {
   }
 }
 
-export function createBoardAssetStore(options: BoardAssetStoreOptions = {}): TLAssetStore {
-  return {
-    async upload(_asset: TLAsset, file: File, abortSignal?: AbortSignal) {
-      const formData = new FormData()
-      formData.set('file', file, file.name)
+export async function uploadBoardAsset(file: File, options: UploadBoardAssetOptions = {}) {
+  const formData = new FormData()
+  formData.set('file', file, file.name)
 
-      try {
-        const response = await fetch(getApiUrl('/assets'), {
-          method: 'POST',
-          body: formData,
-          signal: abortSignal,
-        })
+  try {
+    const response = await fetch(getApiUrl('/assets'), {
+      method: 'POST',
+      body: formData,
+      signal: options.signal,
+    })
 
-        if (!response.ok) {
-          throw new Error(await readUploadFailureMessage(response))
-        }
+    if (!response.ok) {
+      throw new Error(await readUploadFailureMessage(response))
+    }
 
-        const storedAsset = (await response.json()) as AssetUploadHttpResponse
-        const src = getStoredAssetUrl(storedAsset)
-        if (!src) {
-          throw new Error('Upload completed without a usable asset URL.')
-        }
+    const storedAsset = (await response.json()) as AssetUploadHttpResponse
+    const src = getStoredAssetUrl(storedAsset)
+    if (!src) {
+      throw new Error('Upload completed without a usable asset URL.')
+    }
 
-        return { src }
-      } catch (error) {
-        const message = toMessage(error)
-        options.onUploadError?.(message)
-        throw error
-      }
-    },
-
-    resolve(asset) {
-      return asset.props.src
-    },
-
-    async remove() {
-      return
-    },
+    return src
+  } catch (error) {
+    options.onUploadError?.(toMessage(error))
+    throw error
   }
 }

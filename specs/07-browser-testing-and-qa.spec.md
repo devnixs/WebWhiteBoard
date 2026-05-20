@@ -10,6 +10,7 @@
 - [X] Manual testing covers the board grid overlay to confirm faint line-based grid lines are visible behind content without reducing readability of drawings or floating panels.
 - [X] Manual testing covers each primary tool, including select, pencil, text, shapes, eraser, and lasso.
 - [X] Manual testing covers infinite canvas navigation, trackpad panning, zooming, and protection against accidental browser back navigation.
+- [ ] Manual Chrome DevTools verification of the native canvas runtime covers drawing, text, shapes, image paste, selection handles, resize, rotate, duplication, lasso, pan, zoom, and shortcut flows on `/board/{guid}`.
 - [X] Manual testing covers image paste behavior using platform-appropriate clipboard input.
 - [X] Manual testing of image paste confirms that the pasted image is uploaded to the backend, stored as a file in the asset upload folder, served back to the canvas via a static URL, visible to a second connected participant, and still visible after a full page reload.
 - [X] End-to-end coverage for image paste verifies that the pasted image uploads through the backend asset endpoint, appears exactly once, persists as an asset URL instead of inline base64, remains visible to a second participant, preserves legacy base64 board rendering, and surfaces a visible failure notice when an upload is rejected.
@@ -17,6 +18,7 @@
 - [X] Manual testing covers keyboard shortcuts on both Windows/Linux conventions and macOS equivalents as applicable to the implementation environment.
 - [X] Manual testing covers multi-user collaboration with visible remote cursors, names, colors, and low-latency update behavior.
 - [X] Manual testing covers local camera pan and zoom during multi-user collaboration to confirm remote cursors remain anchored to the same board content.
+- [X] End-to-end coverage for the native canvas migration verifies board creation, drawing, selection editing, collaboration, asset rendering, and persisted reload behavior without `tldraw` present in the shipped frontend dependency graph.
 - [X] Manual testing covers reconnect or reload scenarios to confirm persisted board state is restored correctly.
 - [X] After any major frontend component decomposition or file-structure refactor, manual Chrome DevTools regression testing covers both `/` and `/board/{guid}` to confirm the extracted components preserve the existing login, board creation, drawing, sharing, selection, and collaboration-visible UI behavior.
 - [X] The browser test suite is structured so each major feature area has at least one meaningful end-to-end flow that exercises the real system through the UI.

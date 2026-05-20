@@ -118,15 +118,38 @@ public sealed class BoardApiIntegrationTests
             using var document = JsonDocument.Parse("""
                 {
                   "schema": {
-                    "schemaVersion": 2
+                    "kind": "wwb.native-board",
+                    "version": 1
                   },
                   "store": {
-                    "shape:seed": {
-                      "id": "shape:seed",
-                      "typeName": "shape",
-                      "x": 120,
-                      "y": 80
-                    }
+                    "elements": [
+                      {
+                        "id": "shape-seed",
+                        "type": "shape",
+                        "color": "blue",
+                        "size": "m",
+                        "shape": "rectangle",
+                        "position": {
+                          "x": 120,
+                          "y": 80
+                        },
+                        "width": 180,
+                        "height": 120,
+                        "rotation": 0
+                      },
+                      {
+                        "id": "image-seed",
+                        "type": "image",
+                        "position": {
+                          "x": 360,
+                          "y": 220
+                        },
+                        "width": 96,
+                        "height": 96,
+                        "rotation": 0,
+                        "src": "/assets/persisted-seed.png"
+                      }
+                    ]
                   }
                 }
                 """);
@@ -150,9 +173,19 @@ public sealed class BoardApiIntegrationTests
 
             await _postgres.WaitForBoardSnapshotAsync(connectionString, boardId, persisted =>
             {
-                var store = persisted.GetProperty("document").GetProperty("store");
+                var persistedDocument = persisted.GetProperty("document");
+                var schema = persistedDocument.GetProperty("schema");
+                var elements = persistedDocument.GetProperty("store").GetProperty("elements").EnumerateArray().ToArray();
                 return persisted.GetProperty("version").GetInt64() == 2
-                    && store.TryGetProperty("shape:seed", out _)
+                    && schema.GetProperty("kind").GetString() == "wwb.native-board"
+                    && schema.GetProperty("version").GetInt32() == 1
+                    && elements.Any(element =>
+                        element.GetProperty("id").GetString() == "shape-seed"
+                        && element.GetProperty("type").GetString() == "shape")
+                    && elements.Any(element =>
+                        element.GetProperty("id").GetString() == "image-seed"
+                        && element.GetProperty("type").GetString() == "image"
+                        && element.GetProperty("src").GetString() == "/assets/persisted-seed.png")
                     && persisted.GetProperty("cursors").GetArrayLength() == 0;
             });
 
@@ -168,11 +201,21 @@ public sealed class BoardApiIntegrationTests
 
         var reloadedBoard = await reloadedResponse.Content.ReadFromJsonAsync<JsonElement>();
         var reloadedSnapshot = reloadedBoard.GetProperty("snapshot");
-        var reloadedStore = reloadedSnapshot.GetProperty("document").GetProperty("store");
+        var reloadedDocument = reloadedSnapshot.GetProperty("document");
+        var reloadedSchema = reloadedDocument.GetProperty("schema");
+        var reloadedElements = reloadedDocument.GetProperty("store").GetProperty("elements").EnumerateArray().ToArray();
 
         Assert.Equal(boardId, reloadedSnapshot.GetProperty("boardId").GetGuid());
         Assert.Equal(2, reloadedSnapshot.GetProperty("version").GetInt64());
-        Assert.True(reloadedStore.TryGetProperty("shape:seed", out _));
+        Assert.Equal("wwb.native-board", reloadedSchema.GetProperty("kind").GetString());
+        Assert.Equal(1, reloadedSchema.GetProperty("version").GetInt32());
+        Assert.Contains(reloadedElements, element =>
+            element.GetProperty("id").GetString() == "shape-seed"
+            && element.GetProperty("type").GetString() == "shape");
+        Assert.Contains(reloadedElements, element =>
+            element.GetProperty("id").GetString() == "image-seed"
+            && element.GetProperty("type").GetString() == "image"
+            && element.GetProperty("src").GetString() == "/assets/persisted-seed.png");
         Assert.Empty(reloadedSnapshot.GetProperty("cursors").EnumerateArray());
     }
 

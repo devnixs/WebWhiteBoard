@@ -28,3 +28,9 @@
 - `stories/18-backend-integration-test-suite.story_COMPLETE.md`
 - `stories/19-board-asset-upload-backend.story_COMPLETE.md`
 - `stories/20-board-asset-upload-frontend.story_COMPLETE.md`
+- `stories/21-native-html-canvas-runtime.story_COMPLETE.md`
+- `stories/22-native-html-canvas-tools-and-selection.story_IN_PROGRESS.md`
+- `stories/23-native-html-canvas-collaboration-assets-and-qa.story_COMPLETE.md`
+- `stories/24-native-canvas-tool-persistence-text-and-paste-fixes.story_COMPLETE.md`
+- `stories/25-text-tool-blinking-caret-and-immediate-typing.story_COMPLETE.md`
+- `stories/26-double-click-text-to-edit.story_TODO.md`
