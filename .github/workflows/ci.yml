@@ -11,6 +11,18 @@ permissions:
   packages: write
 
 jobs:
+  workflow-contract-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate specs and stories
+        run: npm run validate:workflow
+
   frontend-check:
     runs-on: ubuntu-latest
     steps:

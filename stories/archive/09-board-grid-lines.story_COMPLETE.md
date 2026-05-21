@@ -21,7 +21,7 @@
 
 - [X] The grid should read as a light orientation aid rather than a primary visual element.
 - [X] The line treatment should stay subtle enough that the board does not feel busy or reduce contrast for user-created content.
-- [ ] Any automated browser coverage should still run against the real backend and real PostgreSQL setup used by the project.
+- [X] Any automated browser coverage should still run against the real backend and real PostgreSQL setup used by the project.
 
 ## Browser Test
 

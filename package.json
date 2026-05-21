@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "generate:story-map": "node scripts/generate-story-map.js",
+    "validate:workflow": "node scripts/validate-workflow.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

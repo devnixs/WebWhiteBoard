@@ -1,25 +1,35 @@
-- [X] The application defines a central set of CSS custom properties (design tokens) in `index.css` that correspond to the THEME values in `design-guidelines/project/app.jsx`: background, panel, ink, muted, border, accent, accent-on, accent-tint, panel-shadow, panel-shadow-strong, grid, grid-faint, and supporting neutrals used by the prototype.
-- [X] All floating panels on the board view and all cards on the homepage/auth screens use the `--panel` token (`#ffffff`) as their background, without backdrop-filter blur effects.
-- [X] Panel and card borders use the `--border` token color (`#e4e7ec`) rather than rgba opacity variants.
-- [X] Floating panel box-shadows use the `--panel-shadow` token value.
-- [X] Strong card box-shadows (login card, homepage cards) use the `--panel-shadow-strong` token value.
-- [X] The primary accent color across all interactive elements (active tool buttons, primary buttons, focus rings, share-copied state) derives from the `--accent` token (`oklch(0.58 0.16 254)`), with white text on accent backgrounds using `--accent-on`.
-- [X] Tinted/soft accent fills (badges, highlight backgrounds, active option chips) use the `--accent-tint` token.
-- [X] The application body and page background uses the `--bg` token (`#f7f8fa`) instead of a radial-gradient blue tinted background.
-- [X] The board canvas background color uses the `--canvas` token (`#fafbfc`).
-- [X] Primary text (headings, tool labels, panel content) uses the `--ink` token (`#0f172a`).
-- [X] Secondary and helper text uses the `--muted` token (`#64748b`).
-- [X] The UI font stack is updated to `"Helvetica Neue", Helvetica, Arial, sans-serif` matching the design guidelines.
-- [X] Monospace text (keyboard shortcut keys, board IDs, tool hints) uses `"JetBrains Mono", "SFMono-Regular", monospace`.
-- [X] Floating panel border-radius is `12px` for rectangular panels and `999px` for pill-shaped panels, matching the design guidelines.
-- [X] Active tool buttons show the `--accent` background with `--accent-on` text color; inactive tool buttons are transparent with `--ink` text.
-- [X] The board grid lines use the `--grid` token color (`rgba(15, 23, 42, 0.12)` for major lines, a proportionally fainter value for minor lines) rather than the current blue-tinted rgba values.
-- [X] The homepage and login screens no longer use a blue radial-gradient tinted background; they use the flat `--bg` token.
-- [X] No design token values are duplicated via hardcoded hex literals in the CSS — each value is defined once in the `:root` token block and referenced via `var()`.
-- [X] Shared visual primitives in the production app mirror the reference components in `design-guidelines/project/board-chrome.jsx` and `design-guidelines/project/screens.jsx`, including the same button treatments, pill shapes, panel spacing, border weights, divider styles, and shadow hierarchy, while remaining implemented inside the real application codebase.
-- [X] The production icon set is visually identical to the reference SVG strokes in `design-guidelines/project/icons.jsx` for the board tools, share, zoom, shortcuts, logout, context-menu actions, and homepage board list affordances, without importing the design-guidelines files at runtime.
-- [X] The unauthenticated `/` route visually matches `design-guidelines/Screenshots/Screenshot1 - Login.png`: dotted page backdrop, top-left brand mark, centered welcome card, focused name field styling, eight-color palette row, accent primary button, and supporting copy placement.
-- [X] The authenticated `/` route visually matches `design-guidelines/Screenshots/Screenshot2 - Board selector.png`: top-left brand, top-right identity pill, returning-user heading block, dashed new-board callout, board-list card, search affordance, selected first row highlight, avatar stack treatment, and footer helper copy.
-- [X] The default board chrome visually matches `design-guidelines/Screenshots/Screenshot3 - Full board view.png`: top-left share pill with board id, separate top-right latency, collaborator, and identity pills, left-side vertical tool rail, bottom-right zoom cluster, and a faint line-grid canvas with restrained neutral contrast.
-- [X] The active-pencil board state visually matches `design-guidelines/Screenshots/Screenshot4 - Keyboard Shortcut Menu.png`: copied-link share state, active pencil tool treatment, pencil options flyout, dimmed modal backdrop, and keyboard shortcuts modal layout and styling.
-- [X] Where screenshot parity depends on seeded example content rather than user-created content, the app provides a deterministic browser-QA setup so those reference states can be reproduced for visual comparison without weakening normal product behavior.
+---
+area: visual-design-tokens
+owners:
+  - frontend
+status: active
+depends_on:
+  - specs/00-foundations.spec.md
+  - specs/02-board-layout-and-panels.spec.md
+---
+
+- [X] DESIGN-001: The application defines a central set of CSS custom properties (design tokens) in `index.css` that correspond to the THEME values in `design-guidelines/project/app.jsx`: background, panel, ink, muted, border, accent, accent-on, accent-tint, panel-shadow, panel-shadow-strong, grid, grid-faint, and supporting neutrals used by the prototype.
+- [X] DESIGN-002: All floating panels on the board view and all cards on the homepage/auth screens use the `--panel` token (`#ffffff`) as their background, without backdrop-filter blur effects.
+- [X] DESIGN-003: Panel and card borders use the `--border` token color (`#e4e7ec`) rather than rgba opacity variants.
+- [X] DESIGN-004: Floating panel box-shadows use the `--panel-shadow` token value.
+- [X] DESIGN-005: Strong card box-shadows (login card, homepage cards) use the `--panel-shadow-strong` token value.
+- [X] DESIGN-006: The primary accent color across all interactive elements (active tool buttons, primary buttons, focus rings, share-copied state) derives from the `--accent` token (`oklch(0.58 0.16 254)`), with white text on accent backgrounds using `--accent-on`.
+- [X] DESIGN-007: Tinted/soft accent fills (badges, highlight backgrounds, active option chips) use the `--accent-tint` token.
+- [X] DESIGN-008: The application body and page background uses the `--bg` token (`#f7f8fa`) instead of a radial-gradient blue tinted background.
+- [X] DESIGN-009: The board canvas background color uses the `--canvas` token (`#fafbfc`).
+- [X] DESIGN-010: Primary text (headings, tool labels, panel content) uses the `--ink` token (`#0f172a`).
+- [X] DESIGN-011: Secondary and helper text uses the `--muted` token (`#64748b`).
+- [X] DESIGN-012: The UI font stack is updated to `"Helvetica Neue", Helvetica, Arial, sans-serif` matching the design guidelines.
+- [X] DESIGN-013: Monospace text (keyboard shortcut keys, board IDs, tool hints) uses `"JetBrains Mono", "SFMono-Regular", monospace`.
+- [X] DESIGN-014: Floating panel border-radius is `12px` for rectangular panels and `999px` for pill-shaped panels, matching the design guidelines.
+- [X] DESIGN-015: Active tool buttons show the `--accent` background with `--accent-on` text color; inactive tool buttons are transparent with `--ink` text.
+- [X] DESIGN-016: The board grid lines use the `--grid` token color (`rgba(15, 23, 42, 0.12)` for major lines, a proportionally fainter value for minor lines) rather than the current blue-tinted rgba values.
+- [X] DESIGN-017: The homepage and login screens no longer use a blue radial-gradient tinted background; they use the flat `--bg` token.
+- [X] DESIGN-018: No design token values are duplicated via hardcoded hex literals in the CSS — each value is defined once in the `:root` token block and referenced via `var()`.
+- [X] DESIGN-019: Shared visual primitives in the production app mirror the reference components in `design-guidelines/project/board-chrome.jsx` and `design-guidelines/project/screens.jsx`, including the same button treatments, pill shapes, panel spacing, border weights, divider styles, and shadow hierarchy, while remaining implemented inside the real application codebase.
+- [X] DESIGN-020: The production icon set is visually identical to the reference SVG strokes in `design-guidelines/project/icons.jsx` for the board tools, share, zoom, shortcuts, logout, context-menu actions, and homepage board list affordances, without importing the design-guidelines files at runtime.
+- [X] DESIGN-021: The unauthenticated `/` route visually matches `design-guidelines/Screenshots/Screenshot1 - Login.png`: dotted page backdrop, top-left brand mark, centered welcome card, focused name field styling, eight-color palette row, accent primary button, and supporting copy placement.
+- [X] DESIGN-022: The authenticated `/` route visually matches `design-guidelines/Screenshots/Screenshot2 - Board selector.png`: top-left brand, top-right identity pill, returning-user heading block, dashed new-board callout, board-list card, search affordance, selected first row highlight, avatar stack treatment, and footer helper copy.
+- [X] DESIGN-023: The default board chrome visually matches `design-guidelines/Screenshots/Screenshot3 - Full board view.png`: top-left share pill with board id, separate top-right latency, collaborator, and identity pills, left-side vertical tool rail, bottom-right zoom cluster, and a faint line-grid canvas with restrained neutral contrast.
+- [X] DESIGN-024: The active-pencil board state visually matches `design-guidelines/Screenshots/Screenshot4 - Keyboard Shortcut Menu.png`: copied-link share state, active pencil tool treatment, pencil options flyout, dimmed modal backdrop, and keyboard shortcuts modal layout and styling.
+- [X] DESIGN-025: Where screenshot parity depends on seeded example content rather than user-created content, the app provides a deterministic browser-QA setup so those reference states can be reproduced for visual comparison without weakening normal product behavior.

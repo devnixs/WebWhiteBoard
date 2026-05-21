@@ -1,41 +1,56 @@
-- [X] The default active tool when entering a board is the select tool.
-- [X] The left tools panel includes a select tool.
-- [X] The left tools panel includes a pencil tool.
-- [X] Activating the pencil tool opens a compact tool settings panel for pencil-specific options.
-- [X] The pencil settings panel allows selecting pencil color.
-- [X] The pencil settings panel allows selecting pencil size.
-- [X] The left tools panel includes a text tool.
-- [X] Activating the text tool opens a compact tool settings panel for text-specific options.
-- [X] The text settings panel allows selecting font size.
-- [X] The text settings panel allows selecting font family.
-- [X] The left tools panel includes a shapes tool.
-- [X] The shapes tool allows choosing from multiple supported shapes such as circle and square.
-- [X] The left tools panel includes an arrow tool for creating directional arrows without opening the shapes preset picker.
-- [X] Activating the arrow tool opens a compact tool settings panel for arrow-specific options.
-- [X] The arrow settings panel allows selecting arrow color.
-- [X] The arrow settings panel allows selecting arrow stroke size.
-- [X] The left tools panel includes an eraser tool.
-- [X] Activating the eraser tool allows selecting eraser size.
-- [X] The left tools panel includes a lasso selection tool.
-- [ ] The board's rendering, hit-testing, and authoring interactions are driven by an application-owned native HTML canvas surface while preserving the existing floating tool UI.
-- [X] The whiteboard canvas is infinite in all directions.
-- [X] Users can draw, write, and place shapes anywhere on the infinite canvas without artificial bounds.
-- [ ] Pencil strokes, text, shapes, pasted images, and transient interaction previews all render through the native canvas engine without exposing third-party editor chrome inside the board.
-- [X] Pasting an image with `Ctrl+V` on Windows/Linux or `Cmd+V` on macOS inserts the image into the board.
-- [X] Pasting an image inserts it exactly once — no duplicate copy is produced on the canvas.
-- [X] Drawing interactions remain responsive even when persistence or collaboration traffic is active in the background.
-- [X] Holding `Shift` while using the pencil constrains drawing to straight snapped directions at 0 degrees, 90 degrees, 180 degrees, and 270 degrees.
-- [ ] The selected pencil color is preserved after receiving a remote collaboration document update, so strokes drawn immediately after a remote sync still appear in the user's chosen color.
-- [X] The settings panel for every tool that has one (pencil, text, shapes, eraser, lasso) can be collapsed to reclaim canvas real estate without deactivating the tool.
-- [X] Activating a tool from the tool rail keeps that tool active for repeated use — drawing a pencil stroke, placing a shape, or creating a text item does not silently revert the active tool back to the select tool.
-- [X] Dragging on the canvas with the arrow tool active creates an arrow element with a visible directional arrowhead from the drag origin toward the drag endpoint.
-- [X] Arrow elements render through the native canvas runtime, remain selectable like other board items, and preserve their color and draw size when duplicated, synchronized, and reloaded.
-- [X] Clicking the canvas with the text tool active opens an editable text input at the click location, focuses it, and lets the user type and commit text without the tool being deselected mid-interaction.
-- [X] After clicking the canvas with the text tool active, a blinking text caret (the standard `|` insertion-point indicator) appears at the click location to signal that the position is the active text input target.
-- [X] After clicking the canvas with the text tool active, the user can start typing immediately on the keyboard without any further click, focus action, or modal step, and the typed characters appear at the caret position in real time.
-- [X] While editing multiline text, the inline text input grows to fit the entered lines so the active text remains visible instead of being clipped or disappearing during typing.
-- [X] The text caret continues to blink at the active position while the text input is empty, so the user has a clear visual signal that the canvas is ready to receive typed text.
-- [X] Pressing `Escape` while the text caret is active and the input is empty closes the text input without creating an empty text element and without leaving a residual caret on the canvas.
-- [X] Committing text (via blur or `Cmd/Ctrl+Enter`) renders the typed text as a permanent text element on the native canvas at the caret location, and the caret indicator is removed once the text is committed.
-- [X] The select tool only becomes active again automatically when the user explicitly switches tools (via the tool rail, keyboard shortcut, or pressing `Escape`).
-- [X] With the select tool active, dragging with the primary pointer button on empty board space starts a rectangle marquee selection so desktop users can box-select elements without switching tools.
+---
+area: tools-and-drawing
+owners:
+  - frontend
+  - backend
+status: active
+depends_on:
+  - specs/00-foundations.spec.md
+  - specs/02-board-layout-and-panels.spec.md
+  - specs/04-selection-editing-and-ordering.spec.md
+  - specs/05-navigation-shortcuts-and-input.spec.md
+  - specs/06-collaboration-persistence-and-backend.spec.md
+  - specs/10-board-assets-and-uploads.spec.md
+---
+
+- [X] TOOLS-001: The default active tool when entering a board is the select tool.
+- [X] TOOLS-002: The left tools panel includes a select tool.
+- [X] TOOLS-003: The left tools panel includes a pencil tool.
+- [X] TOOLS-004: Activating the pencil tool opens a compact tool settings panel for pencil-specific options.
+- [X] TOOLS-005: The pencil settings panel allows selecting pencil color.
+- [X] TOOLS-006: The pencil settings panel allows selecting pencil size.
+- [X] TOOLS-007: The left tools panel includes a text tool.
+- [X] TOOLS-008: Activating the text tool opens a compact tool settings panel for text-specific options.
+- [X] TOOLS-009: The text settings panel allows selecting font size.
+- [X] TOOLS-010: The text settings panel allows selecting font family.
+- [X] TOOLS-011: The left tools panel includes a shapes tool.
+- [X] TOOLS-012: The shapes tool allows choosing from multiple supported shapes such as circle and square.
+- [X] TOOLS-013: The left tools panel includes an arrow tool for creating directional arrows without opening the shapes preset picker.
+- [X] TOOLS-014: Activating the arrow tool opens a compact tool settings panel for arrow-specific options.
+- [X] TOOLS-015: The arrow settings panel allows selecting arrow color.
+- [X] TOOLS-016: The arrow settings panel allows selecting arrow stroke size.
+- [X] TOOLS-017: The left tools panel includes an eraser tool.
+- [X] TOOLS-018: Activating the eraser tool allows selecting eraser size.
+- [X] TOOLS-019: The left tools panel includes a lasso selection tool.
+- [ ] TOOLS-020: The board's rendering, hit-testing, and authoring interactions are driven by an application-owned native HTML canvas surface while preserving the existing floating tool UI.
+- [X] TOOLS-021: The whiteboard canvas is infinite in all directions.
+- [X] TOOLS-022: Users can draw, write, and place shapes anywhere on the infinite canvas without artificial bounds.
+- [ ] TOOLS-023: Pencil strokes, text, shapes, pasted images, and transient interaction previews all render through the native canvas engine without exposing third-party editor chrome inside the board.
+- [X] TOOLS-024: Pasting an image with `Ctrl+V` on Windows/Linux or `Cmd+V` on macOS inserts the image into the board.
+- [X] TOOLS-025: Pasting an image inserts it exactly once — no duplicate copy is produced on the canvas.
+- [X] TOOLS-026: Drawing interactions remain responsive even when persistence or collaboration traffic is active in the background.
+- [X] TOOLS-027: Holding `Shift` while using the pencil constrains drawing to straight snapped directions at 0 degrees, 90 degrees, 180 degrees, and 270 degrees.
+- [ ] TOOLS-028: The selected pencil color is preserved after receiving a remote collaboration document update, so strokes drawn immediately after a remote sync still appear in the user's chosen color.
+- [X] TOOLS-029: The settings panel for every tool that has one (pencil, text, shapes, eraser, lasso) can be collapsed to reclaim canvas real estate without deactivating the tool.
+- [X] TOOLS-030: Activating a tool from the tool rail keeps that tool active for repeated use — drawing a pencil stroke, placing a shape, or creating a text item does not silently revert the active tool back to the select tool.
+- [X] TOOLS-031: Dragging on the canvas with the arrow tool active creates an arrow element with a visible directional arrowhead from the drag origin toward the drag endpoint.
+- [X] TOOLS-032: Arrow elements render through the native canvas runtime, remain selectable like other board items, and preserve their color and draw size when duplicated, synchronized, and reloaded.
+- [X] TOOLS-033: Clicking the canvas with the text tool active opens an editable text input at the click location, focuses it, and lets the user type and commit text without the tool being deselected mid-interaction.
+- [X] TOOLS-034: After clicking the canvas with the text tool active, a blinking text caret (the standard `|` insertion-point indicator) appears at the click location to signal that the position is the active text input target.
+- [X] TOOLS-035: After clicking the canvas with the text tool active, the user can start typing immediately on the keyboard without any further click, focus action, or modal step, and the typed characters appear at the caret position in real time.
+- [X] TOOLS-036: While editing multiline text, the inline text input grows to fit the entered lines so the active text remains visible instead of being clipped or disappearing during typing.
+- [X] TOOLS-037: The text caret continues to blink at the active position while the text input is empty, so the user has a clear visual signal that the canvas is ready to receive typed text.
+- [X] TOOLS-038: Pressing `Escape` while the text caret is active and the input is empty closes the text input without creating an empty text element and without leaving a residual caret on the canvas.
+- [X] TOOLS-039: Committing text (via blur or `Cmd/Ctrl+Enter`) renders the typed text as a permanent text element on the native canvas at the caret location, and the caret indicator is removed once the text is committed.
+- [X] TOOLS-040: The select tool only becomes active again automatically when the user explicitly switches tools (via the tool rail, keyboard shortcut, or pressing `Escape`).
+- [X] TOOLS-041: With the select tool active, dragging with the primary pointer button on empty board space starts a rectangle marquee selection so desktop users can box-select elements without switching tools.

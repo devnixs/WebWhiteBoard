@@ -1,4 +1,4 @@
-# Story 15 — Collapsible Tool Settings Panel
+# Story 31: Collapsible Tool Settings Panel
 
 ## Goal
 
