@@ -13,7 +13,7 @@ depends_on:
 - [X] NAV-001: On laptop trackpads, moving around the infinite board is supported with a two-finger gesture.
 - [X] NAV-002: Zooming is supported with trackpad pinch gestures or the platform-appropriate pan and zoom gestures expected by users.
 - [X] NAV-003: Trackpad interactions are configured so attempting to pan left with two fingers does not trigger browser history navigation away from the board.
-- [ ] NAV-004: The native canvas camera supports smooth pointer, wheel, and trackpad pan-and-zoom behavior across supported desktop browsers without desynchronizing board content, selection overlays, or remote cursors.
+- [X] NAV-004: The native canvas camera supports smooth pointer, wheel, and trackpad pan-and-zoom behavior across supported desktop browsers without desynchronizing board content, selection overlays, or remote cursors.
 - [X] NAV-005: Keyboard shortcuts support both Windows/Linux conventions and macOS equivalents, replacing `Ctrl` with `Cmd` where appropriate.
 - [X] NAV-006: The shortcuts popup documents the supported shortcuts for all major board operations.
 - [X] NAV-007: The application includes convenient standard shortcuts beyond the explicitly requested ones when they fit the product model and do not conflict with browser behavior.

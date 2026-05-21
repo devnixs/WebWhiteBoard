@@ -32,15 +32,15 @@ depends_on:
 - [X] TOOLS-017: The left tools panel includes an eraser tool.
 - [X] TOOLS-018: Activating the eraser tool allows selecting eraser size.
 - [X] TOOLS-019: The left tools panel includes a lasso selection tool.
-- [ ] TOOLS-020: The board's rendering, hit-testing, and authoring interactions are driven by an application-owned native HTML canvas surface while preserving the existing floating tool UI.
+- [X] TOOLS-020: The board's rendering, hit-testing, and authoring interactions are driven by an application-owned native HTML canvas surface while preserving the existing floating tool UI.
 - [X] TOOLS-021: The whiteboard canvas is infinite in all directions.
 - [X] TOOLS-022: Users can draw, write, and place shapes anywhere on the infinite canvas without artificial bounds.
-- [ ] TOOLS-023: Pencil strokes, text, shapes, pasted images, and transient interaction previews all render through the native canvas engine without exposing third-party editor chrome inside the board.
+- [X] TOOLS-023: Pencil strokes, text, shapes, pasted images, and transient interaction previews all render through the native canvas engine without exposing third-party editor chrome inside the board.
 - [X] TOOLS-024: Pasting an image with `Ctrl+V` on Windows/Linux or `Cmd+V` on macOS inserts the image into the board.
 - [X] TOOLS-025: Pasting an image inserts it exactly once — no duplicate copy is produced on the canvas.
 - [X] TOOLS-026: Drawing interactions remain responsive even when persistence or collaboration traffic is active in the background.
 - [X] TOOLS-027: Holding `Shift` while using the pencil constrains drawing to straight snapped directions at 0 degrees, 90 degrees, 180 degrees, and 270 degrees.
-- [ ] TOOLS-028: The selected pencil color is preserved after receiving a remote collaboration document update, so strokes drawn immediately after a remote sync still appear in the user's chosen color.
+- [X] TOOLS-028: The selected pencil color is preserved after receiving a remote collaboration document update, so strokes drawn immediately after a remote sync still appear in the user's chosen color.
 - [X] TOOLS-029: The settings panel for every tool that has one (pencil, text, shapes, eraser, lasso) can be collapsed to reclaim canvas real estate without deactivating the tool.
 - [X] TOOLS-030: Activating a tool from the tool rail keeps that tool active for repeated use — drawing a pencil stroke, placing a shape, or creating a text item does not silently revert the active tool back to the select tool.
 - [X] TOOLS-031: Dragging on the canvas with the arrow tool active creates an arrow element with a visible directional arrowhead from the drag origin toward the drag endpoint.

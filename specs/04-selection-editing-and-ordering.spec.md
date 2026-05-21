@@ -16,7 +16,7 @@ depends_on:
 - [X] SELECT-004: The bounding box supports rotation of the selected item.
 - [X] SELECT-005: Repeated rotation gestures keep each selected text block, shape, and image anchored around its own visual center instead of drifting around an expanded rotated bounding box.
 - [X] SELECT-006: A visible rotate handle or icon is shown around the selection bounds.
-- [ ] SELECT-007: Selection bounds, resize handles, rotate controls, and multi-select visuals are rendered by the application's native canvas interaction layer and remain aligned while the board is panned or zoomed.
+- [X] SELECT-007: Selection bounds, resize handles, rotate controls, and multi-select visuals are rendered by the application's native canvas interaction layer and remain aligned while the board is panned or zoomed.
 - [X] SELECT-008: Multiple items can be added to the current selection by using `Ctrl` on Windows/Linux or `Cmd` on macOS while selecting.
 - [X] SELECT-009: When multiple items are selected, each item’s own bounds remain visible.
 - [X] SELECT-010: When multiple items are selected, a combined bounding box for the whole selection is also shown.
