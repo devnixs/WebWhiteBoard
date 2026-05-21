@@ -1,0 +1,4 @@
+interface:
+  display_name: "Greenfield Spec Bootstrap"
+  short_description: "Set up specs, stories, and validation for a new project"
+  default_prompt: "Set up a spec-first project structure for this empty project, including specs, stories, validation, story map generation, and development documentation."
