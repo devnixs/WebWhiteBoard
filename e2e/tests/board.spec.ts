@@ -29,6 +29,43 @@ async function getDocumentElements(page: import('@playwright/test').Page) {
   return await page.evaluate(() => window.__wwbCanvasRuntime?.getState().document.store.elements ?? [])
 }
 
+async function getArrowShaftTipSampleAlpha(page: import('@playwright/test').Page) {
+  return await page.evaluate(() => {
+    const state = window.__wwbCanvasRuntime?.getState()
+    const arrow = state?.document.store.elements.find((element) => element.type === 'shape' && element.shape === 'arrow')
+    const canvas = document.querySelector<HTMLCanvasElement>('.board-canvas-surface')
+    const context = canvas?.getContext('2d')
+    if (!state || !arrow || arrow.type !== 'shape' || !canvas || !context) {
+      return null
+    }
+
+    const center = {
+      x: arrow.position.x + arrow.width / 2,
+      y: arrow.position.y + arrow.height / 2,
+    }
+    const sampleLocal = {
+      x: arrow.position.x + arrow.width * 0.85,
+      y: center.y,
+    }
+    const deltaX = sampleLocal.x - center.x
+    const deltaY = sampleLocal.y - center.y
+    const boardPoint = {
+      x: center.x + deltaX * Math.cos(arrow.rotation) - deltaY * Math.sin(arrow.rotation),
+      y: center.y + deltaX * Math.sin(arrow.rotation) + deltaY * Math.cos(arrow.rotation),
+    }
+    const screenPoint = {
+      x: state.canvasSize.width / 2 + state.viewport.x + boardPoint.x * state.viewport.zoom,
+      y: state.canvasSize.height / 2 + state.viewport.y + boardPoint.y * state.viewport.zoom,
+    }
+    const rect = canvas.getBoundingClientRect()
+    const scaleX = canvas.width / rect.width
+    const scaleY = canvas.height / rect.height
+    const pixel = context.getImageData(Math.round(screenPoint.x * scaleX), Math.round(screenPoint.y * scaleY), 1, 1).data
+
+    return pixel[3]
+  })
+}
+
 async function waitForElementCount(
   page: import('@playwright/test').Page,
   predicate: (elements: Array<Record<string, unknown>>) => boolean,
@@ -287,6 +324,7 @@ test.describe('board view', () => {
     )
     expect(arrowsBeforeReload).toHaveLength(2)
     expect(arrowsBeforeReload.every((element) => element.color === 'red' && element.size === 'l')).toBeTruthy()
+    await expect.poll(async () => await getArrowShaftTipSampleAlpha(page)).toBeGreaterThan(0)
 
     await page.waitForTimeout(500)
     await page.reload()
@@ -297,6 +335,44 @@ test.describe('board view', () => {
     )
     expect(arrowsAfterReload).toHaveLength(2)
     expect(arrowsAfterReload.every((element) => element.color === 'red' && element.size === 'l')).toBeTruthy()
+    await expect.poll(async () => await getArrowShaftTipSampleAlpha(page)).toBeGreaterThan(0)
+  })
+
+  test('ctrl z undoes board actions and ctrl y redoes them', async ({ page }) => {
+    await loginAndCreateBoard(page, 'UndoRedoUser')
+
+    await page.getByRole('button', { name: 'Pencil' }).click()
+    await dragCanvasAtPage(page, { x: -120, y: -40 }, { x: 80, y: 90 })
+    await waitForElementCount(page, (elements) =>
+      elements.filter((element) => element.type === 'stroke').length === 1,
+    )
+
+    await page.keyboard.press('Control+Z')
+    await waitForElementCount(page, (elements) =>
+      elements.filter((element) => element.type === 'stroke').length === 0,
+    )
+
+    await page.keyboard.press('Control+Y')
+    await waitForElementCount(page, (elements) =>
+      elements.filter((element) => element.type === 'stroke').length === 1,
+    )
+
+    await page.keyboard.press('Control+Z')
+    await waitForElementCount(page, (elements) =>
+      elements.filter((element) => element.type === 'stroke').length === 0,
+    )
+
+    await page.getByRole('button', { name: 'Shapes' }).click()
+    await dragCanvasAtPage(page, { x: 120, y: 40 }, { x: 230, y: 130 })
+    await waitForElementCount(page, (elements) =>
+      elements.filter((element) => element.type === 'shape' && element.shape === 'rectangle').length === 1,
+    )
+
+    await page.keyboard.press('Control+Y')
+    await waitForElementCount(page, (elements) =>
+      elements.filter((element) => element.type === 'shape' && element.shape === 'rectangle').length === 1 &&
+      elements.filter((element) => element.type === 'stroke').length === 0,
+    )
   })
 
   test('context menu appears when right-clicking a native shape', async ({ page }) => {

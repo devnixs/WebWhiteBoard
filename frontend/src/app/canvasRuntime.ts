@@ -562,7 +562,7 @@ function drawShapePath(context: CanvasRenderingContext2D, shape: ShapeChoice, wi
     const tipX = width / 2
     const shaftEndX = tipX - headLength
     context.moveTo(-width / 2, 0)
-    context.lineTo(shaftEndX, 0)
+    context.lineTo(tipX, 0)
     context.moveTo(shaftEndX, -height / 2)
     context.lineTo(tipX, 0)
     context.lineTo(shaftEndX, height / 2)
@@ -1527,7 +1527,7 @@ function isPointNearArrow(element: BoardShapeElement, point: BoardPoint, thresho
   const segments = [
     {
       start: { x: element.position.x, y: centerY },
-      end: { x: shaftEndX, y: centerY },
+      end: { x: tipX, y: centerY },
     },
     {
       start: { x: shaftEndX, y: element.position.y },
@@ -1633,7 +1633,7 @@ function doesArrowIntersectPolygon(element: BoardShapeElement, polygon: BoardPoi
   const segments = [
     {
       start: rotatePoint({ x: element.position.x, y: centerY }, center, element.rotation),
-      end: rotatePoint({ x: shaftEndX, y: centerY }, center, element.rotation),
+      end: rotatePoint({ x: tipX, y: centerY }, center, element.rotation),
     },
     {
       start: rotatePoint({ x: shaftEndX, y: element.position.y }, center, element.rotation),

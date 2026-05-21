@@ -33,6 +33,8 @@ export function ShortcutModal({ onClose }: ShortcutModalProps) {
       title: 'Editing',
       items: [
         ['Select all', `${modifierLabel}  A`],
+        ['Undo', `${modifierLabel}  Z`],
+        ['Redo', isMacPlatform ? `${modifierLabel}  Shift  Z` : `${modifierLabel}  Y`],
         ['Copy', `${modifierLabel}  C`],
         ['Paste', `${modifierLabel}  V`],
         ['Duplicate', `${modifierLabel}  D`],

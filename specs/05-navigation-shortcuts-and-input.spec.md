@@ -22,3 +22,5 @@ depends_on:
 - [X] NAV-010: Canvas navigation and manipulation shortcuts are implemented in a way that preserves accessibility and predictable focus behavior.
 - [X] NAV-011: On desktop browsers, holding `Ctrl` while rotating the mouse wheel zooms the board in 10% increments per wheel step instead of using large jumps.
 - [X] NAV-012: On desktop browsers, holding the secondary mouse button while moving the pointer pans the board using the same camera behavior as the hand tool and existing middle-click pan interaction.
+- [X] NAV-013: Pressing `Ctrl+Z` on Windows/Linux or `Cmd+Z` on macOS while the board has focus undoes the most recent local board content action and broadcasts the reverted document to collaborators.
+- [X] NAV-014: Pressing `Ctrl+Y` on Windows/Linux or `Cmd+Shift+Z` on macOS while the board has focus redoes the most recently undone local board content action, unless a new local content action has cleared the redo stack.

@@ -143,6 +143,7 @@ type PointerRotateState = {
 type PointerEraseState = {
   kind: 'erase'
   pointerId: number
+  baseDocument: BoardDocumentSnapshot
 }
 
 type PointerLassoState = {
@@ -208,6 +209,11 @@ const desktopWheelDeltaPerStep = 100
 const contextMenuPanThresholdPx = 3
 const minTextEditorWidthPx = 180
 const minTextEditorHeightPx = 42
+const maxDocumentHistoryEntries = 100
+
+type ReplaceDocumentOptions = {
+  history?: 'record' | 'skip'
+}
 
 function createRectangleSelectionPath(origin: BoardPoint, current: BoardPoint): BoardPoint[] {
   return [
@@ -216,6 +222,14 @@ function createRectangleSelectionPath(origin: BoardPoint, current: BoardPoint): 
     current,
     { x: origin.x, y: current.y },
   ]
+}
+
+function cloneBoardDocument(document: BoardDocumentSnapshot) {
+  return structuredClone(document)
+}
+
+function areBoardDocumentsEqual(first: BoardDocumentSnapshot, second: BoardDocumentSnapshot) {
+  return JSON.stringify(first) === JSON.stringify(second)
 }
 
 export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
@@ -228,6 +242,8 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
   const interactionRef = useRef<PointerInteractionState | null>(null)
   const hasViewportInitializedRef = useRef(false)
   const documentRef = useRef<BoardDocumentSnapshot>(createEmptyBoardDocument())
+  const undoStackRef = useRef<BoardDocumentSnapshot[]>([])
+  const redoStackRef = useRef<BoardDocumentSnapshot[]>([])
   const selectionRef = useRef<string[]>([])
   const internalClipboardRef = useRef<string | null>(null)
   const lastPointerPagePointRef = useRef<BoardPoint>({ x: 0, y: 0 })
@@ -292,7 +308,39 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     }, 120)
   }, [boardId, identity.sessionId, sendRealtimeMessage])
 
-  const replaceDocument = useCallback((nextDocument: BoardDocumentSnapshot, source: 'local' | 'remote') => {
+  const pushUndoSnapshot = useCallback((previousDocument: BoardDocumentSnapshot) => {
+    if (areBoardDocumentsEqual(previousDocument, documentRef.current)) {
+      return
+    }
+
+    undoStackRef.current = [
+      ...undoStackRef.current.slice(-(maxDocumentHistoryEntries - 1)),
+      cloneBoardDocument(previousDocument),
+    ]
+    redoStackRef.current = []
+  }, [])
+
+  const replaceDocument = useCallback((
+    nextDocument: BoardDocumentSnapshot,
+    source: 'local' | 'remote',
+    options: ReplaceDocumentOptions = {},
+  ) => {
+    const shouldRecordHistory = source === 'local' && options.history !== 'skip'
+    const previousDocument = documentRef.current
+
+    if (shouldRecordHistory && !areBoardDocumentsEqual(previousDocument, nextDocument)) {
+      undoStackRef.current = [
+        ...undoStackRef.current.slice(-(maxDocumentHistoryEntries - 1)),
+        cloneBoardDocument(previousDocument),
+      ]
+      redoStackRef.current = []
+    }
+
+    if (source === 'remote') {
+      undoStackRef.current = []
+      redoStackRef.current = []
+    }
+
     documentRef.current = nextDocument
     setDocument(nextDocument)
 
@@ -300,6 +348,36 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
       queueDocumentBroadcast()
     }
   }, [queueDocumentBroadcast])
+
+  const undoDocumentAction = useCallback(() => {
+    const previousDocument = undoStackRef.current.pop()
+    if (!previousDocument) {
+      return
+    }
+
+    redoStackRef.current = [
+      ...redoStackRef.current.slice(-(maxDocumentHistoryEntries - 1)),
+      cloneBoardDocument(documentRef.current),
+    ]
+    replaceDocument(cloneBoardDocument(previousDocument), 'local', { history: 'skip' })
+    setContextMenu(null)
+    setTextEditor(null)
+  }, [replaceDocument])
+
+  const redoDocumentAction = useCallback(() => {
+    const nextDocument = redoStackRef.current.pop()
+    if (!nextDocument) {
+      return
+    }
+
+    undoStackRef.current = [
+      ...undoStackRef.current.slice(-(maxDocumentHistoryEntries - 1)),
+      cloneBoardDocument(documentRef.current),
+    ]
+    replaceDocument(cloneBoardDocument(nextDocument), 'local', { history: 'skip' })
+    setContextMenu(null)
+    setTextEditor(null)
+  }, [replaceDocument])
 
   const updateSelection = useCallback((nextSelection: string[]) => {
     selectionRef.current = nextSelection
@@ -668,6 +746,22 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
       const key = event.key.toLowerCase()
       const modifierPressed = event.metaKey || event.ctrlKey
 
+      if (modifierPressed && key === 'z') {
+        event.preventDefault()
+        if (event.shiftKey) {
+          redoDocumentAction()
+        } else {
+          undoDocumentAction()
+        }
+        return
+      }
+
+      if (modifierPressed && key === 'y') {
+        event.preventDefault()
+        redoDocumentAction()
+        return
+      }
+
       if (modifierPressed && key === 'a') {
         event.preventDefault()
         updateSelection(documentRef.current.store.elements.map((element) => element.id))
@@ -795,7 +889,7 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
 
     window.addEventListener('keydown', handleBoardShortcuts)
     return () => window.removeEventListener('keydown', handleBoardShortcuts)
-  }, [replaceDocument, updateSelection, zoomByFactor])
+  }, [redoDocumentAction, replaceDocument, undoDocumentAction, updateSelection, zoomByFactor])
 
   useEffect(() => {
     const container = boardScreenRef.current
@@ -920,7 +1014,7 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
         ...createRuntimeDebugState(documentRef.current, viewport, canvasSize, activeTool),
         selectedIds: selectionRef.current,
       }),
-      replaceDocument: (nextDocument) => replaceDocument(nextDocument, 'local'),
+      replaceDocument: (nextDocument) => replaceDocument(nextDocument, 'local', { history: 'skip' }),
       setViewport: (nextViewport) => setViewport(nextViewport),
     }
 
@@ -1108,9 +1202,10 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
       interactionRef.current = {
         kind: 'erase',
         pointerId: event.pointerId,
+        baseDocument: documentRef.current,
       }
       const radius = getEraserRadius(eraserSize)
-      replaceDocument(eraseAtPoint(documentRef.current, boardPoint, radius), 'local')
+      replaceDocument(eraseAtPoint(documentRef.current, boardPoint, radius), 'local', { history: 'skip' })
       setEraserPreviewPoint(boardPoint)
       updateSelection([])
       return
@@ -1196,6 +1291,7 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
       replaceDocument(
         moveSelectedElements(interaction.baseDocument, interaction.selectedIds, deltaX, deltaY),
         'local',
+        { history: 'skip' },
       )
       return
     }
@@ -1214,6 +1310,7 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
           nextScales.scaleY,
         ),
         'local',
+        { history: 'skip' },
       )
       return
     }
@@ -1228,6 +1325,7 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
           nextAngle - interaction.startAngle,
         ),
         'local',
+        { history: 'skip' },
       )
       return
     }
@@ -1243,7 +1341,7 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
 
     if (interaction.kind === 'erase') {
       const radius = getEraserRadius(eraserSize)
-      replaceDocument(eraseAtPoint(documentRef.current, boardPoint, radius), 'local')
+      replaceDocument(eraseAtPoint(documentRef.current, boardPoint, radius), 'local', { history: 'skip' })
       setEraserPreviewPoint(boardPoint)
       return
     }
@@ -1301,6 +1399,15 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
             createRectangleSelectionPath(interaction.origin, interaction.current),
           ),
         )
+      }
+
+      if (
+        interaction.kind === 'move-selection' ||
+        interaction.kind === 'resize-selection' ||
+        interaction.kind === 'rotate-selection' ||
+        interaction.kind === 'erase'
+      ) {
+        pushUndoSnapshot(interaction.baseDocument)
       }
 
       interactionRef.current = null

@@ -131,3 +131,4 @@ When using this skill for a real task:
 - Name new story files with the `_TODO` suffix. Rename to `_IN_PROGRESS` when implementation starts and to `_COMPLETE` when all checks pass.
 - Run `npm run generate:story-map` when available after story file changes.
 - Run `npm run validate:workflow` when available and report the result.
+- Do not implement that newly created story yet; just create the story file with the checklist and verification instructions. Implementation comes later, either by you or by an engineer who picks up the story.

@@ -45,6 +45,7 @@ depends_on:
 - [X] TOOLS-030: Activating a tool from the tool rail keeps that tool active for repeated use — drawing a pencil stroke, placing a shape, or creating a text item does not silently revert the active tool back to the select tool.
 - [X] TOOLS-031: Dragging on the canvas with the arrow tool active creates an arrow element with a visible directional arrowhead from the drag origin toward the drag endpoint.
 - [X] TOOLS-032: Arrow elements render through the native canvas runtime, remain selectable like other board items, and preserve their color and draw size when duplicated, synchronized, and reloaded.
+- [ ] TOOLS-044: Arrow elements render as a continuous connector where the arrow shaft reaches the actual arrow tip, without a visible break between the line and arrowhead.
 - [X] TOOLS-033: Clicking the canvas with the text tool active opens an editable text input at the click location, focuses it, and lets the user type and commit text without the tool being deselected mid-interaction.
 - [X] TOOLS-034: After clicking the canvas with the text tool active, a blinking text caret (the standard `|` insertion-point indicator) appears at the click location to signal that the position is the active text input target.
 - [X] TOOLS-035: After clicking the canvas with the text tool active, the user can start typing immediately on the keyboard without any further click, focus action, or modal step, and the typed characters appear at the caret position in real time.
@@ -54,3 +55,5 @@ depends_on:
 - [X] TOOLS-039: Committing text (via blur or `Cmd/Ctrl+Enter`) renders the typed text as a permanent text element on the native canvas at the caret location, and the caret indicator is removed once the text is committed.
 - [X] TOOLS-040: The select tool only becomes active again automatically when the user explicitly switches tools (via the tool rail, keyboard shortcut, or pressing `Escape`).
 - [X] TOOLS-041: With the select tool active, dragging with the primary pointer button on empty board space starts a rectangle marquee selection so desktop users can box-select elements without switching tools.
+- [ ] TOOLS-042: Holding `Shift` while using the circle shape constrains the authored shape to a perfect circle, with equal visual width and height from the drag origin to the current pointer position.
+- [ ] TOOLS-043: Holding `Shift` while using a line-authoring tool constrains the authored line endpoint to 45-degree angle increments while preserving the drag origin and line direction closest to the pointer.
