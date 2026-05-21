@@ -33,6 +33,7 @@
 - [X] Clicking the canvas with the text tool active opens an editable text input at the click location, focuses it, and lets the user type and commit text without the tool being deselected mid-interaction.
 - [X] After clicking the canvas with the text tool active, a blinking text caret (the standard `|` insertion-point indicator) appears at the click location to signal that the position is the active text input target.
 - [X] After clicking the canvas with the text tool active, the user can start typing immediately on the keyboard without any further click, focus action, or modal step, and the typed characters appear at the caret position in real time.
+- [X] While editing multiline text, the inline text input grows to fit the entered lines so the active text remains visible instead of being clipped or disappearing during typing.
 - [X] The text caret continues to blink at the active position while the text input is empty, so the user has a clear visual signal that the canvas is ready to receive typed text.
 - [X] Pressing `Escape` while the text caret is active and the input is empty closes the text input without creating an empty text element and without leaving a residual caret on the canvas.
 - [X] Committing text (via blur or `Cmd/Ctrl+Enter`) renders the typed text as a permanent text element on the native canvas at the caret location, and the caret indicator is removed once the text is committed.

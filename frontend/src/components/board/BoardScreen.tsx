@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent } from 'react'
 import {
   appendElement,
@@ -43,7 +43,7 @@ import {
 } from '../../app/canvasRuntime'
 import type { BoardRenderPreview } from '../../app/canvasRuntime'
 import { uploadBoardAsset } from '../../app/assetStore'
-import { colorToHex } from '../../app/constants'
+import { colorToHex, fontPixelSizes } from '../../app/constants'
 import {
   applyRemoteDocument,
   copyTextToClipboard,
@@ -206,6 +206,8 @@ declare global {
 const desktopZoomStepFactor = 1.1
 const desktopWheelDeltaPerStep = 100
 const contextMenuPanThresholdPx = 3
+const minTextEditorWidthPx = 180
+const minTextEditorHeightPx = 42
 
 function createRectangleSelectionPath(origin: BoardPoint, current: BoardPoint): BoardPoint[] {
   return [
@@ -423,6 +425,27 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
 
     textEditorRef.current?.focus()
   }, [textEditor])
+
+  useLayoutEffect(() => {
+    if (!textEditor) {
+      return
+    }
+
+    const editor = textEditorRef.current
+    if (!editor) {
+      return
+    }
+
+    editor.style.width = `${minTextEditorWidthPx}px`
+    editor.style.height = '0px'
+
+    const nextWidth = Math.max(minTextEditorWidthPx, Math.ceil(editor.scrollWidth))
+    editor.style.width = `${nextWidth}px`
+    editor.style.height = '0px'
+
+    const nextHeight = Math.max(minTextEditorHeightPx, Math.ceil(editor.scrollHeight))
+    editor.style.height = `${nextHeight}px`
+  }, [textEditor, viewport.zoom])
 
   useEffect(() => {
     const nextSelection = selectionRef.current.filter((id) =>
@@ -1400,8 +1423,10 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
               }
             }}
             ref={textEditorRef}
+            rows={1}
             style={textEditorStyle}
             value={textEditor.text}
+            wrap="off"
           />
         ) : null}
       </div>
@@ -1557,22 +1582,29 @@ function getTextEditorStyle(
   textFont: FontChoice,
   drawColor: ColorChoice,
 ) {
-  const fontFamily = {
-    draw: '"Caveat", "Comic Sans MS", cursive',
-    sans: '"Instrument Sans", "Inter", sans-serif',
-    serif: '"Iowan Old Style", "Georgia", serif',
-    mono: '"JetBrains Mono", "SFMono-Regular", monospace',
-  }[textFont]
   const screen = pageToScreen(position, viewport, canvasSize)
   const inkColor = colorToHex[drawColor]
   return {
     left: `${screen.x}px`,
     top: `${screen.y}px`,
-    fontSize: `${Math.max(14, Math.round({ s: 14, m: 18, l: 24, xl: 32 }[textSize] * viewport.zoom))}px`,
-    fontFamily,
+    fontSize: `${getTextEditorFontSizePx(textSize, viewport.zoom)}px`,
+    fontFamily: getTextEditorFontFamily(textFont),
     color: inkColor,
     caretColor: inkColor,
   }
+}
+
+function getTextEditorFontSizePx(textSize: SizeChoice, zoom: number) {
+  return Math.max(14, Math.round(fontPixelSizes[textSize] * zoom))
+}
+
+function getTextEditorFontFamily(textFont: FontChoice) {
+  return {
+    draw: '"Caveat", "Comic Sans MS", cursive',
+    sans: '"Instrument Sans", "Inter", sans-serif',
+    serif: '"Iowan Old Style", "Georgia", serif',
+    mono: '"JetBrains Mono", "SFMono-Regular", monospace',
+  }[textFont]
 }
 
 async function readImageDimensions(src: string) {

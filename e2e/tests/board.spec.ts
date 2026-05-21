@@ -91,6 +91,71 @@ async function dragCanvasAtPage(
   await page.mouse.up()
 }
 
+async function dragCanvasScreenToScreen(
+  page: import('@playwright/test').Page,
+  from: { x: number; y: number },
+  to: { x: number; y: number },
+) {
+  const canvas = page.locator('.board-screen__canvas')
+  await canvas.hover({ position: from })
+  await page.mouse.down()
+  await page.mouse.move(to.x, to.y, { steps: 12 })
+  await page.mouse.up()
+}
+
+async function getShapeRotationMetrics(page: import('@playwright/test').Page, id: string) {
+  const metrics = await page.evaluate((elementId) => {
+    const state = window.__wwbCanvasRuntime?.getState()
+    const element = state?.document.store.elements.find((candidate) => candidate.id === elementId)
+    if (!state || !element || element.type !== 'shape') {
+      return null
+    }
+
+    const center = {
+      x: element.position.x + element.width / 2,
+      y: element.position.y + element.height / 2,
+    }
+    const corners = [
+      element.position,
+      { x: element.position.x + element.width, y: element.position.y },
+      { x: element.position.x + element.width, y: element.position.y + element.height },
+      { x: element.position.x, y: element.position.y + element.height },
+    ]
+    const rotatePoint = (point: { x: number; y: number }) => {
+      const deltaX = point.x - center.x
+      const deltaY = point.y - center.y
+      const cos = Math.cos(element.rotation)
+      const sin = Math.sin(element.rotation)
+
+      return {
+        x: center.x + deltaX * cos - deltaY * sin,
+        y: center.y + deltaX * sin + deltaY * cos,
+      }
+    }
+    const rotatedCorners = corners.map(rotatePoint)
+    const minX = Math.min(...rotatedCorners.map((point) => point.x))
+    const maxX = Math.max(...rotatedCorners.map((point) => point.x))
+    const minY = Math.min(...rotatedCorners.map((point) => point.y))
+    const maxY = Math.max(...rotatedCorners.map((point) => point.y))
+
+    return {
+      center,
+      position: element.position,
+      rotation: element.rotation,
+      rotateHandle: {
+        x: (minX + maxX) / 2,
+        y: minY - 28,
+      },
+    }
+  }, id)
+
+  if (!metrics) {
+    throw new Error(`Missing shape metrics for ${id}.`)
+  }
+
+  return metrics
+}
+
 async function panCanvasBy(
   page: import('@playwright/test').Page,
   delta: { x: number; y: number },
@@ -168,6 +233,28 @@ test.describe('board view', () => {
     await expect(page.locator('.panel--tool-settings')).toContainText('Shapes')
     await page.getByRole('button', { name: 'Arrow' }).click()
     await expect(page.locator('.panel--tool-settings')).toContainText('Arrow')
+  })
+
+  test('text tool keeps multiline draft text visible while typing', async ({ page }) => {
+    await loginAndCreateBoard(page)
+
+    await page.getByRole('button', { name: 'Text' }).click()
+    await clickCanvasAtPage(page, { x: -120, y: -60 })
+
+    const editor = page.getByLabel('Text editor')
+    await editor.fill('First line\nSecond line\nThird line')
+
+    const metrics = await editor.evaluate((element) => ({
+      clientHeight: element.clientHeight,
+      scrollHeight: element.scrollHeight,
+      value: element.value,
+      wrap: element.getAttribute('wrap'),
+    }))
+
+    expect(metrics.value).toBe('First line\nSecond line\nThird line')
+    expect(metrics.wrap).toBe('off')
+    expect(metrics.clientHeight).toBeGreaterThan(42)
+    expect(metrics.scrollHeight).toBeLessThanOrEqual(metrics.clientHeight + 1)
   })
 
   test('arrow tool creates persisted arrows from the tool rail and keyboard shortcut', async ({ page }) => {
@@ -357,6 +444,106 @@ test.describe('board view', () => {
       const state = await getRuntimeState(page)
       return state?.viewport ?? null
     }).not.toEqual(beforePan?.viewport ?? null)
+  })
+
+  test('rotated shape can be reselected with a marquee over visible rotated geometry', async ({ page }) => {
+    await loginAndCreateBoard(page)
+    await replaceDocument(page, {
+      schema: { kind: 'wwb.native-board', version: 1 },
+      store: {
+        elements: [
+          {
+            id: 'shape-rotated-marquee',
+            type: 'shape',
+            color: 'orange',
+            size: 'm',
+            shape: 'rectangle',
+            position: { x: 140, y: 140 },
+            width: 120,
+            height: 120,
+            rotation: 0,
+          },
+        ],
+      },
+    })
+
+    await page.getByRole('button', { name: 'Select' }).click()
+    await clickCanvasAtPage(page, { x: 200, y: 200 })
+
+    const rotateHandle = await pageToScreen(page, { x: 200, y: 112 })
+    const rotatedTarget = await pageToScreen(page, { x: 292, y: 164 })
+    await dragCanvasScreenToScreen(page, rotateHandle, rotatedTarget)
+
+    await expect.poll(async () => {
+      const elements = await getDocumentElements(page)
+      const shape = elements.find((element) => element.id === 'shape-rotated-marquee')
+      return typeof shape?.rotation === 'number' ? Math.abs(shape.rotation) : 0
+    }).toBeGreaterThan(0.4)
+
+    await clickCanvasAtPage(page, { x: 20, y: 20 })
+    await expect.poll(async () => {
+      const state = await getRuntimeState(page)
+      return state?.selectedIds.length ?? 0
+    }).toBe(0)
+
+    await dragCanvasAtPage(page, { x: 220, y: 132 }, { x: 278, y: 190 })
+
+    await expect.poll(async () => {
+      const state = await getRuntimeState(page)
+      return state?.selectedIds ?? []
+    }).toEqual(['shape-rotated-marquee'])
+  })
+
+  test('repeated rotations keep a selected shape anchored around its center', async ({ page }) => {
+    await loginAndCreateBoard(page)
+    await replaceDocument(page, {
+      schema: { kind: 'wwb.native-board', version: 1 },
+      store: {
+        elements: [
+          {
+            id: 'shape-repeat-rotate',
+            type: 'shape',
+            color: 'blue',
+            size: 'm',
+            shape: 'rectangle',
+            position: { x: 140, y: 140 },
+            width: 120,
+            height: 120,
+            rotation: 0,
+          },
+        ],
+      },
+    })
+
+    await page.getByRole('button', { name: 'Select' }).click()
+    await clickCanvasAtPage(page, { x: 200, y: 200 })
+
+    const firstStart = await getShapeRotationMetrics(page, 'shape-repeat-rotate')
+    const firstHandle = await pageToScreen(page, firstStart.rotateHandle)
+    const firstTarget = await pageToScreen(page, {
+      x: firstStart.center.x + 92,
+      y: firstStart.center.y - 36,
+    })
+    await dragCanvasScreenToScreen(page, firstHandle, firstTarget)
+
+    const afterFirstRotation = await getShapeRotationMetrics(page, 'shape-repeat-rotate')
+    expect(Math.abs(afterFirstRotation.rotation)).toBeGreaterThan(0.4)
+    expect(afterFirstRotation.position.x).toBeCloseTo(140, 4)
+    expect(afterFirstRotation.position.y).toBeCloseTo(140, 4)
+
+    const secondHandle = await pageToScreen(page, afterFirstRotation.rotateHandle)
+    const secondTarget = await pageToScreen(page, {
+      x: afterFirstRotation.center.x - 84,
+      y: afterFirstRotation.center.y - 44,
+    })
+    await dragCanvasScreenToScreen(page, secondHandle, secondTarget)
+
+    const afterSecondRotation = await getShapeRotationMetrics(page, 'shape-repeat-rotate')
+    expect(Math.abs(afterSecondRotation.rotation - afterFirstRotation.rotation)).toBeGreaterThan(0.2)
+    expect(afterSecondRotation.center.x).toBeCloseTo(afterFirstRotation.center.x, 4)
+    expect(afterSecondRotation.center.y).toBeCloseTo(afterFirstRotation.center.y, 4)
+    expect(afterSecondRotation.position.x).toBeCloseTo(afterFirstRotation.position.x, 4)
+    expect(afterSecondRotation.position.y).toBeCloseTo(afterFirstRotation.position.y, 4)
   })
 
   test('native board state persists after reload', async ({ page }) => {

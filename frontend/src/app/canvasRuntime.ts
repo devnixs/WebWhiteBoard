@@ -449,19 +449,21 @@ function drawTextElement(
 ) {
   const metrics = getTextMetrics(element)
   const screenPoint = pageToScreen(element.position, viewport, canvasSize)
+  const scale = element.scale * viewport.zoom
+  const centerX = screenPoint.x + (metrics.width * scale) / 2
+  const centerY = screenPoint.y + (metrics.height * scale) / 2
 
   context.save()
   context.globalAlpha = opacity
-  context.translate(screenPoint.x, screenPoint.y)
+  context.translate(centerX, centerY)
   context.rotate(element.rotation)
-  const scale = element.scale * viewport.zoom
   context.scale(scale, scale)
   context.fillStyle = colorToHex[element.color]
   context.font = `${fontPixelSizes[element.size]}px ${fontFamilies[element.font]}`
   context.textBaseline = 'top'
 
   metrics.lines.forEach((line, index) => {
-    context.fillText(line, 0, index * metrics.lineHeight)
+    context.fillText(line, -metrics.width / 2, -metrics.height / 2 + index * metrics.lineHeight)
   })
 
   context.restore()
@@ -1017,12 +1019,12 @@ function rotateElement(element: BoardElement, center: BoardPoint, angleDelta: nu
     }
   }
 
-  const bounds = getElementBounds(element)
-  const elementCenter = getBoundsCenter(bounds)
+  const elementCenter = getElementCenter(element)
   const rotatedCenter = rotatePoint(elementCenter, center, angleDelta)
+  const size = getElementSize(element)
   const position = {
-    x: roundCoordinate(rotatedCenter.x - bounds.width / 2),
-    y: roundCoordinate(rotatedCenter.y - bounds.height / 2),
+    x: roundCoordinate(rotatedCenter.x - size.width / 2),
+    y: roundCoordinate(rotatedCenter.y - size.height / 2),
   }
 
   if (element.type === 'text') {
@@ -1037,6 +1039,29 @@ function rotateElement(element: BoardElement, center: BoardPoint, angleDelta: nu
     ...element,
     position,
     rotation: roundCoordinate(element.rotation + angleDelta),
+  }
+}
+
+function getElementCenter(element: BoardTextElement | BoardShapeElement | BoardImageElement): BoardPoint {
+  const size = getElementSize(element)
+  return {
+    x: element.position.x + size.width / 2,
+    y: element.position.y + size.height / 2,
+  }
+}
+
+function getElementSize(element: BoardTextElement | BoardShapeElement | BoardImageElement) {
+  if (element.type === 'text') {
+    const metrics = getTextMetrics(element)
+    return {
+      width: metrics.width,
+      height: metrics.height,
+    }
+  }
+
+  return {
+    width: element.width,
+    height: element.height,
   }
 }
 
@@ -1353,22 +1378,7 @@ export function selectElementsInLasso(document: BoardDocumentSnapshot, polygon: 
   }
 
   return document.store.elements
-    .filter((element) => {
-      if (element.type === 'stroke') {
-        return element.points.some((point) => isPointInPolygon(point, polygon))
-      }
-
-      const bounds = getElementBounds(element)
-      const corners = [
-        { x: bounds.x, y: bounds.y },
-        { x: bounds.x + bounds.width, y: bounds.y },
-        { x: bounds.x + bounds.width, y: bounds.y + bounds.height },
-        { x: bounds.x, y: bounds.y + bounds.height },
-        getBoundsCenter(bounds),
-      ]
-
-      return corners.some((point) => isPointInPolygon(point, polygon))
-    })
+    .filter((element) => doesElementIntersectPolygon(element, polygon))
     .map((element) => element.id)
 }
 
@@ -1578,4 +1588,160 @@ function isPointInPolygon(point: BoardPoint, polygon: BoardPoint[]) {
   }
 
   return inside
+}
+
+function doesElementIntersectPolygon(element: BoardElement, polygon: BoardPoint[]) {
+  if (element.type === 'stroke') {
+    return doesStrokeIntersectPolygon(element, polygon)
+  }
+
+  if (element.type === 'text') {
+    const metrics = getTextMetrics(element)
+    return doPolygonsIntersect(getRotatedRectanglePoints(element.position, metrics.width, metrics.height, element.rotation), polygon)
+  }
+
+  if (element.type === 'shape' && element.shape === 'arrow') {
+    return doesArrowIntersectPolygon(element, polygon)
+  }
+
+  return doPolygonsIntersect(getRotatedRectanglePoints(element.position, element.width, element.height, element.rotation), polygon)
+}
+
+function doesStrokeIntersectPolygon(element: BoardStrokeElement, polygon: BoardPoint[]) {
+  if (element.points.some((point) => isPointInsideOrOnPolygon(point, polygon))) {
+    return true
+  }
+
+  for (let index = 0; index < element.points.length - 1; index += 1) {
+    if (doesSegmentIntersectPolygon(element.points[index], element.points[index + 1], polygon)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function doesArrowIntersectPolygon(element: BoardShapeElement, polygon: BoardPoint[]) {
+  const headLength = getArrowHeadLength(element.width, element.height)
+  const tipX = element.position.x + element.width
+  const shaftEndX = tipX - headLength
+  const centerY = element.position.y + element.height / 2
+  const center = {
+    x: element.position.x + element.width / 2,
+    y: element.position.y + element.height / 2,
+  }
+  const segments = [
+    {
+      start: rotatePoint({ x: element.position.x, y: centerY }, center, element.rotation),
+      end: rotatePoint({ x: shaftEndX, y: centerY }, center, element.rotation),
+    },
+    {
+      start: rotatePoint({ x: shaftEndX, y: element.position.y }, center, element.rotation),
+      end: rotatePoint({ x: tipX, y: centerY }, center, element.rotation),
+    },
+    {
+      start: rotatePoint({ x: shaftEndX, y: element.position.y + element.height }, center, element.rotation),
+      end: rotatePoint({ x: tipX, y: centerY }, center, element.rotation),
+    },
+  ]
+
+  return segments.some((segment) => doesSegmentIntersectPolygon(segment.start, segment.end, polygon))
+}
+
+function getRotatedRectanglePoints(position: BoardPoint, width: number, height: number, rotation: number) {
+  const center = { x: position.x + width / 2, y: position.y + height / 2 }
+  return [
+    position,
+    { x: position.x + width, y: position.y },
+    { x: position.x + width, y: position.y + height },
+    { x: position.x, y: position.y + height },
+  ].map((point) => rotatePoint(point, center, rotation))
+}
+
+function doPolygonsIntersect(first: BoardPoint[], second: BoardPoint[]) {
+  return (
+    first.some((point) => isPointInsideOrOnPolygon(point, second)) ||
+    second.some((point) => isPointInsideOrOnPolygon(point, first)) ||
+    doPolygonEdgesIntersect(first, second)
+  )
+}
+
+function doPolygonEdgesIntersect(first: BoardPoint[], second: BoardPoint[]) {
+  for (let index = 0; index < first.length; index += 1) {
+    const nextIndex = (index + 1) % first.length
+    for (let innerIndex = 0; innerIndex < second.length; innerIndex += 1) {
+      const innerNextIndex = (innerIndex + 1) % second.length
+      if (doSegmentsIntersect(first[index], first[nextIndex], second[innerIndex], second[innerNextIndex])) {
+        return true
+      }
+    }
+  }
+
+  return false
+}
+
+function doesSegmentIntersectPolygon(start: BoardPoint, end: BoardPoint, polygon: BoardPoint[]) {
+  if (isPointInsideOrOnPolygon(start, polygon) || isPointInsideOrOnPolygon(end, polygon)) {
+    return true
+  }
+
+  for (let index = 0; index < polygon.length; index += 1) {
+    const nextIndex = (index + 1) % polygon.length
+    if (doSegmentsIntersect(start, end, polygon[index], polygon[nextIndex])) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function isPointInsideOrOnPolygon(point: BoardPoint, polygon: BoardPoint[]) {
+  return isPointInPolygon(point, polygon) || isPointOnPolygonEdge(point, polygon)
+}
+
+function isPointOnPolygonEdge(point: BoardPoint, polygon: BoardPoint[]) {
+  for (let index = 0; index < polygon.length; index += 1) {
+    const nextIndex = (index + 1) % polygon.length
+    if (distancePointToSegment(point, polygon[index], polygon[nextIndex]) <= 0.5) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function doSegmentsIntersect(startA: BoardPoint, endA: BoardPoint, startB: BoardPoint, endB: BoardPoint) {
+  const epsilon = 0.001
+  const orientationA = getOrientation(startA, endA, startB)
+  const orientationB = getOrientation(startA, endA, endB)
+  const orientationC = getOrientation(startB, endB, startA)
+  const orientationD = getOrientation(startB, endB, endA)
+
+  if (
+    ((orientationA > epsilon && orientationB < -epsilon) || (orientationA < -epsilon && orientationB > epsilon)) &&
+    ((orientationC > epsilon && orientationD < -epsilon) || (orientationC < -epsilon && orientationD > epsilon))
+  ) {
+    return true
+  }
+
+  return (
+    isPointOnSegment(startB, startA, endA, epsilon) ||
+    isPointOnSegment(endB, startA, endA, epsilon) ||
+    isPointOnSegment(startA, startB, endB, epsilon) ||
+    isPointOnSegment(endA, startB, endB, epsilon)
+  )
+}
+
+function getOrientation(start: BoardPoint, end: BoardPoint, point: BoardPoint) {
+  return (end.x - start.x) * (point.y - start.y) - (end.y - start.y) * (point.x - start.x)
+}
+
+function isPointOnSegment(point: BoardPoint, start: BoardPoint, end: BoardPoint, epsilon: number) {
+  return (
+    Math.abs(getOrientation(start, end, point)) <= epsilon &&
+    point.x >= Math.min(start.x, end.x) - epsilon &&
+    point.x <= Math.max(start.x, end.x) + epsilon &&
+    point.y >= Math.min(start.y, end.y) - epsilon &&
+    point.y <= Math.max(start.y, end.y) + epsilon
+  )
 }

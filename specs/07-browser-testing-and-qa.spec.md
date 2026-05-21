@@ -17,6 +17,8 @@
 - [X] Manual testing of image paste confirms that the pasted image is uploaded to the backend, stored as a file in the asset upload folder, served back to the canvas via a static URL, visible to a second connected participant, and still visible after a full page reload.
 - [X] End-to-end coverage for image paste verifies that the pasted image uploads through the backend asset endpoint, appears exactly once, persists as an asset URL instead of inline base64, remains visible to a second participant, preserves legacy base64 board rendering, and surfaces a visible failure notice when an upload is rejected.
 - [X] Manual testing covers single selection, multi-selection, resize, rotate, duplication, deletion, ordering changes, and context-menu editing actions, including selecting an exact color from the context-menu palette.
+- [X] End-to-end coverage verifies that a rotated board element can still be selected with the select tool's rectangle marquee using the visible rotated geometry.
+- [X] End-to-end coverage verifies that rotating an already-rotated element again does not make it orbit away from its original center.
 - [X] End-to-end coverage verifies that right-clicking a colorable board item opens the context menu palette and applies the exact color swatch the user chooses.
 - [X] Manual testing covers keyboard shortcuts on both Windows/Linux conventions and macOS equivalents as applicable to the implementation environment.
 - [X] Manual testing covers multi-user collaboration with visible remote cursors, names, colors, and low-latency update behavior.
