@@ -17,6 +17,25 @@ test.describe('login and routing', () => {
     await expect(page.getByRole('heading', { name: /welcome back, E2EUser/i })).toBeVisible()
   })
 
+  test('login lets the user choose and persist a cursor color', async ({ page }) => {
+    const chosenColor = '#ec4899'
+
+    await page.goto('/')
+    await page.getByRole('textbox').fill('ColorUser')
+    await page.getByRole('radio', { name: `Choose cursor color ${chosenColor}` }).check()
+    await expect(page.getByRole('radio', { name: `Choose cursor color ${chosenColor}` })).toBeChecked()
+    await page.getByRole('button', { name: /continue/i }).click()
+
+    await expect(page.getByRole('heading', { name: /welcome back, ColorUser/i })).toBeVisible()
+    await expect(page.locator('.presence-chip--user .presence-chip__avatar')).toHaveCSS('background-color', 'rgb(236, 72, 153)')
+
+    const identity = await page.evaluate(() => JSON.parse(window.localStorage.getItem('wwb.identity') ?? '{}'))
+    expect(identity).toMatchObject({
+      name: 'ColorUser',
+      color: chosenColor,
+    })
+  })
+
   test('returning user sees homepage without login prompt', async ({ page }) => {
     await page.goto('/')
     await page.getByRole('textbox').fill('E2EUser')

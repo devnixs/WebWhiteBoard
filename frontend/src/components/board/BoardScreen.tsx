@@ -1297,7 +1297,12 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     }
 
     if (interaction.kind === 'resize-selection') {
-      const nextScales = getSelectionResizeScales(interaction.startBounds, interaction.corner, boardPoint)
+      const nextScales = getSelectionResizeScales(
+        interaction.startBounds,
+        interaction.corner,
+        boardPoint,
+        event.shiftKey,
+      )
       if (!nextScales) {
         return
       }
@@ -1660,6 +1665,7 @@ function getSelectionResizeScales(
   bounds: BoardBounds,
   corner: 'nw' | 'ne' | 'se' | 'sw',
   point: BoardPoint,
+  preserveAspectRatio = false,
 ) {
   const anchor = {
     nw: { x: bounds.x + bounds.width, y: bounds.y + bounds.height },
@@ -1672,6 +1678,15 @@ function getSelectionResizeScales(
   const height = Math.abs(anchor.y - point.y)
   if (width < 12 || height < 12 || bounds.width === 0 || bounds.height === 0) {
     return null
+  }
+
+  if (preserveAspectRatio) {
+    const uniformScale = Math.max(width / bounds.width, height / bounds.height)
+    return {
+      origin: anchor,
+      scaleX: uniformScale,
+      scaleY: uniformScale,
+    }
   }
 
   return {

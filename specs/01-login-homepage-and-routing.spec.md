@@ -11,7 +11,7 @@ depends_on:
 
 - [X] ROUTE-001: When a user loads the app for the first time, the app prompts for the user name before entering the main experience.
 - [X] ROUTE-002: The chosen user name is stored in local storage and reused across sessions until the user logs out.
-- [X] ROUTE-003: Logging in assigns the user a random color that is persisted for the current local session identity.
+- [X] ROUTE-003: Logging in preselects a random cursor color, lets the user choose a different color before continuing, and persists the chosen color for the current local session identity.
 - [X] ROUTE-004: The stored local identity is used as the session identity for collaboration features.
 - [X] ROUTE-005: If a user opens a board through a shareable `/board/{guid}` link and has not yet entered a name, the login flow completes first and then joins that board immediately.
 - [X] ROUTE-006: If a user reaches `/` directly, the homepage allows the user to create a new board or open an existing known board.

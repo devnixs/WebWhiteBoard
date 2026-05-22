@@ -12,14 +12,14 @@ type LoginScreenProps = {
 
 export function LoginScreen({ route, onLogin }: LoginScreenProps) {
   const [name, setName] = useState('')
-  const [previewColor] = useState(() => colorPalette[Math.floor(Math.random() * colorPalette.length)])
+  const [selectedColor, setSelectedColor] = useState(() => colorPalette[Math.floor(Math.random() * colorPalette.length)])
 
   const destinationLabel =
     route.kind === 'board' ? `You will join board ${shortBoardId(route.boardId)} right away.` : null
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    onLogin(name, previewColor)
+    onLogin(name, selectedColor)
   }
 
   return (
@@ -40,18 +40,28 @@ export function LoginScreen({ route, onLogin }: LoginScreenProps) {
             value={name}
             onChange={(event) => setName(event.target.value)}
           />
-          <div className="auth-palette">
-            <span className="auth-palette__label">Your color</span>
-            <div className="auth-palette__swatches" aria-hidden="true">
+          <fieldset className="auth-palette">
+            <legend className="auth-palette__label">Your color</legend>
+            <div className="auth-palette__swatches">
               {loginPalette.map((color) => (
-                <span
-                  className={`auth-palette__swatch ${color === previewColor ? 'auth-palette__swatch--selected' : ''}`}
-                  key={color}
-                  style={{ background: color }}
-                />
+                <label className="auth-palette__choice" key={color}>
+                  <input
+                    checked={color === selectedColor}
+                    name="cursor-color"
+                    onChange={() => setSelectedColor(color)}
+                    type="radio"
+                    value={color}
+                  />
+                  <span
+                    aria-hidden="true"
+                    className={`auth-palette__swatch ${color === selectedColor ? 'auth-palette__swatch--selected' : ''}`}
+                    style={{ background: color }}
+                  />
+                  <span className="sr-only">Choose cursor color {color}</span>
+                </label>
               ))}
             </div>
-          </div>
+          </fieldset>
           <button type="submit">Continue →</button>
         </form>
         <p className="auth-card__footer">Saved on this device. No account needed.</p>

@@ -472,6 +472,59 @@ test.describe('board view', () => {
     )
   })
 
+  test('shift resize preserves image aspect ratio while regular resize stays freeform', async ({ page }) => {
+    await loginAndCreateBoard(page)
+    const documentWithImage = {
+      schema: { kind: 'wwb.native-board', version: 1 },
+      store: {
+        elements: [
+          {
+            id: 'image-resize',
+            type: 'image',
+            position: { x: 160, y: 140 },
+            width: 200,
+            height: 100,
+            rotation: 0,
+            src: `data:image/png;base64,${clipboardPngBase64}`,
+          },
+        ],
+      },
+    }
+    const originalRatio = 2
+
+    await replaceDocument(page, documentWithImage)
+    await page.getByRole('button', { name: 'Select' }).click()
+    await clickCanvasAtPage(page, { x: 260, y: 190 })
+
+    const shiftHandle = await pageToScreen(page, { x: 360, y: 240 })
+    const shiftTarget = await pageToScreen(page, { x: 460, y: 280 })
+    await page.locator('.board-screen__canvas').hover({ position: shiftHandle })
+    await page.keyboard.down('Shift')
+    await page.mouse.down()
+    await page.mouse.move(shiftTarget.x, shiftTarget.y, { steps: 12 })
+    await page.mouse.up()
+    await page.keyboard.up('Shift')
+
+    await expect.poll(async () => {
+      const elements = await getDocumentElements(page)
+      const image = elements.find((element) => element.id === 'image-resize')
+      return image && image.type === 'image' ? image.width / image.height : null
+    }).toBeCloseTo(originalRatio, 4)
+
+    await replaceDocument(page, documentWithImage)
+    await clickCanvasAtPage(page, { x: 260, y: 190 })
+
+    const freeformHandle = await pageToScreen(page, { x: 360, y: 240 })
+    const freeformTarget = await pageToScreen(page, { x: 460, y: 280 })
+    await dragCanvasScreenToScreen(page, freeformHandle, freeformTarget)
+
+    await expect.poll(async () => {
+      const elements = await getDocumentElements(page)
+      const image = elements.find((element) => element.id === 'image-resize')
+      return image && image.type === 'image' ? image.width / image.height : null
+    }).not.toBeCloseTo(originalRatio, 4)
+  })
+
   test('select tool marquee-selects shapes and right-drag pans without opening the context menu', async ({ page }) => {
     await loginAndCreateBoard(page)
     await replaceDocument(page, {

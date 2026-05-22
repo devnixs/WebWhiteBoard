@@ -45,7 +45,7 @@ depends_on:
 - [X] TOOLS-030: Activating a tool from the tool rail keeps that tool active for repeated use — drawing a pencil stroke, placing a shape, or creating a text item does not silently revert the active tool back to the select tool.
 - [X] TOOLS-031: Dragging on the canvas with the arrow tool active creates an arrow element with a visible directional arrowhead from the drag origin toward the drag endpoint.
 - [X] TOOLS-032: Arrow elements render through the native canvas runtime, remain selectable like other board items, and preserve their color and draw size when duplicated, synchronized, and reloaded.
-- [ ] TOOLS-044: Arrow elements render as a continuous connector where the arrow shaft reaches the actual arrow tip, without a visible break between the line and arrowhead.
+- [X] TOOLS-044: Arrow elements render as a continuous connector where the arrow shaft reaches the actual arrow tip, without a visible break between the line and arrowhead.
 - [X] TOOLS-033: Clicking the canvas with the text tool active opens an editable text input at the click location, focuses it, and lets the user type and commit text without the tool being deselected mid-interaction.
 - [X] TOOLS-034: After clicking the canvas with the text tool active, a blinking text caret (the standard `|` insertion-point indicator) appears at the click location to signal that the position is the active text input target.
 - [X] TOOLS-035: After clicking the canvas with the text tool active, the user can start typing immediately on the keyboard without any further click, focus action, or modal step, and the typed characters appear at the caret position in real time.

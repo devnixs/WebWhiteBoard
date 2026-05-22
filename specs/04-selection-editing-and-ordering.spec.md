@@ -36,3 +36,4 @@ depends_on:
 - [X] SELECT-024: Copying the current selection with `Ctrl+C` on Windows/Linux or `Cmd+C` on macOS stores a portable representation that can be pasted back into the board.
 - [X] SELECT-025: Pasting a copied selection with `Ctrl+V` on Windows/Linux or `Cmd+V` on macOS creates duplicated board items with preserved editable properties.
 - [X] SELECT-026: Double-clicking an existing text element with the select/cursor tool enters inline edit mode for that element, placing a blinking editable caret inside the existing text so the user can modify it without switching to the text tool.
+- [X] SELECT-027: Holding `Shift` while resizing selected items preserves the selected item's original aspect ratio, including image items, while regular resize gestures remain unconstrained.
