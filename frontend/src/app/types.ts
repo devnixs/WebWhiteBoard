@@ -184,6 +184,48 @@ export type SyncRejectedMessage = {
   document: unknown | null
 }
 
+export type BoardShapeAddedMessage = {
+  type: 'shape.added'
+  boardId: string
+  actorId: string
+  elementId: string
+  element: BoardElement
+  sequence: number
+  version: number
+  updatedAtUtc: string
+}
+
+export type BoardShapeUpdatedMessage = {
+  type: 'shape.updated'
+  boardId: string
+  actorId: string
+  elementId: string
+  element: BoardElement
+  sequence: number
+  version: number
+  updatedAtUtc: string
+}
+
+export type BoardShapeDeletedMessage = {
+  type: 'shape.deleted'
+  boardId: string
+  actorId: string
+  elementId: string
+  sequence: number
+  version: number
+  updatedAtUtc: string
+}
+
+export type BoardShapesReorderedMessage = {
+  type: 'shape.reordered'
+  boardId: string
+  actorId: string
+  elementIds: string[]
+  sequence: number
+  version: number
+  updatedAtUtc: string
+}
+
 export type PongMessage = {
   type: 'pong'
   nonce: string
@@ -209,6 +251,36 @@ export type BoardDocumentReplaceClientMessage = {
   document: BoardDocumentSnapshot
 }
 
+export type BoardShapeAddedClientMessage = {
+  type: 'shape.added'
+  boardId: string
+  actorId: string
+  elementId: string
+  element: BoardElement
+}
+
+export type BoardShapeUpdatedClientMessage = {
+  type: 'shape.updated'
+  boardId: string
+  actorId: string
+  elementId: string
+  element: BoardElement
+}
+
+export type BoardShapeDeletedClientMessage = {
+  type: 'shape.deleted'
+  boardId: string
+  actorId: string
+  elementId: string
+}
+
+export type BoardShapesReorderedClientMessage = {
+  type: 'shape.reordered'
+  boardId: string
+  actorId: string
+  elementIds: string[]
+}
+
 export type CursorUpdateClientMessage = {
   type: 'cursor.update'
   boardId: string
@@ -228,6 +300,10 @@ export type BoardRealtimeServerMessage =
   | ParticipantJoinedMessage
   | ParticipantLeftMessage
   | BoardDocumentUpdatedMessage
+  | BoardShapeAddedMessage
+  | BoardShapeUpdatedMessage
+  | BoardShapeDeletedMessage
+  | BoardShapesReorderedMessage
   | CursorUpdatedMessage
   | CursorClearedMessage
   | SyncRejectedMessage
@@ -237,6 +313,10 @@ export type BoardRealtimeServerMessage =
 export type BoardRealtimeClientMessage =
   | SessionJoinClientMessage
   | BoardDocumentReplaceClientMessage
+  | BoardShapeAddedClientMessage
+  | BoardShapeUpdatedClientMessage
+  | BoardShapeDeletedClientMessage
+  | BoardShapesReorderedClientMessage
   | CursorUpdateClientMessage
   | PingClientMessage
 

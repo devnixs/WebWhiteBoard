@@ -179,6 +179,54 @@ type TextEditorState = {
   size: SizeChoice
 }
 
+function getShiftConstrainedShapeTarget(origin: BoardPoint, current: BoardPoint, shape: ShapeChoice) {
+  if (shape !== 'ellipse') {
+    return current
+  }
+
+  const deltaX = current.x - origin.x
+  const deltaY = current.y - origin.y
+  const side = Math.max(Math.abs(deltaX), Math.abs(deltaY))
+
+  return {
+    x: origin.x + Math.sign(deltaX || 1) * side,
+    y: origin.y + Math.sign(deltaY || 1) * side,
+  }
+}
+
+function getShiftConstrainedLineTarget(origin: BoardPoint, current: BoardPoint) {
+  const deltaX = current.x - origin.x
+  const deltaY = current.y - origin.y
+  const length = Math.hypot(deltaX, deltaY)
+
+  if (length === 0) {
+    return current
+  }
+
+  const angleStep = Math.PI / 4
+  const snappedAngle = Math.round(Math.atan2(deltaY, deltaX) / angleStep) * angleStep
+
+  return {
+    x: origin.x + Math.cos(snappedAngle) * length,
+    y: origin.y + Math.sin(snappedAngle) * length,
+  }
+}
+
+function getConstrainedAuthoringTarget(
+  origin: BoardPoint,
+  current: BoardPoint,
+  shape: ShapeChoice,
+  isShiftPressed: boolean,
+) {
+  if (!isShiftPressed) {
+    return current
+  }
+
+  return shape === 'arrow'
+    ? getShiftConstrainedLineTarget(origin, current)
+    : getShiftConstrainedShapeTarget(origin, current, shape)
+}
+
 type ContextMenuState = {
   x: number
   y: number
@@ -215,6 +263,11 @@ type ReplaceDocumentOptions = {
   history?: 'record' | 'skip'
 }
 
+type BoardDocumentHistoryEntry = {
+  before: BoardDocumentSnapshot
+  after: BoardDocumentSnapshot
+}
+
 function createRectangleSelectionPath(origin: BoardPoint, current: BoardPoint): BoardPoint[] {
   return [
     origin,
@@ -228,6 +281,122 @@ function cloneBoardDocument(document: BoardDocumentSnapshot) {
   return structuredClone(document)
 }
 
+function cloneBoardElement(element: BoardElement) {
+  return structuredClone(element)
+}
+
+function areBoardElementsEqual(first: BoardElement, second: BoardElement) {
+  return JSON.stringify(first) === JSON.stringify(second)
+}
+
+function getElementMap(document: BoardDocumentSnapshot) {
+  return new Map(document.store.elements.map((element) => [element.id, element]))
+}
+
+function getChangedElementIds(first: BoardDocumentSnapshot, second: BoardDocumentSnapshot) {
+  const firstById = getElementMap(first)
+  const secondById = getElementMap(second)
+  const ids = new Set([...firstById.keys(), ...secondById.keys()])
+
+  return Array.from(ids).filter((id) => {
+    const firstElement = firstById.get(id)
+    const secondElement = secondById.get(id)
+
+    if (!firstElement || !secondElement) {
+      return true
+    }
+
+    return !areBoardElementsEqual(firstElement, secondElement)
+  })
+}
+
+function areElementOrdersEqual(first: BoardDocumentSnapshot, second: BoardDocumentSnapshot) {
+  const firstIds = first.store.elements.map((element) => element.id)
+  const secondIds = second.store.elements.map((element) => element.id)
+
+  return firstIds.length === secondIds.length && firstIds.every((id, index) => id === secondIds[index])
+}
+
+function applyDocumentHistoryEntry(
+  currentDocument: BoardDocumentSnapshot,
+  entry: BoardDocumentHistoryEntry,
+  direction: 'undo' | 'redo',
+) {
+  const sourceDocument = direction === 'undo' ? entry.after : entry.before
+  const targetDocument = direction === 'undo' ? entry.before : entry.after
+  const sourceById = getElementMap(sourceDocument)
+  const targetById = getElementMap(targetDocument)
+  const currentById = getElementMap(currentDocument)
+  const changedIds = getChangedElementIds(sourceDocument, targetDocument)
+  const idsToRemove = new Set<string>()
+  const replacements = new Map<string, BoardElement>()
+  const additions: BoardElement[] = []
+
+  for (const id of changedIds) {
+    const sourceElement = sourceById.get(id)
+    const targetElement = targetById.get(id)
+    const currentElement = currentById.get(id)
+
+    if (sourceElement && !targetElement) {
+      if (currentElement && areBoardElementsEqual(currentElement, sourceElement)) {
+        idsToRemove.add(id)
+      }
+      continue
+    }
+
+    if (!sourceElement && targetElement) {
+      if (!currentElement) {
+        additions.push(cloneBoardElement(targetElement))
+      }
+      continue
+    }
+
+    if (sourceElement && targetElement && currentElement && areBoardElementsEqual(currentElement, sourceElement)) {
+      replacements.set(id, cloneBoardElement(targetElement))
+    }
+  }
+
+  const nextElements = currentDocument.store.elements
+    .filter((element) => !idsToRemove.has(element.id))
+    .map((element) => replacements.get(element.id) ?? element)
+
+  if (!areElementOrdersEqual(sourceDocument, targetDocument) && areElementOrdersEqual(currentDocument, sourceDocument)) {
+    const nextById = new Map([...nextElements, ...additions].map((element) => [element.id, element]))
+    return {
+      ...currentDocument,
+      store: {
+        elements: targetDocument.store.elements.flatMap((element) => {
+          const nextElement = nextById.get(element.id)
+          return nextElement ? [nextElement] : []
+        }),
+      },
+    }
+  }
+
+  return {
+    ...currentDocument,
+    store: {
+      elements: [...nextElements, ...additions],
+    },
+  }
+}
+
+function getActiveGestureElementIds(interaction: PointerInteractionState | null): string[] {
+  if (!interaction) {
+    return []
+  }
+
+  if (
+    interaction.kind === 'move-selection' ||
+    interaction.kind === 'resize-selection' ||
+    interaction.kind === 'rotate-selection'
+  ) {
+    return interaction.selectedIds
+  }
+
+  return []
+}
+
 function areBoardDocumentsEqual(first: BoardDocumentSnapshot, second: BoardDocumentSnapshot) {
   return JSON.stringify(first) === JSON.stringify(second)
 }
@@ -238,12 +407,13 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
   const websocketRef = useRef<WebSocket | null>(null)
   const isSessionReadyRef = useRef(false)
   const pendingPingsRef = useRef(new Map<string, number>())
-  const pendingSnapshotFlushRef = useRef<number | null>(null)
   const interactionRef = useRef<PointerInteractionState | null>(null)
+  const lastSeenSequenceRef = useRef(0)
+  const deferredRemoteUpdatesRef = useRef(new Map<string, BoardElement>())
   const hasViewportInitializedRef = useRef(false)
   const documentRef = useRef<BoardDocumentSnapshot>(createEmptyBoardDocument())
-  const undoStackRef = useRef<BoardDocumentSnapshot[]>([])
-  const redoStackRef = useRef<BoardDocumentSnapshot[]>([])
+  const undoStackRef = useRef<BoardDocumentHistoryEntry[]>([])
+  const redoStackRef = useRef<BoardDocumentHistoryEntry[]>([])
   const selectionRef = useRef<string[]>([])
   const internalClipboardRef = useRef<string | null>(null)
   const lastPointerPagePointRef = useRef<BoardPoint>({ x: 0, y: 0 })
@@ -288,34 +458,77 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     socket.send(JSON.stringify(message))
   }, [])
 
-  const queueDocumentBroadcast = useCallback(() => {
+  const emitDocumentDiffActions = useCallback((
+    previousDocument: BoardDocumentSnapshot,
+    nextDocument: BoardDocumentSnapshot,
+  ) => {
     if (!isSessionReadyRef.current) {
       return
     }
 
-    if (pendingSnapshotFlushRef.current !== null) {
-      window.clearTimeout(pendingSnapshotFlushRef.current)
+    const previousElements = previousDocument.store.elements
+    const nextElements = nextDocument.store.elements
+    const previousById = new Map(previousElements.map((element) => [element.id, element]))
+    const nextById = new Map(nextElements.map((element) => [element.id, element]))
+
+    for (const element of nextElements) {
+      const previous = previousById.get(element.id)
+      if (!previous) {
+        sendRealtimeMessage({
+          type: 'shape.added',
+          boardId,
+          actorId: identity.sessionId,
+          elementId: element.id,
+          element,
+        })
+      } else if (JSON.stringify(previous) !== JSON.stringify(element)) {
+        sendRealtimeMessage({
+          type: 'shape.updated',
+          boardId,
+          actorId: identity.sessionId,
+          elementId: element.id,
+          element,
+        })
+      }
     }
 
-    pendingSnapshotFlushRef.current = window.setTimeout(() => {
-      pendingSnapshotFlushRef.current = null
+    for (const element of previousElements) {
+      if (!nextById.has(element.id)) {
+        sendRealtimeMessage({
+          type: 'shape.deleted',
+          boardId,
+          actorId: identity.sessionId,
+          elementId: element.id,
+        })
+      }
+    }
+
+    const previousOrder = previousElements.map((element) => element.id).filter((id) => nextById.has(id))
+    const nextOrder = nextElements.map((element) => element.id).filter((id) => previousById.has(id))
+    if (
+      previousOrder.length === nextOrder.length &&
+      previousOrder.some((id, index) => id !== nextOrder[index])
+    ) {
       sendRealtimeMessage({
-        type: 'board.document.replace',
+        type: 'shape.reordered',
         boardId,
         actorId: identity.sessionId,
-        document: documentRef.current,
+        elementIds: nextElements.map((element) => element.id),
       })
-    }, 120)
+    }
   }, [boardId, identity.sessionId, sendRealtimeMessage])
 
-  const pushUndoSnapshot = useCallback((previousDocument: BoardDocumentSnapshot) => {
-    if (areBoardDocumentsEqual(previousDocument, documentRef.current)) {
+  const pushUndoEntry = useCallback((previousDocument: BoardDocumentSnapshot, nextDocument = documentRef.current) => {
+    if (areBoardDocumentsEqual(previousDocument, nextDocument)) {
       return
     }
 
     undoStackRef.current = [
       ...undoStackRef.current.slice(-(maxDocumentHistoryEntries - 1)),
-      cloneBoardDocument(previousDocument),
+      {
+        before: cloneBoardDocument(previousDocument),
+        after: cloneBoardDocument(nextDocument),
+      },
     ]
     redoStackRef.current = []
   }, [])
@@ -328,12 +541,8 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     const shouldRecordHistory = source === 'local' && options.history !== 'skip'
     const previousDocument = documentRef.current
 
-    if (shouldRecordHistory && !areBoardDocumentsEqual(previousDocument, nextDocument)) {
-      undoStackRef.current = [
-        ...undoStackRef.current.slice(-(maxDocumentHistoryEntries - 1)),
-        cloneBoardDocument(previousDocument),
-      ]
-      redoStackRef.current = []
+    if (shouldRecordHistory) {
+      pushUndoEntry(previousDocument, nextDocument)
     }
 
     if (source === 'remote') {
@@ -345,36 +554,68 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     setDocument(nextDocument)
 
     if (source === 'local') {
-      queueDocumentBroadcast()
+      emitDocumentDiffActions(previousDocument, nextDocument)
     }
-  }, [queueDocumentBroadcast])
+  }, [emitDocumentDiffActions, pushUndoEntry])
+
+  const applyRemoteDocumentMutation = useCallback((
+    mutator: (elements: BoardElement[]) => BoardElement[] | null,
+  ) => {
+    const nextElements = mutator(documentRef.current.store.elements)
+    if (!nextElements) {
+      return
+    }
+
+    const nextDocument: BoardDocumentSnapshot = {
+      ...documentRef.current,
+      store: { elements: nextElements },
+    }
+    documentRef.current = nextDocument
+    setDocument(nextDocument)
+  }, [])
+
+  const flushDeferredRemoteUpdates = useCallback(() => {
+    const deferred = deferredRemoteUpdatesRef.current
+    if (deferred.size === 0) {
+      return
+    }
+
+    const updates = Array.from(deferred.entries())
+    deferred.clear()
+    applyRemoteDocumentMutation((elements) =>
+      elements.map((element) => {
+        const replacement = updates.find(([id]) => id === element.id)
+        return replacement ? replacement[1] : element
+      }),
+    )
+  }, [applyRemoteDocumentMutation])
 
   const undoDocumentAction = useCallback(() => {
-    const previousDocument = undoStackRef.current.pop()
-    if (!previousDocument) {
+    const entry = undoStackRef.current.pop()
+    if (!entry) {
       return
     }
 
     redoStackRef.current = [
       ...redoStackRef.current.slice(-(maxDocumentHistoryEntries - 1)),
-      cloneBoardDocument(documentRef.current),
+      entry,
     ]
-    replaceDocument(cloneBoardDocument(previousDocument), 'local', { history: 'skip' })
+    replaceDocument(applyDocumentHistoryEntry(documentRef.current, entry, 'undo'), 'local', { history: 'skip' })
     setContextMenu(null)
     setTextEditor(null)
   }, [replaceDocument])
 
   const redoDocumentAction = useCallback(() => {
-    const nextDocument = redoStackRef.current.pop()
-    if (!nextDocument) {
+    const entry = redoStackRef.current.pop()
+    if (!entry) {
       return
     }
 
     undoStackRef.current = [
       ...undoStackRef.current.slice(-(maxDocumentHistoryEntries - 1)),
-      cloneBoardDocument(documentRef.current),
+      entry,
     ]
-    replaceDocument(cloneBoardDocument(nextDocument), 'local', { history: 'skip' })
+    replaceDocument(applyDocumentHistoryEntry(documentRef.current, entry, 'redo'), 'local', { history: 'skip' })
     setContextMenu(null)
     setTextEditor(null)
   }, [replaceDocument])
@@ -549,6 +790,8 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
 
   useEffect(() => {
     isSessionReadyRef.current = false
+    lastSeenSequenceRef.current = 0
+    deferredRemoteUpdatesRef.current.clear()
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reset must happen before the new socket can deliver session.ready, otherwise an rAF-deferred reset races and wipes the freshly synced state
     setConnectionState('connecting')
     setIsSessionReady(false)
@@ -581,6 +824,8 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
 
       if (message.type === 'session.ready') {
         isSessionReadyRef.current = true
+        lastSeenSequenceRef.current = 0
+        deferredRemoteUpdatesRef.current.clear()
         setParticipantCount(message.participants.length)
         setParticipants(
           message.participants.filter((participant) => participant.sessionId !== identity.sessionId),
@@ -589,6 +834,93 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
         setIsSessionReady(true)
         setRemoteCursors(indexRemoteCursors(message.cursors, identity.sessionId))
         replaceDocument(applyRemoteDocument(message.document), 'remote')
+        return
+      }
+
+      if (
+        message.type === 'shape.added' ||
+        message.type === 'shape.updated' ||
+        message.type === 'shape.deleted' ||
+        message.type === 'shape.reordered'
+      ) {
+        if (message.actorId === identity.sessionId) {
+          if (message.sequence > lastSeenSequenceRef.current) {
+            lastSeenSequenceRef.current = message.sequence
+          }
+          return
+        }
+
+        if (message.sequence <= lastSeenSequenceRef.current) {
+          return
+        }
+        lastSeenSequenceRef.current = message.sequence
+
+        const activeIds = new Set(getActiveGestureElementIds(interactionRef.current))
+
+        if (message.type === 'shape.added') {
+          applyRemoteDocumentMutation((elements) => {
+            if (elements.some((element) => element.id === message.elementId)) {
+              return elements.map((element) =>
+                element.id === message.elementId ? message.element : element,
+              )
+            }
+            return [...elements, message.element]
+          })
+          return
+        }
+
+        if (message.type === 'shape.updated') {
+          if (activeIds.has(message.elementId)) {
+            deferredRemoteUpdatesRef.current.set(message.elementId, message.element)
+            return
+          }
+          applyRemoteDocumentMutation((elements) =>
+            elements.map((element) =>
+              element.id === message.elementId ? message.element : element,
+            ),
+          )
+          return
+        }
+
+        if (message.type === 'shape.deleted') {
+          deferredRemoteUpdatesRef.current.delete(message.elementId)
+          applyRemoteDocumentMutation((elements) =>
+            elements.filter((element) => element.id !== message.elementId),
+          )
+          if (selectionRef.current.includes(message.elementId)) {
+            updateSelection(selectionRef.current.filter((id) => id !== message.elementId))
+          }
+          setContextMenu((current) => {
+            if (!current) {
+              return current
+            }
+            if (!current.selectedIds.includes(message.elementId)) {
+              return current
+            }
+            const nextIds = current.selectedIds.filter((id) => id !== message.elementId)
+            return nextIds.length === 0 ? null : { ...current, selectedIds: nextIds }
+          })
+          setTextEditor((current) =>
+            current && current.editingElementId === message.elementId ? null : current,
+          )
+          return
+        }
+
+        applyRemoteDocumentMutation((elements) => {
+          const byId = new Map(elements.map((element) => [element.id, element]))
+          const reordered: BoardElement[] = []
+          for (const id of message.elementIds) {
+            const existing = byId.get(id)
+            if (existing) {
+              reordered.push(existing)
+              byId.delete(id)
+            }
+          }
+          for (const remaining of byId.values()) {
+            reordered.push(remaining)
+          }
+          return reordered
+        })
         return
       }
 
@@ -675,7 +1007,7 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
       isSessionReadyRef.current = false
       pendingPings.clear()
     }
-  }, [boardId, identity.color, identity.name, identity.sessionId, replaceDocument, updateSelection])
+  }, [applyRemoteDocumentMutation, boardId, identity.color, identity.name, identity.sessionId, replaceDocument, updateSelection])
 
   useEffect(() => {
     if (!isSessionReady) {
@@ -694,14 +1026,6 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
 
     return () => window.clearInterval(intervalId)
   }, [isSessionReady, sendRealtimeMessage])
-
-  useEffect(() => {
-    return () => {
-      if (pendingSnapshotFlushRef.current !== null) {
-        window.clearTimeout(pendingSnapshotFlushRef.current)
-      }
-    }
-  }, [])
 
   const commitTextEditor = useCallback(() => {
     if (!textEditor) {
@@ -1266,17 +1590,23 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
     }
 
     if (interaction.kind === 'shape') {
+      const authoringTarget = getConstrainedAuthoringTarget(
+        interaction.origin,
+        boardPoint,
+        interaction.shape,
+        event.shiftKey,
+      )
       interactionRef.current = {
         ...interaction,
         current: boardPoint,
       }
       setDraftShape(
         interaction.shape === 'arrow'
-          ? createArrowElement(interaction.origin, boardPoint, drawColor, drawSize)
+          ? createArrowElement(interaction.origin, authoringTarget, drawColor, drawSize)
           : createShapeElement(
               interaction.origin,
-              boardPoint.x - interaction.origin.x,
-              boardPoint.y - interaction.origin.y,
+              authoringTarget.x - interaction.origin.x,
+              authoringTarget.y - interaction.origin.y,
               interaction.shape,
               drawColor,
               drawSize,
@@ -1377,15 +1707,22 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
       }
 
       if (interaction.kind === 'shape') {
-        const width = interaction.current.x - interaction.origin.x
-        const height = interaction.current.y - interaction.origin.y
+        const boardPoint = screenToBoardPoint(event.clientX, event.clientY)
+        const authoringTarget = getConstrainedAuthoringTarget(
+          interaction.origin,
+          boardPoint,
+          interaction.shape,
+          event.shiftKey,
+        )
+        const width = authoringTarget.x - interaction.origin.x
+        const height = authoringTarget.y - interaction.origin.y
         const dragDistance = Math.hypot(width, height)
         if (interaction.shape === 'arrow' ? dragDistance >= 6 : Math.abs(width) >= 6 || Math.abs(height) >= 6) {
           replaceDocument(
             appendElement(
               documentRef.current,
               interaction.shape === 'arrow'
-                ? createArrowElement(interaction.origin, interaction.current, drawColor, drawSize)
+                ? createArrowElement(interaction.origin, authoringTarget, drawColor, drawSize)
                 : createShapeElement(interaction.origin, width, height, interaction.shape, drawColor, drawSize),
             ),
             'local',
@@ -1412,11 +1749,12 @@ export function BoardScreen({ boardId, identity, onLogout }: BoardScreenProps) {
         interaction.kind === 'rotate-selection' ||
         interaction.kind === 'erase'
       ) {
-        pushUndoSnapshot(interaction.baseDocument)
+        pushUndoEntry(interaction.baseDocument)
       }
 
       interactionRef.current = null
       clearInteractionPreview()
+      flushDeferredRemoteUpdates()
     }
 
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {

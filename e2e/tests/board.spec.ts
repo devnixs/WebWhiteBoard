@@ -118,14 +118,21 @@ async function dragCanvasAtPage(
   page: import('@playwright/test').Page,
   from: { x: number; y: number },
   to: { x: number; y: number },
+  options: { shift?: boolean } = {},
 ) {
   const start = await pageToScreen(page, from)
   const end = await pageToScreen(page, to)
   const canvas = page.locator('.board-screen__canvas')
   await canvas.hover({ position: { x: start.x, y: start.y } })
+  if (options.shift) {
+    await page.keyboard.down('Shift')
+  }
   await page.mouse.down()
   await page.mouse.move(end.x, end.y, { steps: 12 })
   await page.mouse.up()
+  if (options.shift) {
+    await page.keyboard.up('Shift')
+  }
 }
 
 async function dragCanvasScreenToScreen(
@@ -336,6 +343,42 @@ test.describe('board view', () => {
     expect(arrowsAfterReload).toHaveLength(2)
     expect(arrowsAfterReload.every((element) => element.color === 'red' && element.size === 'l')).toBeTruthy()
     await expect.poll(async () => await getArrowShaftTipSampleAlpha(page)).toBeGreaterThan(0)
+  })
+
+  test('shift constrains circle and arrow authoring while unconstrained drags stay freeform', async ({ page }) => {
+    await loginAndCreateBoard(page, 'ShiftAuthoringUser')
+
+    await page.getByRole('button', { name: 'Shapes' }).click()
+    await page.getByRole('button', { name: 'Circle' }).click()
+    await dragCanvasAtPage(page, { x: -180, y: -100 }, { x: -70, y: -40 }, { shift: true })
+    await dragCanvasAtPage(page, { x: 40, y: 80 }, { x: -20, y: 10 }, { shift: true })
+    await dragCanvasAtPage(page, { x: 80, y: -100 }, { x: 190, y: -40 })
+
+    await waitForElementCount(page, (elements) =>
+      elements.filter((element) => element.type === 'shape' && element.shape === 'ellipse').length === 3,
+    )
+
+    const circles = (await getDocumentElements(page)).filter(
+      (element) => element.type === 'shape' && element.shape === 'ellipse',
+    )
+    expect(circles[0]).toMatchObject({ width: 110, height: 110, position: { x: -180, y: -100 } })
+    expect(circles[1]).toMatchObject({ width: 70, height: 70, position: { x: -30, y: 10 } })
+    expect(circles[2]).toMatchObject({ width: 110, height: 60, position: { x: 80, y: -100 } })
+
+    await page.getByRole('button', { name: 'Arrow' }).click()
+    await dragCanvasAtPage(page, { x: -40, y: -20 }, { x: 110, y: 80 }, { shift: true })
+    await dragCanvasAtPage(page, { x: 120, y: -20 }, { x: 270, y: 80 })
+
+    await waitForElementCount(page, (elements) =>
+      elements.filter((element) => element.type === 'shape' && element.shape === 'arrow').length === 2,
+    )
+
+    const arrows = (await getDocumentElements(page)).filter(
+      (element) => element.type === 'shape' && element.shape === 'arrow',
+    )
+    expect(arrows[0].rotation).toBeCloseTo(Math.PI / 4, 2)
+    expect(arrows[1].rotation).toBeCloseTo(Math.atan2(100, 150), 2)
+    expect(Math.abs((arrows[1].rotation as number) - Math.PI / 4)).toBeGreaterThan(0.15)
   })
 
   test('ctrl z undoes board actions and ctrl y redoes them', async ({ page }) => {

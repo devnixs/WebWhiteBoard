@@ -164,6 +164,18 @@ public sealed class BoardRealtimeSessionCoordinator
                 case BoardDocumentReplaceRealtimeMessage documentReplace:
                     await HandleDocumentReplaceAsync(boardId, room, connection, documentReplace, cancellationToken);
                     break;
+                case BoardShapeAddedRealtimeMessage shapeAdded:
+                    await HandleShapeAddedAsync(boardId, room, connection, shapeAdded, cancellationToken);
+                    break;
+                case BoardShapeUpdatedRealtimeMessage shapeUpdated:
+                    await HandleShapeUpdatedAsync(boardId, room, connection, shapeUpdated, cancellationToken);
+                    break;
+                case BoardShapeDeletedRealtimeMessage shapeDeleted:
+                    await HandleShapeDeletedAsync(boardId, room, connection, shapeDeleted, cancellationToken);
+                    break;
+                case BoardShapesReorderedRealtimeMessage shapeReordered:
+                    await HandleShapesReorderedAsync(boardId, room, connection, shapeReordered, cancellationToken);
+                    break;
                 case CursorUpdateRealtimeMessage cursorUpdate:
                     await HandleCursorUpdateAsync(boardId, room, connection, cursorUpdate, cancellationToken);
                     break;
@@ -230,6 +242,197 @@ public sealed class BoardRealtimeSessionCoordinator
                 version = board.Snapshot.Version,
                 document = board.Snapshot.Document
             }, cancellationToken);
+        }
+    }
+
+    private async Task HandleShapeAddedAsync(
+        Guid boardId,
+        BoardRealtimeRoom room,
+        BoardRealtimeConnection connection,
+        BoardShapeAddedRealtimeMessage message,
+        CancellationToken cancellationToken)
+    {
+        EnsureBoardRouteMatches(boardId, message.BoardId);
+        EnsureActorMatches(connection, message.ActorId);
+
+        try
+        {
+            EnsureElementId(message.ElementId);
+            var result = await _commandService.AddElementAsync(
+                new AddBoardElementRequest(boardId, connection.Participant.SessionId, message.ElementId, message.Element),
+                cancellationToken);
+
+            await room.BroadcastAsync(
+                exceptConnectionId: null,
+                payload: new
+                {
+                    type = "shape.added",
+                    boardId,
+                    actorId = connection.Participant.SessionId,
+                    elementId = message.ElementId,
+                    element = result.Element,
+                    sequence = result.Sequence,
+                    version = result.Snapshot.Version,
+                    updatedAtUtc = result.Snapshot.UpdatedAtUtc
+                },
+                cancellationToken);
+        }
+        catch (ArgumentException exception)
+        {
+            await SendRejectedAsync(boardId, connection, exception.Message, cancellationToken);
+        }
+    }
+
+    private async Task HandleShapeUpdatedAsync(
+        Guid boardId,
+        BoardRealtimeRoom room,
+        BoardRealtimeConnection connection,
+        BoardShapeUpdatedRealtimeMessage message,
+        CancellationToken cancellationToken)
+    {
+        EnsureBoardRouteMatches(boardId, message.BoardId);
+        EnsureActorMatches(connection, message.ActorId);
+
+        try
+        {
+            EnsureElementId(message.ElementId);
+            var result = await _commandService.UpdateElementAsync(
+                new UpdateBoardElementRequest(boardId, connection.Participant.SessionId, message.ElementId, message.Element),
+                cancellationToken);
+
+            // LWW-per-element: silently drop updates whose target was already deleted,
+            // matching COLLAB-023 ("never resurrect a deleted element").
+            if (result is null)
+            {
+                return;
+            }
+
+            await room.BroadcastAsync(
+                exceptConnectionId: null,
+                payload: new
+                {
+                    type = "shape.updated",
+                    boardId,
+                    actorId = connection.Participant.SessionId,
+                    elementId = message.ElementId,
+                    element = result.Element,
+                    sequence = result.Sequence,
+                    version = result.Snapshot.Version,
+                    updatedAtUtc = result.Snapshot.UpdatedAtUtc
+                },
+                cancellationToken);
+        }
+        catch (ArgumentException exception)
+        {
+            await SendRejectedAsync(boardId, connection, exception.Message, cancellationToken);
+        }
+    }
+
+    private async Task HandleShapeDeletedAsync(
+        Guid boardId,
+        BoardRealtimeRoom room,
+        BoardRealtimeConnection connection,
+        BoardShapeDeletedRealtimeMessage message,
+        CancellationToken cancellationToken)
+    {
+        EnsureBoardRouteMatches(boardId, message.BoardId);
+        EnsureActorMatches(connection, message.ActorId);
+
+        try
+        {
+            EnsureElementId(message.ElementId);
+            var result = await _commandService.DeleteElementAsync(
+                new DeleteBoardElementRequest(boardId, connection.Participant.SessionId, message.ElementId),
+                cancellationToken);
+
+            if (result is null)
+            {
+                return;
+            }
+
+            await room.BroadcastAsync(
+                exceptConnectionId: null,
+                payload: new
+                {
+                    type = "shape.deleted",
+                    boardId,
+                    actorId = connection.Participant.SessionId,
+                    elementId = message.ElementId,
+                    sequence = result.Sequence,
+                    version = result.Snapshot.Version,
+                    updatedAtUtc = result.Snapshot.UpdatedAtUtc
+                },
+                cancellationToken);
+        }
+        catch (ArgumentException exception)
+        {
+            await SendRejectedAsync(boardId, connection, exception.Message, cancellationToken);
+        }
+    }
+
+    private async Task HandleShapesReorderedAsync(
+        Guid boardId,
+        BoardRealtimeRoom room,
+        BoardRealtimeConnection connection,
+        BoardShapesReorderedRealtimeMessage message,
+        CancellationToken cancellationToken)
+    {
+        EnsureBoardRouteMatches(boardId, message.BoardId);
+        EnsureActorMatches(connection, message.ActorId);
+
+        try
+        {
+            if (message.ElementIds is null)
+            {
+                throw new ArgumentException("shape.reordered requires elementIds.");
+            }
+
+            var result = await _commandService.ReorderElementsAsync(
+                new ReorderBoardElementsRequest(boardId, connection.Participant.SessionId, message.ElementIds),
+                cancellationToken);
+
+            await room.BroadcastAsync(
+                exceptConnectionId: null,
+                payload: new
+                {
+                    type = "shape.reordered",
+                    boardId,
+                    actorId = connection.Participant.SessionId,
+                    elementIds = message.ElementIds,
+                    sequence = result.Sequence,
+                    version = result.Snapshot.Version,
+                    updatedAtUtc = result.Snapshot.UpdatedAtUtc
+                },
+                cancellationToken);
+        }
+        catch (ArgumentException exception)
+        {
+            await SendRejectedAsync(boardId, connection, exception.Message, cancellationToken);
+        }
+    }
+
+    private async Task SendRejectedAsync(
+        Guid boardId,
+        BoardRealtimeConnection connection,
+        string message,
+        CancellationToken cancellationToken)
+    {
+        var board = await _commandService.GetBoardAsync(boardId, cancellationToken);
+        await SendAsync(connection, new
+        {
+            type = "board.sync.rejected",
+            boardId,
+            message,
+            version = board.Snapshot.Version,
+            document = board.Snapshot.Document
+        }, cancellationToken);
+    }
+
+    private static void EnsureElementId(string elementId)
+    {
+        if (string.IsNullOrWhiteSpace(elementId))
+        {
+            throw new ArgumentException("Action requires a non-empty element id.");
         }
     }
 

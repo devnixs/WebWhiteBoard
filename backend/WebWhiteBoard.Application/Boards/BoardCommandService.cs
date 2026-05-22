@@ -56,12 +56,123 @@ public sealed class BoardCommandService : IBoardCommandService
             DateTimeOffset.UtcNow,
             request.Document.Clone());
 
-        board.Apply(action);
+        BoardSnapshot snapshot;
+        lock (board.SyncRoot)
+        {
+            board.Apply(action);
+            board.NextActionSequence();
+            snapshot = board.ToSnapshot();
+        }
 
-        var snapshot = board.ToSnapshot();
         await PersistSnapshotAsync(snapshot, cancellationToken);
 
         return new BoardMutationResult(snapshot, action);
+    }
+
+    public async Task<BoardElementMutationResult> AddElementAsync(
+        AddBoardElementRequest request,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(request.ActorId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(request.ElementId);
+        ValidateElement(request.ElementId, request.Element);
+
+        var board = await _activeBoardStore.GetOrCreateAsync(request.BoardId, cancellationToken);
+
+        BoardSnapshot snapshot;
+        long sequence;
+        lock (board.SyncRoot)
+        {
+            if (!board.TryApplyElementAdded(request.ElementId, request.Element, DateTimeOffset.UtcNow))
+            {
+                throw new ArgumentException("Element payload is invalid.");
+            }
+            sequence = board.NextActionSequence();
+            snapshot = board.ToSnapshot();
+        }
+
+        await PersistSnapshotAsync(snapshot, cancellationToken);
+        board.TryGetElement(request.ElementId, out var stored);
+        return new BoardElementMutationResult(snapshot, sequence, request.ElementId, stored);
+    }
+
+    public async Task<BoardElementMutationResult?> UpdateElementAsync(
+        UpdateBoardElementRequest request,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(request.ActorId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(request.ElementId);
+        ValidateElement(request.ElementId, request.Element);
+
+        var board = await _activeBoardStore.GetOrCreateAsync(request.BoardId, cancellationToken);
+
+        BoardSnapshot snapshot;
+        long sequence;
+        lock (board.SyncRoot)
+        {
+            // LWW-per-element with last-delete-wins: if the element has already been
+            // deleted, drop the update silently to avoid resurrecting it (COLLAB-023).
+            if (!board.TryApplyElementUpdated(request.ElementId, request.Element, DateTimeOffset.UtcNow))
+            {
+                return null;
+            }
+            sequence = board.NextActionSequence();
+            snapshot = board.ToSnapshot();
+        }
+
+        await PersistSnapshotAsync(snapshot, cancellationToken);
+        board.TryGetElement(request.ElementId, out var stored);
+        return new BoardElementMutationResult(snapshot, sequence, request.ElementId, stored);
+    }
+
+    public async Task<BoardElementMutationResult?> DeleteElementAsync(
+        DeleteBoardElementRequest request,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(request.ActorId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(request.ElementId);
+
+        var board = await _activeBoardStore.GetOrCreateAsync(request.BoardId, cancellationToken);
+
+        BoardSnapshot snapshot;
+        long sequence;
+        lock (board.SyncRoot)
+        {
+            if (!board.TryApplyElementDeleted(request.ElementId, DateTimeOffset.UtcNow))
+            {
+                return null;
+            }
+            sequence = board.NextActionSequence();
+            snapshot = board.ToSnapshot();
+        }
+
+        await PersistSnapshotAsync(snapshot, cancellationToken);
+        return new BoardElementMutationResult(snapshot, sequence, request.ElementId, null);
+    }
+
+    public async Task<BoardElementMutationResult> ReorderElementsAsync(
+        ReorderBoardElementsRequest request,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(request.ActorId);
+        if (request.ElementIds is null)
+        {
+            throw new ArgumentException("Reorder payload must include elementIds.");
+        }
+
+        var board = await _activeBoardStore.GetOrCreateAsync(request.BoardId, cancellationToken);
+
+        BoardSnapshot snapshot;
+        long sequence;
+        lock (board.SyncRoot)
+        {
+            board.TryApplyElementsReordered(request.ElementIds, DateTimeOffset.UtcNow);
+            sequence = board.NextActionSequence();
+            snapshot = board.ToSnapshot();
+        }
+
+        await PersistSnapshotAsync(snapshot, cancellationToken);
+        return new BoardElementMutationResult(snapshot, sequence, string.Empty, null);
     }
 
     public async Task<BoardSnapshot> UpdateCursorAsync(
@@ -110,6 +221,21 @@ public sealed class BoardCommandService : IBoardCommandService
     private async Task PersistSnapshotAsync(BoardSnapshot snapshot, CancellationToken cancellationToken)
     {
         await _persistenceScheduler.EnqueueAsync(snapshot with { Cursors = [] }, cancellationToken);
+    }
+
+    private static void ValidateElement(string elementId, JsonElement element)
+    {
+        if (element.ValueKind != JsonValueKind.Object)
+        {
+            throw new ArgumentException("Element payload must be a JSON object.");
+        }
+
+        if (element.TryGetProperty("id", out var idProperty)
+            && idProperty.ValueKind == JsonValueKind.String
+            && !string.Equals(idProperty.GetString(), elementId, StringComparison.Ordinal))
+        {
+            throw new ArgumentException("Element payload id does not match the action element id.");
+        }
     }
 
     private static void ValidateDocument(JsonElement document)

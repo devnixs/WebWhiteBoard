@@ -14,6 +14,22 @@ public interface IBoardCommandService
         ReplaceBoardDocumentRequest request,
         CancellationToken cancellationToken);
 
+    Task<BoardElementMutationResult> AddElementAsync(
+        AddBoardElementRequest request,
+        CancellationToken cancellationToken);
+
+    Task<BoardElementMutationResult?> UpdateElementAsync(
+        UpdateBoardElementRequest request,
+        CancellationToken cancellationToken);
+
+    Task<BoardElementMutationResult?> DeleteElementAsync(
+        DeleteBoardElementRequest request,
+        CancellationToken cancellationToken);
+
+    Task<BoardElementMutationResult> ReorderElementsAsync(
+        ReorderBoardElementsRequest request,
+        CancellationToken cancellationToken);
+
     Task<BoardSnapshot> UpdateCursorAsync(
         UpdateBoardCursorRequest request,
         CancellationToken cancellationToken);
